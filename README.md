@@ -1,1 +1,1 @@
-# hygieia-whitesource-collector
+hygieia-whitesource-collector for WhiteSource
