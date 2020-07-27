@@ -20,8 +20,8 @@
     </properties>
     <body>
         <!-- ================================================== -->
-        <section name="Hygieia Github(graphql) Collector">
-            Welcome to the Hygieia Github(graphql) Collector
+        <section name="Hygieia Whitesource Collector">
+            Welcome to the Hygieia Whitesource Collector
         </section>
         <!-- ================================================== -->
     </body>
