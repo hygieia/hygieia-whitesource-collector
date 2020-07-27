@@ -1,52 +1,29 @@
 package com.capitalone.dashboard.collector;
 
 import com.capitalone.dashboard.client.RestClient;
-import com.capitalone.dashboard.client.RestUserInfo;
-import com.capitalone.dashboard.model.FeatureFlag;
-import com.capitalone.dashboard.model.Library;
-import com.capitalone.dashboard.model.Vulnerability;
-import com.capitalone.dashboard.model.WhiteSourceComponent;
 import com.capitalone.dashboard.model.LibraryPolicyResult;
 import com.capitalone.dashboard.model.LibraryPolicyThreatDisposition;
 import com.capitalone.dashboard.model.LibraryPolicyThreatLevel;
 import com.capitalone.dashboard.model.LibraryPolicyType;
+import com.capitalone.dashboard.model.WhiteSourceComponent;
 import com.capitalone.dashboard.model.WhiteSourceProduct;
-import com.capitalone.dashboard.model.WhiteSourceProject;
-import com.capitalone.dashboard.model.WhiteSourceProjectAlerts;
-import com.capitalone.dashboard.model.adapter.FeatureFlagAdapter;
-import com.capitalone.dashboard.model.adapter.WhiteSourceProjectAlertsAdapter;
-import com.capitalone.dashboard.testutil.GsonUtil;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
-import com.google.gson.reflect.TypeToken;
-import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.bson.types.ObjectId;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
-import org.springframework.web.client.RestClientException;
 
-import java.io.FileReader;
-import java.math.BigDecimal;
-import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 @Component
 public class DefaultWhiteSourceClient implements WhiteSourceClient {
