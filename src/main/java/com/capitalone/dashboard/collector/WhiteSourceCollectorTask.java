@@ -125,7 +125,6 @@ public class WhiteSourceCollectorTask extends CollectorTask<WhiteSourceCollector
         List<WhiteSourceComponent> exception429TooManyRequestsComponentsList = new ArrayList<>();
         int counter = 0;
         for (WhiteSourceComponent component : enabledProjects) {
-            if (component.isEnabled()) {
                 if (component.checkErrorOrReset(whiteSourceSettings.getErrorResetWindow(), whiteSourceSettings.getErrorThreshold())) {
                     try {
                         LibraryPolicyResult libraryPolicyResult = whiteSourceClient.getProjectAlerts(instanceUrl, component);
@@ -158,7 +157,6 @@ public class WhiteSourceCollectorTask extends CollectorTask<WhiteSourceCollector
                     LOG.info(component.getProjectName() + ":: errorThreshold exceeded");
                 }
             }
-        }
         count.addInstanceCount(counter);
     }
 
