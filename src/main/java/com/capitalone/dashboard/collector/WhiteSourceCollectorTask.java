@@ -1,7 +1,9 @@
 package com.capitalone.dashboard.collector;
 
 
+import com.capitalone.dashboard.misc.HygieiaException;
 import com.capitalone.dashboard.model.CollectionError;
+import com.capitalone.dashboard.model.Count;
 import com.capitalone.dashboard.model.LibraryPolicyResult;
 import com.capitalone.dashboard.model.WhiteSourceCollector;
 import com.capitalone.dashboard.model.WhiteSourceComponent;
@@ -20,9 +22,10 @@ import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestClientException;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -83,31 +86,44 @@ public class WhiteSourceCollectorTask extends CollectorTask<WhiteSourceCollector
     @Override
     public void collect(WhiteSourceCollector collector) {
         long start = System.currentTimeMillis();
+        Count count = new Count();
         collector.getWhiteSourceServers().forEach(instanceUrl -> {
             logBanner(instanceUrl);
             whiteSourceSettings.getOrgTokens().forEach(orgToken -> {
-                String orgName = whiteSourceClient.getOrgDetails(instanceUrl, orgToken);
-                List<WhiteSourceProduct> products = whiteSourceClient.getProducts(instanceUrl, orgToken);
-                List<WhiteSourceComponent> projects = new ArrayList<>();
-                for (WhiteSourceProduct product : products) {
-                    projects.addAll(whiteSourceClient.getAllProjectsForProduct(instanceUrl, product, orgToken, orgName));
+                String logMessage = "WhiteSourceCollector :";
+                try {
+                    String orgName = whiteSourceClient.getOrgDetails(instanceUrl, orgToken);
+                    List<WhiteSourceProduct> products = whiteSourceClient.getProducts(instanceUrl, orgToken,orgName);
+                    List<WhiteSourceComponent> projects = new ArrayList<>();
+                    for (WhiteSourceProduct product : products) {
+                        projects.addAll(whiteSourceClient.getAllProjectsForProduct(instanceUrl, product, orgToken, orgName));
+                    }
+                    count.addFetched(projects.size());
+                    List<WhiteSourceComponent> existingComponents = whiteSourceComponentRepository.findByCollectorIdIn(Stream.of(collector.getId()).collect(Collectors.toList()));
+                    addNewApplications(projects, existingComponents, collector, count);
+                    refreshData(enabledApplications(collector), getRequestRateLimit(),
+                            getRequestRateLimitTimeWindow(), getWaitTime(), instanceUrl,count);
+                    logMessage="SUCCESS, orgName="+orgName+", fetched projects="+projects.size()+", New projects="+count.getAdded()+", updated-projects="+count.getUpdated()+", updated instance-data="+count.getInstanceCount();
+                }catch (HygieiaException he) {
+                    logMessage= "EXCEPTION, "+he.getClass().getCanonicalName();
+                    LOG.error("Unexpected error occurred while collecting data for url=" + instanceUrl, he);
+                } finally {
+                    LOG.info(String.format("status=%s",logMessage));
                 }
-                log("Fetched projects for Organization : " + orgName + ":  total projects :" + projects.size(), start);
-                List<WhiteSourceComponent> existingComponents = whiteSourceComponentRepository.findByCollectorIdIn(Stream.of(collector.getId()).collect(Collectors.toList()));
-                addNewApplications(projects, existingComponents, collector);
-                refreshData(enabledApplications(collector), getRequestRateLimit(),
-                        getRequestRateLimitTimeWindow(), getWaitTime(), instanceUrl);
             });
-            log("Finished", start);
         });
+        long end = System.currentTimeMillis();
+        long elapsedTime = (end-start) / 1000;
+        LOG.info(String.format("WhitesourceCollectorTask:collect stop, totalProcessSeconds=%d,  totalFetchedProjects=%d, totalNewProjects=%d, totalUpdatedProjects=%d, totalUpdatedInstanceData=%d ",
+                elapsedTime, count.getFetched(), count.getAdded(), count.getUpdated(), count.getInstanceCount()));
     }
 
-    private void refreshData(List<WhiteSourceComponent> enabledProjects, int requestRateLimit, long requestRateLimitTimeWindow, long waitTime, String instanceUrl) {
+    private void refreshData(List<WhiteSourceComponent> enabledProjects, int requestRateLimit, long requestRateLimitTimeWindow, long waitTime, String instanceUrl, Count count) {
         long start = System.currentTimeMillis();
         int rateCount = 0;
         long startTime = System.currentTimeMillis();
         List<WhiteSourceComponent> exception429TooManyRequestsComponentsList = new ArrayList<>();
-        AtomicInteger count = new AtomicInteger();
+        int counter = 0;
         for (WhiteSourceComponent component : enabledProjects) {
             if (component.isEnabled()) {
                 if (component.checkErrorOrReset(whiteSourceSettings.getErrorResetWindow(), whiteSourceSettings.getErrorThreshold())) {
@@ -116,7 +132,7 @@ public class WhiteSourceCollectorTask extends CollectorTask<WhiteSourceCollector
                         LibraryPolicyResult libraryPolicyResultExisting = getLibraryPolicyResultExisting(component.getId());
                         if(Objects.nonNull(libraryPolicyResult)){
                             libraryPolicyResult.setCollectorItemId(component.getId());
-                            count.getAndIncrement();
+                            counter++;
                             if (Objects.nonNull(libraryPolicyResultExisting)) {
                                 libraryPolicyResult.setId(libraryPolicyResultExisting.getId());
                             }
@@ -129,7 +145,7 @@ public class WhiteSourceCollectorTask extends CollectorTask<WhiteSourceCollector
                         component.getErrors().add(error);
                     } catch (RestClientException re) {
                         LOG.error("Error fetching details for:" + component.getDescription(), re);
-                        CollectionError error = new CollectionError(CollectionError.UNKNOWN_HOST, component.getInstanceUrl());
+                        CollectionError error = new CollectionError(CollectionError.UNKNOWN_HOST, instanceUrl);
                         component.getErrors().add(error);
                     }
                     component.setLastUpdated(System.currentTimeMillis());
@@ -143,8 +159,7 @@ public class WhiteSourceCollectorTask extends CollectorTask<WhiteSourceCollector
                 }
             }
         }
-        log("Updated", start, count.get());
-
+        count.addInstanceCount(counter);
     }
 
     private LibraryPolicyResult getLibraryPolicyResultExisting(ObjectId collectorItemId) {
@@ -155,14 +170,13 @@ public class WhiteSourceCollectorTask extends CollectorTask<WhiteSourceCollector
         return whiteSourceComponentRepository.findEnabledComponents(collector.getId());
     }
 
-    private void addNewApplications(List<WhiteSourceComponent> applications, List<WhiteSourceComponent> existingApplications, WhiteSourceCollector collector) {
-        long start = System.currentTimeMillis();
+    private void addNewApplications(List<WhiteSourceComponent> applications, List<WhiteSourceComponent> existingApplications, WhiteSourceCollector collector, Count count) {
         int newCount = 0;
         int updatedCount = 0;
+        HashMap<WhiteSourceComponent,WhiteSourceComponent> existingMap = (HashMap<WhiteSourceComponent, WhiteSourceComponent>) existingApplications.stream().collect(Collectors.toMap(Function.identity(),Function.identity()));
         for (WhiteSourceComponent application : applications) {
-            int matchIndex = existingApplications.indexOf(application);
-            WhiteSourceComponent matching = matchIndex >= 0 ? existingApplications.get(matchIndex) : null;
-            if (matching == null) {
+            WhiteSourceComponent matched = existingMap.get(application);
+            if (matched == null) {
                 application.setCollectorId(collector.getId());
                 application.setCollector(collector);
                 application.setEnabled(false);
@@ -171,17 +185,15 @@ public class WhiteSourceCollectorTask extends CollectorTask<WhiteSourceCollector
                 whiteSourceComponentRepository.save(application);
                 newCount++;
             } else {
-                if (Objects.isNull(matching.getProductToken())) {
-                    matching.setProductToken(application.getProductToken());
+                if (Objects.isNull(matched.getProductToken()) && Objects.isNull(matched.getProjectToken())) {
+                    matched.setProductToken(application.getProductToken());
+                    matched.setProjectToken(application.getProjectToken());
+                    whiteSourceComponentRepository.save(matched);
+                    updatedCount++;
                 }
-                if (Objects.isNull(matching.getProjectToken())) {
-                    matching.setProjectToken(application.getProjectToken());
-                }
-                whiteSourceComponentRepository.save(matching);
-                updatedCount++;
             }
         }
-        log("New projects", start, newCount);
-        log("Updated projects", start, updatedCount);
+        count.addNewCount(newCount);
+        count.addUpdatedCount(updatedCount);
     }
 }

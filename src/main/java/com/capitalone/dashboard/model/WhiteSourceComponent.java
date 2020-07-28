@@ -8,7 +8,6 @@ public class WhiteSourceComponent extends CollectorItem {
     public static final String PROJECT_NAME = "projectName";
     public static final String PRODUCT_TOKEN = "productToken";
     public static final String PROJECT_TOKEN = "projectToken";
-    public static final String INSTANCE_URL = "instanceUrl";
     public static final String ORG_NAME = "orgName";
 
 
@@ -54,14 +53,6 @@ public class WhiteSourceComponent extends CollectorItem {
     }
 
 
-    public String getInstanceUrl() {
-        return (String) getOptions().get(INSTANCE_URL);
-    }
-
-    public void setInstanceUrl(String instanceUrl){
-       getOptions().put(INSTANCE_URL,instanceUrl);
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -73,8 +64,7 @@ public class WhiteSourceComponent extends CollectorItem {
 
     @Override
     public int hashCode() {
-        int result = getInstanceUrl().hashCode();
-        result = 31 * result + getProductName().hashCode()+ getProjectName().hashCode()+ getOrgName().hashCode();
+        int result = 31 * getProductName().hashCode()+ getProjectName().hashCode()+ getOrgName().hashCode();
         return result;
     }
 }
