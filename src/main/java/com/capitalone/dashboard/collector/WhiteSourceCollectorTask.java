@@ -87,6 +87,7 @@ public class WhiteSourceCollectorTask extends CollectorTask<WhiteSourceCollector
     public void collect(WhiteSourceCollector collector) {
         long start = System.currentTimeMillis();
         Count count = new Count();
+        List<WhiteSourceComponent> existingComponents = whiteSourceComponentRepository.findByCollectorIdIn(Stream.of(collector.getId()).collect(Collectors.toList()));
         collector.getWhiteSourceServers().forEach(instanceUrl -> {
             logBanner(instanceUrl);
             whiteSourceSettings.getOrgTokens().forEach(orgToken -> {
@@ -99,7 +100,6 @@ public class WhiteSourceCollectorTask extends CollectorTask<WhiteSourceCollector
                         projects.addAll(whiteSourceClient.getAllProjectsForProduct(instanceUrl, product, orgToken, orgName));
                     }
                     count.addFetched(projects.size());
-                    List<WhiteSourceComponent> existingComponents = whiteSourceComponentRepository.findByCollectorIdIn(Stream.of(collector.getId()).collect(Collectors.toList()));
                     addNewApplications(projects, existingComponents, collector, count);
                     refreshData(enabledApplications(collector), getRequestRateLimit(),
                             getRequestRateLimitTimeWindow(), getWaitTime(), instanceUrl,count);
