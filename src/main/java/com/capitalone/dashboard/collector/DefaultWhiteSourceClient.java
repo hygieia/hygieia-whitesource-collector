@@ -1,6 +1,7 @@
 package com.capitalone.dashboard.collector;
 
 import com.capitalone.dashboard.client.RestClient;
+import com.capitalone.dashboard.misc.HygieiaException;
 import com.capitalone.dashboard.model.LibraryPolicyResult;
 import com.capitalone.dashboard.model.LibraryPolicyThreatDisposition;
 import com.capitalone.dashboard.model.LibraryPolicyThreatLevel;
@@ -40,22 +41,21 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
     }
 
     @Override
-    public String getOrgDetails(String instanceUrl, String orgToken) {
+    public String getOrgDetails(String instanceUrl, String orgToken) throws HygieiaException {
         try {
-            JSONObject jsonObject = makeRestCall(getApiBaseUrl(instanceUrl), Constants.RequestType.getOrganizationDetails, orgToken, null, null);
+            JSONObject jsonObject = makeRestCall(getApiBaseUrl(instanceUrl), Constants.RequestType.getOrganizationDetails, orgToken, null, null,orgToken);
             String orgName = (String) jsonObject.get(Constants.ORG_NAME);
             return orgName;
         } catch (Exception e) {
-            LOG.error("Exception occurred while calling getOrgDetails " + e.getStackTrace());
+            throw new HygieiaException("Exception occurred while calling getOrgDetails",e.getCause(),HygieiaException.BAD_DATA);
         }
-        return null;
     }
 
     @Override
-    public List<WhiteSourceProduct> getProducts(String instanceUrl, String orgToken) {
+    public List<WhiteSourceProduct> getProducts(String instanceUrl, String orgToken,String orgName) throws HygieiaException {
         List<WhiteSourceProduct> whiteSourceProducts = new ArrayList<>();
         try {
-            JSONObject jsonObject = makeRestCall(getApiBaseUrl(instanceUrl), Constants.RequestType.getAllProducts, orgToken, null, null);
+            JSONObject jsonObject = makeRestCall(getApiBaseUrl(instanceUrl), Constants.RequestType.getAllProducts, orgToken, null, null,orgName);
             if (Objects.isNull(jsonObject)) return new ArrayList<>();
             JSONArray jsonArray = (JSONArray) jsonObject.get(Constants.PRODUCTS);
             if (CollectionUtils.isEmpty(jsonArray)) return new ArrayList<>();
@@ -68,7 +68,7 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
                 whiteSourceProducts.add(whiteSourceProduct);
             }
         } catch (Exception e) {
-            LOG.error("Exception occurred while retrieving getAllProducts " + e.getMessage());
+            throw new HygieiaException("Exception occurred while retrieving getAllProducts for orgName="+orgName,e.getCause(),HygieiaException.BAD_DATA);
         }
         return whiteSourceProducts;
     }
@@ -77,7 +77,7 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
     public List<WhiteSourceComponent> getAllProjectsForProduct(String instanceUrl, WhiteSourceProduct product, String orgToken, String orgName) {
         List<WhiteSourceComponent> whiteSourceProjects = new ArrayList<>();
         try {
-            JSONObject jsonObject = makeRestCall(getApiBaseUrl(instanceUrl), Constants.RequestType.getAllProjects, orgToken, product.getProductToken(), null);
+            JSONObject jsonObject = makeRestCall(getApiBaseUrl(instanceUrl), Constants.RequestType.getAllProjects, orgToken, product.getProductToken(), null,orgName);
             if (Objects.isNull(jsonObject)) return new ArrayList<>();
             JSONArray jsonArray = (JSONArray) jsonObject.get(Constants.PROJECTS);
             if (jsonArray == null) return new ArrayList<>();
@@ -92,7 +92,7 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
                 whiteSourceProjects.add(whiteSourceProject);
             }
         } catch (Exception e) {
-            LOG.error("Exception occurred while retrieving getAllProducts " + e.getMessage());
+            LOG.error("Exception occurred while retrieving getAllProjectsForProduct for productName="+product.getProductName()+", Exception=" + e.getMessage());
         }
         return whiteSourceProjects;
     }
@@ -101,7 +101,7 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
     public LibraryPolicyResult getProjectInventory(String instanceUrl, WhiteSourceComponent whiteSourceComponent) {
         LibraryPolicyResult libraryPolicyResult = new LibraryPolicyResult();
         try {
-            JSONObject jsonObject = makeRestCall(getApiBaseUrl(instanceUrl), Constants.RequestType.getProjectInventory, null, null, whiteSourceComponent.getProjectToken());
+            JSONObject jsonObject = makeRestCall(getApiBaseUrl(instanceUrl), Constants.RequestType.getProjectInventory, null, null, whiteSourceComponent.getProjectToken(),whiteSourceComponent.getOrgName());
             JSONObject projectVitals = (JSONObject) Objects.requireNonNull(jsonObject).get(Constants.PROJECT_VITALS);
             if (Objects.isNull(projectVitals)) {
                 return null;
@@ -132,7 +132,7 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
             }
 
         } catch (Exception e) {
-            LOG.info("Exception occurred while calling getProjectInventory " + e.getMessage());
+            LOG.info("Exception occurred while calling getProjectInventory for projectName="+whiteSourceComponent.getProjectName()+", Exception=" + e.getMessage());
         }
         return libraryPolicyResult;
     }
@@ -143,7 +143,7 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
         String url = getApiBaseUrl(instanceUrl);
         LibraryPolicyResult libraryPolicyResult = new LibraryPolicyResult();
         try {
-            JSONObject jsonObject = makeRestCall(getApiBaseUrl(instanceUrl), Constants.RequestType.getProjectAlerts, null, null, whiteSourceComponent.getProjectToken());
+            JSONObject jsonObject = makeRestCall(getApiBaseUrl(instanceUrl), Constants.RequestType.getProjectAlerts, null, null, whiteSourceComponent.getProjectToken(),whiteSourceComponent.getOrgName());
             JSONArray alerts = (JSONArray) Objects.requireNonNull(jsonObject).get(Constants.ALERTS);
             if (CollectionUtils.isEmpty(alerts)) {
                 return null;
@@ -173,13 +173,13 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
                 }
             }
         } catch (Exception e) {
-            LOG.info("Exception occurred while calling getProjectAlerts " + e.getMessage());
+            LOG.info("Exception occurred while calling getProjectAlerts for projectName="+whiteSourceComponent.getProjectName()+", Exception=" + e.getMessage());
         }
         return libraryPolicyResult;
     }
 
-    private JSONObject makeRestCall(String url, Constants.RequestType requestType, String orgToken, String productToken, String projectToken) {
-        LOG.info("collecting analysis for ===> " + url + " and requestType : " + requestType);
+    private JSONObject makeRestCall(String url, Constants.RequestType requestType, String orgToken, String productToken, String projectToken, String orgName) {
+        LOG.info("collecting analysis for orgName=" + orgName + " and requestType=" + requestType);
         JSONObject requestJSON = getRequest(requestType, orgToken, productToken, projectToken);
         JSONParser parser = new JSONParser();
         try {
@@ -187,7 +187,7 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
             if ((response == null) || (response.toString().isEmpty())) return null;
             return (JSONObject) parser.parse(response.getBody());
         } catch (Exception e) {
-            LOG.error("Exception occurred while calling " + url + " and requestType : " + requestType + " with error ===>  " + e.getMessage());
+            LOG.error("Exception occurred while calling REST for orgName=" + orgName + " and requestType=" + requestType + ", Exception=" + e.getMessage());
         }
         return null;
     }
