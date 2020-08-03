@@ -35,13 +35,23 @@ public final class Constants {
     public static final String ORG_TOKEN = "orgToken";
     public static final String ZERO = "0";
     public static final String ALERTS = "alerts";
+    public static final String CHANGES = "changes";
+    public static final String PROJECT = "PROJECT";
+    public static final String SCOPE = "scope";
+    public static final String START_DATE_TIME = "startDateTime";
+    public static final String CHANGE_ASPECT = "changeAspect";
+    public static final String CHANGE_CATEGORY = "changeCategory";
+    public static final String CHANGE_CLASS = "changeClass";
+    public static final String WHITE_SOURCE = "WhiteSource";
+    public static final String YYYY_MM_DD_HH_MM_SS = "yyyy-MM-dd HH:mm:ss";
 
     public enum RequestType {
         getAllProducts,
         getAllProjects,
         getOrganizationDetails,
         getProjectAlerts,
-        getProjectInventory;
+        getProjectInventory,
+        getChangesReport;
 
         public static RequestType fromString(String value) {
             for (RequestType requestType : values()) {

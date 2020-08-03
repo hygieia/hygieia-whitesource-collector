@@ -6,6 +6,7 @@ import com.capitalone.dashboard.model.LibraryPolicyResult;
 import com.capitalone.dashboard.model.LibraryPolicyThreatDisposition;
 import com.capitalone.dashboard.model.LibraryPolicyThreatLevel;
 import com.capitalone.dashboard.model.LibraryPolicyType;
+import com.capitalone.dashboard.model.WhiteSourceChangeRequest;
 import com.capitalone.dashboard.model.WhiteSourceComponent;
 import com.capitalone.dashboard.model.WhiteSourceProduct;
 import org.apache.commons.logging.Log;
@@ -19,6 +20,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -30,7 +32,6 @@ import java.util.concurrent.TimeUnit;
 public class DefaultWhiteSourceClient implements WhiteSourceClient {
     private static final Log LOG = LogFactory.getLog(DefaultWhiteSourceClient.class);
     private static final String API_URL = "/api/v1.3";
-    private static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
     private final RestClient restClient;
     private final WhiteSourceSettings whiteSourceSettings;
 
@@ -43,7 +44,7 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
     @Override
     public String getOrgDetails(String instanceUrl, String orgToken) throws HygieiaException {
         try {
-            JSONObject jsonObject = makeRestCall(getApiBaseUrl(instanceUrl), Constants.RequestType.getOrganizationDetails, orgToken, null, null,orgToken);
+            JSONObject jsonObject = makeRestCall(getApiBaseUrl(instanceUrl), Constants.RequestType.getOrganizationDetails, orgToken, null, null,orgToken,null);
             String orgName = (String) jsonObject.get(Constants.ORG_NAME);
             return orgName;
         } catch (Exception e) {
@@ -55,7 +56,7 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
     public List<WhiteSourceProduct> getProducts(String instanceUrl, String orgToken,String orgName) throws HygieiaException {
         List<WhiteSourceProduct> whiteSourceProducts = new ArrayList<>();
         try {
-            JSONObject jsonObject = makeRestCall(getApiBaseUrl(instanceUrl), Constants.RequestType.getAllProducts, orgToken, null, null,orgName);
+            JSONObject jsonObject = makeRestCall(getApiBaseUrl(instanceUrl), Constants.RequestType.getAllProducts, orgToken, null, null,orgName, null);
             if (Objects.isNull(jsonObject)) return new ArrayList<>();
             JSONArray jsonArray = (JSONArray) jsonObject.get(Constants.PRODUCTS);
             if (CollectionUtils.isEmpty(jsonArray)) return new ArrayList<>();
@@ -77,7 +78,7 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
     public List<WhiteSourceComponent> getAllProjectsForProduct(String instanceUrl, WhiteSourceProduct product, String orgToken, String orgName) {
         List<WhiteSourceComponent> whiteSourceProjects = new ArrayList<>();
         try {
-            JSONObject jsonObject = makeRestCall(getApiBaseUrl(instanceUrl), Constants.RequestType.getAllProjects, orgToken, product.getProductToken(), null,orgName);
+            JSONObject jsonObject = makeRestCall(getApiBaseUrl(instanceUrl), Constants.RequestType.getAllProjects, orgToken, product.getProductToken(), null,orgName,null);
             if (Objects.isNull(jsonObject)) return new ArrayList<>();
             JSONArray jsonArray = (JSONArray) jsonObject.get(Constants.PROJECTS);
             if (jsonArray == null) return new ArrayList<>();
@@ -101,7 +102,7 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
     public LibraryPolicyResult getProjectInventory(String instanceUrl, WhiteSourceComponent whiteSourceComponent) {
         LibraryPolicyResult libraryPolicyResult = new LibraryPolicyResult();
         try {
-            JSONObject jsonObject = makeRestCall(getApiBaseUrl(instanceUrl), Constants.RequestType.getProjectInventory, null, null, whiteSourceComponent.getProjectToken(),whiteSourceComponent.getOrgName());
+            JSONObject jsonObject = makeRestCall(getApiBaseUrl(instanceUrl), Constants.RequestType.getProjectInventory, null, null, whiteSourceComponent.getProjectToken(),whiteSourceComponent.getOrgName(),null);
             JSONObject projectVitals = (JSONObject) Objects.requireNonNull(jsonObject).get(Constants.PROJECT_VITALS);
             if (Objects.isNull(projectVitals)) {
                 return null;
@@ -143,7 +144,7 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
         String url = getApiBaseUrl(instanceUrl);
         LibraryPolicyResult libraryPolicyResult = new LibraryPolicyResult();
         try {
-            JSONObject jsonObject = makeRestCall(getApiBaseUrl(instanceUrl), Constants.RequestType.getProjectAlerts, null, null, whiteSourceComponent.getProjectToken(),whiteSourceComponent.getOrgName());
+            JSONObject jsonObject = makeRestCall(getApiBaseUrl(instanceUrl), Constants.RequestType.getProjectAlerts, null, null, whiteSourceComponent.getProjectToken(),whiteSourceComponent.getOrgName(),null);
             JSONArray alerts = (JSONArray) Objects.requireNonNull(jsonObject).get(Constants.ALERTS);
             if (CollectionUtils.isEmpty(alerts)) {
                 return null;
@@ -178,9 +179,39 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
         return libraryPolicyResult;
     }
 
-    private JSONObject makeRestCall(String url, Constants.RequestType requestType, String orgToken, String productToken, String projectToken, String orgName) {
+
+    @Override
+    public List<WhiteSourceChangeRequest> getChangeRequestLog(String instanceUrl, String orgToken, String orgName, long historyTimestamp) {
+        String startDateT = getTime(historyTimestamp);
+        JSONObject jsonObject = makeRestCall(getApiBaseUrl(instanceUrl),Constants.RequestType.getChangesReport,orgToken,null,null,orgName,startDateT);
+        JSONArray changes = (JSONArray) Objects.requireNonNull(jsonObject).get(Constants.CHANGES);
+        List<WhiteSourceChangeRequest> changeRequests = new ArrayList<>();
+        if(CollectionUtils.isEmpty(changes)){
+            return changeRequests;
+        }else{
+            for (Object c : changes) {
+                JSONObject change = (JSONObject) c;
+                if(! getStringValue(change, Constants.SCOPE).equalsIgnoreCase(Constants.PROJECT)) continue;
+                WhiteSourceChangeRequest whiteSourceChangeRequest = new WhiteSourceChangeRequest();
+                whiteSourceChangeRequest.setScope(getStringValue(change, Constants.SCOPE));
+                whiteSourceChangeRequest.setStartDateTime(timestamp(change, Constants.START_DATE_TIME));
+                whiteSourceChangeRequest.setChangeAspect(getStringValue(change, Constants.CHANGE_ASPECT));
+                whiteSourceChangeRequest.setChangeCategory(getStringValue(change, Constants.CHANGE_CATEGORY));
+                whiteSourceChangeRequest.setChangeClass(getStringValue(change, Constants.CHANGE_CLASS));
+                whiteSourceChangeRequest.setOrgName(getStringValue(change,Constants.ORG_NAME));
+                whiteSourceChangeRequest.setProductName(getStringValue(change,Constants.PRODUCT_NAME));
+                whiteSourceChangeRequest.setProjectName(getStringValue(change,Constants.PROJECT_NAME));
+                changeRequests.add(whiteSourceChangeRequest);
+            }
+        }
+        return changeRequests;
+    }
+
+
+
+    private JSONObject makeRestCall(String url, Constants.RequestType requestType, String orgToken, String productToken, String projectToken, String orgName, String startDateTime) {
         LOG.info("collecting analysis for orgName=" + orgName + " and requestType=" + requestType);
-        JSONObject requestJSON = getRequest(requestType, orgToken, productToken, projectToken);
+        JSONObject requestJSON = getRequest(requestType, orgToken, productToken, projectToken, startDateTime);
         JSONParser parser = new JSONParser();
         try {
             ResponseEntity<String> response = restClient.makeRestCallPost(url, new HttpHeaders(), requestJSON);
@@ -280,7 +311,7 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
     }
 
 
-    private JSONObject getRequest(Constants.RequestType requestType, String orgToken, String productToken, String projectToken) {
+    private JSONObject getRequest(Constants.RequestType requestType, String orgToken, String productToken, String projectToken, String startDateTime) {
         JSONObject requestJSON = new JSONObject();
         requestJSON.put(Constants.REQUEST_TYPE, requestType.toString());
         requestJSON.put(Constants.USER_KEY, whiteSourceSettings.getUserKey());
@@ -296,6 +327,10 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
             case getOrganizationDetails:
                 requestJSON.put(Constants.ORG_TOKEN, orgToken);
                 return requestJSON;
+            case getChangesReport:
+                requestJSON.put(Constants.START_DATE_TIME,startDateTime);
+                requestJSON.put(Constants.ORG_TOKEN, orgToken);
+                requestJSON.put(Constants.SCOPE, Constants.PROJECT);
             default:
                 return requestJSON;
         }
@@ -305,12 +340,17 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
         Object obj = json.get(key);
         if (obj != null) {
             try {
-                return new SimpleDateFormat(DATE_FORMAT).parse(obj.toString()).getTime();
+                return new SimpleDateFormat(Constants.YYYY_MM_DD_HH_MM_SS).parse(obj.toString()).getTime();
             } catch (java.text.ParseException e) {
-                LOG.error(obj + " is not in expected format " + DATE_FORMAT, e);
+                LOG.error(obj + " is not in expected format " + Constants.YYYY_MM_DD_HH_MM_SS, e);
             }
         }
         return 0;
+    }
+
+    private String getTime(long timestamp){
+        DateFormat format = new SimpleDateFormat(Constants.YYYY_MM_DD_HH_MM_SS);
+        return format.format(new Date(timestamp));
     }
 
 }

@@ -3,15 +3,19 @@ package com.capitalone.dashboard.collector;
 
 import com.capitalone.dashboard.misc.HygieiaException;
 import com.capitalone.dashboard.model.CollectionError;
+import com.capitalone.dashboard.model.CollectorItem;
 import com.capitalone.dashboard.model.Count;
 import com.capitalone.dashboard.model.LibraryPolicyResult;
+import com.capitalone.dashboard.model.WhiteSourceChangeRequest;
 import com.capitalone.dashboard.model.WhiteSourceCollector;
 import com.capitalone.dashboard.model.WhiteSourceComponent;
 import com.capitalone.dashboard.model.WhiteSourceProduct;
 import com.capitalone.dashboard.repository.BaseCollectorRepository;
+import com.capitalone.dashboard.repository.CustomRepositoryQuery;
 import com.capitalone.dashboard.repository.LibraryPolicyResultsRepository;
 import com.capitalone.dashboard.repository.WhiteSourceCollectorRepository;
 import com.capitalone.dashboard.repository.WhiteSourceComponentRepository;
+import com.capitalone.dashboard.repository.WhiteSourceCustomComponentRepository;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bson.types.ObjectId;
@@ -22,8 +26,10 @@ import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestClientException;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -38,6 +44,7 @@ public class WhiteSourceCollectorTask extends CollectorTask<WhiteSourceCollector
     private final LibraryPolicyResultsRepository libraryPolicyResultsRepository;
     private final WhiteSourceClient whiteSourceClient;
     private final WhiteSourceSettings whiteSourceSettings;
+    private final WhiteSourceCustomComponentRepository whiteSourceCustomComponentRepository;
 
     @Autowired
     public WhiteSourceCollectorTask(TaskScheduler taskScheduler,
@@ -45,13 +52,15 @@ public class WhiteSourceCollectorTask extends CollectorTask<WhiteSourceCollector
                                     WhiteSourceComponentRepository whiteSourceComponentRepository,
                                     LibraryPolicyResultsRepository libraryPolicyResultsRepository,
                                     WhiteSourceClient whiteSourceClient,
-                                    WhiteSourceSettings whiteSourceSettings) {
-        super(taskScheduler, "WhiteSource");
+                                    WhiteSourceSettings whiteSourceSettings,
+                                    WhiteSourceCustomComponentRepository whiteSourceCustomComponentRepository) {
+        super(taskScheduler, Constants.WHITE_SOURCE);
         this.whiteSourceCollectorRepository = whiteSourceCollectorRepository;
         this.whiteSourceComponentRepository = whiteSourceComponentRepository;
         this.libraryPolicyResultsRepository = libraryPolicyResultsRepository;
         this.whiteSourceClient = whiteSourceClient;
         this.whiteSourceSettings = whiteSourceSettings;
+        this.whiteSourceCustomComponentRepository = whiteSourceCustomComponentRepository;
     }
 
     @Override
@@ -101,7 +110,17 @@ public class WhiteSourceCollectorTask extends CollectorTask<WhiteSourceCollector
                     }
                     count.addFetched(projects.size());
                     addNewApplications(projects, existingComponents, collector, count);
-                    refreshData(enabledApplications(collector), getRequestRateLimit(),
+                    long historyTimestamp = getHistoryTimestamp(collector.getLastExecuted());
+                    LOG.info("Look back time for processing changeRequestLog="+historyTimestamp+", collector lastExecutedTime="+collector.getLastExecuted());
+                    // find change request log
+                    List<WhiteSourceChangeRequest> changeRequests = whiteSourceClient.getChangeRequestLog(instanceUrl,orgToken,orgName,historyTimestamp);
+                    // get collectorItems from changeRequests
+                    List<WhiteSourceComponent> changedCollectorItems = new ArrayList<>();
+                    for (WhiteSourceChangeRequest changeRequest: changeRequests) {
+                        changedCollectorItems.addAll(whiteSourceCustomComponentRepository.findCollectorItemsByUniqueOptions(collector.getId(),getOptions(changeRequest),getOptions(changeRequest),collector.getUniqueFields()));
+                    }
+
+                    refreshData(changedCollectorItems,enabledApplications(collector), getRequestRateLimit(),
                             getRequestRateLimitTimeWindow(), getWaitTime(), instanceUrl,count);
                     logMessage="SUCCESS, orgName="+orgName+", fetched projects="+projects.size()+", New projects="+count.getAdded()+", updated-projects="+count.getUpdated()+", updated instance-data="+count.getInstanceCount();
                 }catch (HygieiaException he) {
@@ -118,18 +137,28 @@ public class WhiteSourceCollectorTask extends CollectorTask<WhiteSourceCollector
                 elapsedTime, count.getFetched(), count.getAdded(), count.getUpdated(), count.getInstanceCount()));
     }
 
-    private void refreshData(List<WhiteSourceComponent> enabledProjects, int requestRateLimit, long requestRateLimitTimeWindow, long waitTime, String instanceUrl, Count count) {
-        long start = System.currentTimeMillis();
+    private Map<String, Object> getOptions(WhiteSourceChangeRequest changeRequest){
+            Map<String, Object> options = new HashMap<>();
+            options.put(Constants.ORG_NAME,changeRequest.getOrgName());
+            options.put(Constants.PRODUCT_NAME,changeRequest.getProductName());
+            options.put(Constants.PROJECT_NAME,changeRequest.getProjectName());
+            return options;
+    }
+
+    private void refreshData(List<WhiteSourceComponent> changedProjects, List<WhiteSourceComponent> enabledProjects, int requestRateLimit, long requestRateLimitTimeWindow, long waitTime, String instanceUrl, Count count) {
         int rateCount = 0;
         long startTime = System.currentTimeMillis();
         List<WhiteSourceComponent> exception429TooManyRequestsComponentsList = new ArrayList<>();
         int counter = 0;
-        for (WhiteSourceComponent component : enabledProjects) {
+        HashMap<WhiteSourceComponent,WhiteSourceComponent> changedMap = (HashMap<WhiteSourceComponent, WhiteSourceComponent>) changedProjects.stream().collect(Collectors.toMap(Function.identity(),Function.identity()));
+        for(WhiteSourceComponent component : enabledProjects) {
+            boolean firstRun = component.getLastUpdated()== 0;
+             if(isEligible(component,firstRun,changedMap)){
                 if (component.checkErrorOrReset(whiteSourceSettings.getErrorResetWindow(), whiteSourceSettings.getErrorThreshold())) {
                     try {
                         LibraryPolicyResult libraryPolicyResult = whiteSourceClient.getProjectAlerts(instanceUrl, component);
                         LibraryPolicyResult libraryPolicyResultExisting = getLibraryPolicyResultExisting(component.getId());
-                        if(Objects.nonNull(libraryPolicyResult)){
+                        if (Objects.nonNull(libraryPolicyResult)) {
                             libraryPolicyResult.setCollectorItemId(component.getId());
                             counter++;
                             if (Objects.nonNull(libraryPolicyResultExisting)) {
@@ -137,7 +166,8 @@ public class WhiteSourceCollectorTask extends CollectorTask<WhiteSourceCollector
                             }
                             libraryPolicyResultsRepository.save(libraryPolicyResult);
                         }
-                   } catch (HttpStatusCodeException hc) {
+                        component.setLastUpdated(System.currentTimeMillis());
+                    } catch (HttpStatusCodeException hc) {
                         exception429TooManyRequestsComponentsList.add(component);
                         LOG.error("Error fetching details for:" + component.getDescription(), hc);
                         CollectionError error = new CollectionError(hc.getStatusCode().toString(), hc.getMessage());
@@ -147,7 +177,6 @@ public class WhiteSourceCollectorTask extends CollectorTask<WhiteSourceCollector
                         CollectionError error = new CollectionError(CollectionError.UNKNOWN_HOST, instanceUrl);
                         component.getErrors().add(error);
                     }
-                    component.setLastUpdated(System.currentTimeMillis());
                     whiteSourceComponentRepository.save(component);
                     if (requestRateLimit > 0 && throttleRequests(startTime, rateCount, waitTime, requestRateLimit, requestRateLimitTimeWindow)) {
                         startTime = System.currentTimeMillis();
@@ -157,6 +186,7 @@ public class WhiteSourceCollectorTask extends CollectorTask<WhiteSourceCollector
                     LOG.info(component.getProjectName() + ":: errorThreshold exceeded");
                 }
             }
+        }
         count.addInstanceCount(counter);
     }
 
@@ -194,4 +224,19 @@ public class WhiteSourceCollectorTask extends CollectorTask<WhiteSourceCollector
         count.addNewCount(newCount);
         count.addUpdatedCount(updatedCount);
     }
+
+    private boolean isEligible(WhiteSourceComponent enabledComponent, boolean firstRun, HashMap<WhiteSourceComponent,WhiteSourceComponent> changedMap){
+        if(enabledComponent.isEnabled() && firstRun) return true;
+        if(enabledComponent.isEnabled() && changedMap.get(enabledComponent)!=null) return true;
+        return false;
+    }
+
+    private long getHistoryTimestamp(long collectorLastUpdated) {
+        if(collectorLastUpdated > 0) {
+            return collectorLastUpdated - whiteSourceSettings.getHistoryTimestamp();
+        }else{
+            return System.currentTimeMillis() - whiteSourceSettings.getHistoryTimestamp();
+        }
+    }
+
 }

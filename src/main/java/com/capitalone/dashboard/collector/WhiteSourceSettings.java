@@ -36,9 +36,29 @@ public class WhiteSourceSettings {
     private int readTimeout;
     private List<String> orgTokens;
     private String userKey;
+    @Value("${whitesource.offset:3600000}") // 1hr
+    private long offSet;
+    @Value("${whitesource.historyTimestamp:345600000}") // 4days in millis
+    private long historyTimestamp;
     private List<String> highLicensePolicyTypes = new ArrayList<>();
     private List<String> mediumLicensePolicyTypes = new ArrayList<>();
     private List<String> lowLicensePolicyTypes = new ArrayList<>();
+
+    public long getHistoryTimestamp() {
+        return historyTimestamp;
+    }
+
+    public void setHistoryTimestamp(long historyTimestamp) {
+        this.historyTimestamp = historyTimestamp;
+    }
+
+    public long getOffSet() {
+        return offSet;
+    }
+
+    public void setOffSet(long offSet) {
+        this.offSet = offSet;
+    }
 
     public String getUserKey() {
         return userKey;
