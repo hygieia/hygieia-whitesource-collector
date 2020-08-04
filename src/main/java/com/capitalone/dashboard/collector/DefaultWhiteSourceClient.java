@@ -149,6 +149,14 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
             if (CollectionUtils.isEmpty(alerts)) {
                 return null;
             } else {
+                JSONObject projectVitalsObject = makeRestCall(getApiBaseUrl(instanceUrl), Constants.RequestType.getProjectVitals, null, null, whiteSourceComponent.getProjectToken(),whiteSourceComponent.getOrgName(),null);
+                JSONArray projectVitals = (JSONArray)  Objects.requireNonNull(projectVitalsObject).get(Constants.PROJECT_VITALS);
+                if (!CollectionUtils.isEmpty(projectVitals)) {
+                    for (Object projectVital : projectVitals){
+                        JSONObject projectVitalObject = (JSONObject) projectVital;
+                        libraryPolicyResult.setEvaluationTimestamp(timestamp(projectVitalObject, Constants.LAST_UPDATED_DATE));
+                    }
+                }
                 libraryPolicyResult.setCollectorItemId(whiteSourceComponent.getId());
                 libraryPolicyResult.setTimestamp(System.currentTimeMillis());
                 for (Object a : alerts) {
@@ -159,7 +167,6 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
                     String creationDate = getStringValue(alert, Constants.CREATION_DATE);
                     String description = getStringValue(alert, Constants.DESCRIPTION);
                     String componentName = getStringValue(library, Constants.FILENAME);
-                    libraryPolicyResult.setEvaluationTimestamp(getLongValue(alert, Constants.TIME));
                     // add threat for license
                     JSONArray licenses = (JSONArray) Objects.requireNonNull(library).get(Constants.LICENSES);
                     if (!CollectionUtils.isEmpty(licenses)) {
@@ -318,6 +325,7 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
         switch (requestType) {
             case getProjectInventory:
             case getProjectAlerts:
+            case getProjectVitals:
                 requestJSON.put(Constants.PROJECT_TOKEN, projectToken);
                 return requestJSON;
             case getAllProjects:
