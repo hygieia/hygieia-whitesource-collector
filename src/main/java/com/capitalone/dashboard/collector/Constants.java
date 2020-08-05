@@ -51,7 +51,8 @@ public final class Constants {
         getOrganizationDetails,
         getProjectAlerts,
         getProjectInventory,
-        getChangesReport;
+        getChangesReport,
+        getProjectVitals;
 
         public static RequestType fromString(String value) {
             for (RequestType requestType : values()) {

@@ -149,29 +149,11 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
             if (CollectionUtils.isEmpty(alerts)) {
                 return null;
             } else {
+                JSONObject projectVitalsObject = makeRestCall(getApiBaseUrl(instanceUrl), Constants.RequestType.getProjectVitals, null, null, whiteSourceComponent.getProjectToken(),whiteSourceComponent.getOrgName(),null);
+                getEvaluationTimeStamp(libraryPolicyResult, projectVitalsObject);
                 libraryPolicyResult.setCollectorItemId(whiteSourceComponent.getId());
                 libraryPolicyResult.setTimestamp(System.currentTimeMillis());
-                for (Object a : alerts) {
-                    JSONObject alert = (JSONObject) a;
-                    String alertType = getStringValue(alert, Constants.TYPE);
-                    String alertLevel = getStringValue(alert, Constants.LEVEL);
-                    JSONObject library = (JSONObject) Objects.requireNonNull(alert).get(Constants.LIBRARY);
-                    String creationDate = getStringValue(alert, Constants.CREATION_DATE);
-                    String description = getStringValue(alert, Constants.DESCRIPTION);
-                    String componentName = getStringValue(library, Constants.FILENAME);
-                    libraryPolicyResult.setEvaluationTimestamp(getLongValue(alert, Constants.TIME));
-                    // add threat for license
-                    JSONArray licenses = (JSONArray) Objects.requireNonNull(library).get(Constants.LICENSES);
-                    if (!CollectionUtils.isEmpty(licenses)) {
-                        setAllLibraryLicensesAlerts(licenses, libraryPolicyResult, componentName, getDays(creationDate) + "", getLicenseThreatLevel(alertType, alertLevel, description));
-                    }
-                    // add threat for Security vulns
-                    JSONObject vulns = (JSONObject) Objects.requireNonNull(alert).get(Constants.VULNERABILITY);
-                    if (!CollectionUtils.isEmpty(vulns)) {
-                        setSecurityVulns(vulns, libraryPolicyResult, componentName, getDays(creationDate) + "");
-                    }
-
-                }
+                transform(libraryPolicyResult, alerts);
             }
         } catch (Exception e) {
             LOG.info("Exception occurred while calling getProjectAlerts for projectName="+whiteSourceComponent.getProjectName()+", Exception=" + e.getMessage());
@@ -221,6 +203,41 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
             LOG.error("Exception occurred while calling REST for orgName=" + orgName + " and requestType=" + requestType + ", Exception=" + e.getMessage());
         }
         return null;
+    }
+
+    @Override
+    public void getEvaluationTimeStamp(LibraryPolicyResult libraryPolicyResult, JSONObject projectVitalsObject) {
+        JSONArray projectVitals = (JSONArray)  Objects.requireNonNull(projectVitalsObject).get(Constants.PROJECT_VITALS);
+        if (!CollectionUtils.isEmpty(projectVitals)) {
+            for (Object projectVital : projectVitals){
+                JSONObject projectVitalObject = (JSONObject) projectVital;
+                libraryPolicyResult.setEvaluationTimestamp(timestamp(projectVitalObject, Constants.LAST_UPDATED_DATE));
+            }
+        }
+    }
+
+    @Override
+    public void transform(LibraryPolicyResult libraryPolicyResult, JSONArray alerts) {
+        for (Object a : alerts) {
+            JSONObject alert = (JSONObject) a;
+            String alertType = getStringValue(alert, Constants.TYPE);
+            String alertLevel = getStringValue(alert, Constants.LEVEL);
+            JSONObject library = (JSONObject) Objects.requireNonNull(alert).get(Constants.LIBRARY);
+            String creationDate = getStringValue(alert, Constants.CREATION_DATE);
+            String description = getStringValue(alert, Constants.DESCRIPTION);
+            String componentName = getStringValue(library, Constants.FILENAME);
+            // add threat for license
+            JSONArray licenses = (JSONArray) Objects.requireNonNull(library).get(Constants.LICENSES);
+            if (!CollectionUtils.isEmpty(licenses)) {
+                setAllLibraryLicensesAlerts(licenses, libraryPolicyResult, componentName, getDays(creationDate) + "", getLicenseThreatLevel(alertType, alertLevel, description));
+            }
+            // add threat for Security vulns
+            JSONObject vulns = (JSONObject) Objects.requireNonNull(alert).get(Constants.VULNERABILITY);
+            if (!CollectionUtils.isEmpty(vulns)) {
+                setSecurityVulns(vulns, libraryPolicyResult, componentName, getDays(creationDate) + "");
+            }
+
+        }
     }
 
     private void setAllLibraryLicenses(JSONArray licenses, LibraryPolicyResult libraryPolicyResult, String componentName) {
@@ -318,6 +335,7 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
         switch (requestType) {
             case getProjectInventory:
             case getProjectAlerts:
+            case getProjectVitals:
                 requestJSON.put(Constants.PROJECT_TOKEN, projectToken);
                 return requestJSON;
             case getAllProjects:
