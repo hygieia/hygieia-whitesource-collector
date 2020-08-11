@@ -1,5 +1,6 @@
 package com.capitalone.dashboard.collector;
 
+import com.capitalone.dashboard.model.LicensePolicyType;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
@@ -40,9 +41,10 @@ public class WhiteSourceSettings {
     private long offSet;
     @Value("${whitesource.historyTimestamp:345600000}") // 4days in millis
     private long historyTimestamp;
-    private List<String> highLicensePolicyTypes = new ArrayList<>();
-    private List<String> mediumLicensePolicyTypes = new ArrayList<>();
-    private List<String> lowLicensePolicyTypes = new ArrayList<>();
+    private List<LicensePolicyType> criticalLicensePolicyTypes = new ArrayList<>();
+    private List<LicensePolicyType> highLicensePolicyTypes = new ArrayList<>();
+    private List<LicensePolicyType> mediumLicensePolicyTypes = new ArrayList<>();
+    private List<LicensePolicyType> lowLicensePolicyTypes = new ArrayList<>();
 
     public long getHistoryTimestamp() {
         return historyTimestamp;
@@ -68,27 +70,35 @@ public class WhiteSourceSettings {
         this.userKey = userKey;
     }
 
-    public List<String> getHighLicensePolicyTypes() {
+    public List<LicensePolicyType> getCriticalLicensePolicyTypes() {
+        return criticalLicensePolicyTypes;
+    }
+
+    public void setCriticalLicensePolicyTypes(List<LicensePolicyType> criticalLicensePolicyTypes) {
+        this.criticalLicensePolicyTypes = criticalLicensePolicyTypes;
+    }
+
+    public List<LicensePolicyType> getHighLicensePolicyTypes() {
         return highLicensePolicyTypes;
     }
 
-    public void setHighLicensePolicyTypes(List<String> highLicensePolicyTypes) {
+    public void setHighLicensePolicyTypes(List<LicensePolicyType> highLicensePolicyTypes) {
         this.highLicensePolicyTypes = highLicensePolicyTypes;
     }
 
-    public List<String> getMediumLicensePolicyTypes() {
+    public List<LicensePolicyType> getMediumLicensePolicyTypes() {
         return mediumLicensePolicyTypes;
     }
 
-    public void setMediumLicensePolicyTypes(List<String> mediumLicensePolicyTypes) {
+    public void setMediumLicensePolicyTypes(List<LicensePolicyType> mediumLicensePolicyTypes) {
         this.mediumLicensePolicyTypes = mediumLicensePolicyTypes;
     }
 
-    public List<String> getLowLicensePolicyTypes() {
+    public List<LicensePolicyType> getLowLicensePolicyTypes() {
         return lowLicensePolicyTypes;
     }
 
-    public void setLowLicensePolicyTypes(List<String> lowLicensePolicyTypes) {
+    public void setLowLicensePolicyTypes(List<LicensePolicyType> lowLicensePolicyTypes) {
         this.lowLicensePolicyTypes = lowLicensePolicyTypes;
     }
 
