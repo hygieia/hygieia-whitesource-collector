@@ -6,6 +6,7 @@ import com.capitalone.dashboard.model.LibraryPolicyResult;
 import com.capitalone.dashboard.model.LibraryPolicyThreatDisposition;
 import com.capitalone.dashboard.model.LibraryPolicyThreatLevel;
 import com.capitalone.dashboard.model.LibraryPolicyType;
+import com.capitalone.dashboard.model.LicensePolicyType;
 import com.capitalone.dashboard.model.WhiteSourceChangeRequest;
 import com.capitalone.dashboard.model.WhiteSourceComponent;
 import com.capitalone.dashboard.model.WhiteSourceProduct;
@@ -282,16 +283,24 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
     }
 
     private LibraryPolicyThreatLevel getLicenseThreatLevel(String alertType, String alertLevel, String description) {
-        if (!CollectionUtils.isEmpty(whiteSourceSettings.getHighLicensePolicyTypes()) && whiteSourceSettings.getHighLicensePolicyTypes().contains(alertType)) {
+        if (!CollectionUtils.isEmpty(whiteSourceSettings.getCriticalLicensePolicyTypes()) && getLicenseSeverity(whiteSourceSettings.getCriticalLicensePolicyTypes(),alertType,description)) {
+            return LibraryPolicyThreatLevel.Critical;
+        }
+        if (!CollectionUtils.isEmpty(whiteSourceSettings.getHighLicensePolicyTypes()) && getLicenseSeverity(whiteSourceSettings.getHighLicensePolicyTypes(),alertType,description)) {
             return LibraryPolicyThreatLevel.High;
         }
-        if (!CollectionUtils.isEmpty(whiteSourceSettings.getMediumLicensePolicyTypes()) && whiteSourceSettings.getMediumLicensePolicyTypes().contains(alertType)) {
+        if (!CollectionUtils.isEmpty(whiteSourceSettings.getMediumLicensePolicyTypes()) && getLicenseSeverity(whiteSourceSettings.getMediumLicensePolicyTypes(),alertType,description)) {
             return LibraryPolicyThreatLevel.Medium;
         }
-        if (!CollectionUtils.isEmpty(whiteSourceSettings.getLowLicensePolicyTypes()) && whiteSourceSettings.getLowLicensePolicyTypes().contains(alertType)) {
+        if (!CollectionUtils.isEmpty(whiteSourceSettings.getLowLicensePolicyTypes()) && getLicenseSeverity(whiteSourceSettings.getLowLicensePolicyTypes(),alertType,description)) {
             return LibraryPolicyThreatLevel.Low;
         }
         return LibraryPolicyThreatLevel.None;
+    }
+
+    private boolean getLicenseSeverity(List<LicensePolicyType> licensePolicyTypes, String alertType, String description){
+        return licensePolicyTypes.stream().anyMatch(licensePolicyType -> licensePolicyType.getPolicyName().equalsIgnoreCase(alertType)
+        && licensePolicyType.getDescriptions().contains(description));
     }
 
     private String getApiBaseUrl(String instanceUrl) {
