@@ -36,7 +36,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 
-@Component
+//@Component
 public class WhiteSourceCollectorTask extends CollectorTask<WhiteSourceCollector> {
     private static final Log LOG = LogFactory.getLog(WhiteSourceCollectorTask.class);
     private final WhiteSourceCollectorRepository whiteSourceCollectorRepository;
