@@ -300,7 +300,7 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
     public String process(WhiteSourceRequest whiteSourceRequest) throws HygieiaException {
         JSONObject projectVital = (JSONObject) decodeJsonPayload(whiteSourceRequest.getProjectVitals());
         JSONArray alerts = (JSONArray) decodeJsonPayload(whiteSourceRequest.getAlerts());
-        String orgName = whiteSourceRequest.getOrgName().toString();
+        String orgName = whiteSourceRequest.getOrgName();
         String name =  (String) projectVital.get("name");
         String productName =  (String) projectVital.get("productName");
         String lastUpdatedDate = (String) projectVital.get("lastUpdatedDate");
@@ -319,7 +319,7 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
         transform(libraryPolicyResult, alerts);
         libraryPolicyResult.setTimestamp(System.currentTimeMillis());
         libraryPolicyResult.setCollectorItemId(collectorItem.getId());
-        libraryPolicyResult.setReportUrl(whiteSourceRequest.getBuildUrl());
+        libraryPolicyResult.setBuildUrl(whiteSourceRequest.getBuildUrl());
         return processCollectorItem(collectorItem,libraryPolicyResult);
     }
 
