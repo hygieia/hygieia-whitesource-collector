@@ -4,6 +4,8 @@ import io.swagger.annotations.ApiModelProperty;
 
 public class WhiteSourceRequest {
 
+
+
     @ApiModelProperty(notes = "WhiteSource Organization name",name="OrgName",required=true)
     private OrgName orgName;
 
@@ -13,10 +15,12 @@ public class WhiteSourceRequest {
     @ApiModelProperty(notes = "Base64 encoded response produced from getProjectVitals of WhiteSource API v1.3",name="projectVitals",required=true)
     private String projectVitals;
 
-    public String getOrgName() {
-        return orgName.toString();
-    }
+    private String buildUrl;
 
+//    public String getOrgName() {
+//        return orgName.toString();
+//    }
+//
     public void setOrgName(String orgName) {
         switch (orgName) {
             case "Capital One QA":
@@ -27,6 +31,15 @@ public class WhiteSourceRequest {
                 break;
         }
     }
+
+
+    public OrgName getOrgName() {
+        return orgName;
+    }
+
+//    public void setOrgName(OrgName orgName) {
+//        this.orgName = orgName;
+//    }
 
     public String getAlerts() {
         return alerts;
@@ -43,25 +56,14 @@ public class WhiteSourceRequest {
     public void setProjectVitals(String projectVitals) {
         this.projectVitals = projectVitals;
     }
-}
 
- enum OrgName {
-     Capital_One_QA ("Capital One QA"),
-     Capital_One_Prod ("Capital One Prod")
-     ;
-
-    private String name;
-
-    /**
-     * @param name
-     */
-    OrgName( String name) {
-        this.name = name;
+    public String getBuildUrl() {
+        return buildUrl;
     }
 
-    @Override
-    public String toString() {
-        return name;
+    public void setBuildUrl(String buildUrl) {
+        this.buildUrl = buildUrl;
     }
-
 }
+
+
