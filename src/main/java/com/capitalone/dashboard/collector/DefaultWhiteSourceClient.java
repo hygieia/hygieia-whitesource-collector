@@ -2,6 +2,7 @@ package com.capitalone.dashboard.collector;
 
 import com.capitalone.dashboard.client.RestClient;
 import com.capitalone.dashboard.misc.HygieiaException;
+import com.capitalone.dashboard.model.CollectorItem;
 import com.capitalone.dashboard.model.LibraryPolicyResult;
 import com.capitalone.dashboard.model.LibraryPolicyThreatDisposition;
 import com.capitalone.dashboard.model.LibraryPolicyThreatLevel;
@@ -10,24 +11,31 @@ import com.capitalone.dashboard.model.LicensePolicyType;
 import com.capitalone.dashboard.model.WhiteSourceChangeRequest;
 import com.capitalone.dashboard.model.WhiteSourceComponent;
 import com.capitalone.dashboard.model.WhiteSourceProduct;
+import com.capitalone.dashboard.model.WhiteSourceRequest;
+import com.capitalone.dashboard.repository.CollectorItemRepository;
+import com.capitalone.dashboard.repository.LibraryPolicyResultsRepository;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.joda.time.format.DateTimeFormat;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
-
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
+import static com.capitalone.dashboard.collector.Constants.YYYY_MM_DD_HH_MM_SS;
 
 @Component
 public class DefaultWhiteSourceClient implements WhiteSourceClient {
@@ -35,11 +43,16 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
     private static final String API_URL = "/api/v1.3";
     private final RestClient restClient;
     private final WhiteSourceSettings whiteSourceSettings;
+    private final CollectorItemRepository collectorItemRepository;
+    private final LibraryPolicyResultsRepository libraryPolicyResultsRepository;
+
 
     @Autowired
-    public DefaultWhiteSourceClient(RestClient restClient, WhiteSourceSettings settings) {
+    public DefaultWhiteSourceClient(RestClient restClient, WhiteSourceSettings settings, CollectorItemRepository collectorItemRepository, LibraryPolicyResultsRepository libraryPolicyResultsRepository) {
         this.restClient = restClient;
         this.whiteSourceSettings = settings;
+        this.collectorItemRepository = collectorItemRepository;
+        this.libraryPolicyResultsRepository = libraryPolicyResultsRepository;
     }
 
     @Override
@@ -217,6 +230,35 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
         }
     }
 
+
+    private Object decodeJsonPayload (String payload) throws HygieiaException{
+        if(payload == null || StringUtils.isEmpty(payload)) {
+            throw new HygieiaException("WhiteSource request is not a valid json.", HygieiaException.JSON_FORMAT_ERROR);
+        }
+        byte[] decodedBytes = Base64.getDecoder().decode(payload);
+        String decodedPayload = new String(decodedBytes);
+        JSONParser parser = new JSONParser();
+        Object obj  = null;
+        try {
+            obj =  parser.parse(decodedPayload);
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return obj;
+    }
+
+    private boolean isNewQualityData(CollectorItem component, LibraryPolicyResult libraryPolicyResult) {
+        return libraryPolicyResultsRepository.findByCollectorItemIdAndTimestamp(
+                component.getId(), libraryPolicyResult.getEvaluationTimestamp()) == null;
+    }
+
+    private LibraryPolicyResult getQualityData(CollectorItem component, LibraryPolicyResult libraryPolicyResult) {
+        return libraryPolicyResultsRepository.findByCollectorItemIdAndTimestamp(
+                component.getId(), libraryPolicyResult.getEvaluationTimestamp());
+    }
+
+
     @Override
     public void transform(LibraryPolicyResult libraryPolicyResult, JSONArray alerts) {
         for (Object a : alerts) {
@@ -240,6 +282,49 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
 
         }
     }
+
+
+
+    private long convertTimestamp (String timestamp){
+
+        long time = 0;
+
+        if(StringUtils.isNotEmpty(timestamp)){
+            time = DateTimeFormat.forPattern(YYYY_MM_DD_HH_MM_SS).parseMillis(timestamp);
+
+        }
+
+        return time;
+    }
+
+
+    public String process(WhiteSourceRequest whiteSourceRequest) throws HygieiaException {
+        JSONObject projectVital = (JSONObject) decodeJsonPayload(whiteSourceRequest.getProjectVitals());
+        JSONArray alerts = (JSONArray) decodeJsonPayload(whiteSourceRequest.getAlerts());
+        String orgName = whiteSourceRequest.getOrgName();
+        String name =  (String) projectVital.get("name");
+        String productName =  (String) projectVital.get("productName");
+        String lastUpdatedDate = (String) projectVital.get("lastUpdatedDate");
+        LibraryPolicyResult libraryPolicyResult = new LibraryPolicyResult();
+        long timestamp = convertTimestamp(lastUpdatedDate);
+        libraryPolicyResult.setEvaluationTimestamp(timestamp);
+        CollectorItem collectorItem = collectorItemRepository.findByOrgNameAndProjectNameAndProductName(orgName, name, productName);
+        LOG.info("WhiteSourceRequest collecting  analysis for orgName= "+ orgName + "name : " + name + "productName : " + productName + "timestamp : "+ timestamp );
+        if(collectorItem != null){
+            LibraryPolicyResult lp = getQualityData(collectorItem,libraryPolicyResult);
+            if(lp != null){
+                LOG.info("Record already exist in LibraryPolicy " + lp.getId());
+                return "Record already exist in LibraryPolicy  " + lp.getId();
+            }
+        }
+        transform(libraryPolicyResult, alerts);
+        libraryPolicyResult.setTimestamp(System.currentTimeMillis());
+        libraryPolicyResult.setCollectorItemId(collectorItem.getId());
+        libraryPolicyResult.setBuildUrl(whiteSourceRequest.getBuildUrl());
+        libraryPolicyResult =libraryPolicyResultsRepository.save(libraryPolicyResult);
+        LOG.info("Successfully updated library policy result  "+ libraryPolicyResult.getId());
+        return " Successfully updated library policy result " + libraryPolicyResult.getId();    }
+
 
     private void setAllLibraryLicenses(JSONArray licenses, LibraryPolicyResult libraryPolicyResult, String componentName) {
         for (Object l : licenses) {
@@ -367,16 +452,16 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
         Object obj = json.get(key);
         if (obj != null) {
             try {
-                return new SimpleDateFormat(Constants.YYYY_MM_DD_HH_MM_SS).parse(obj.toString()).getTime();
+                return new SimpleDateFormat(YYYY_MM_DD_HH_MM_SS).parse(obj.toString()).getTime();
             } catch (java.text.ParseException e) {
-                LOG.error(obj + " is not in expected format " + Constants.YYYY_MM_DD_HH_MM_SS, e);
+                LOG.error(obj + " is not in expected format " + YYYY_MM_DD_HH_MM_SS, e);
             }
         }
         return 0;
     }
 
     private String getTime(long timestamp){
-        DateFormat format = new SimpleDateFormat(Constants.YYYY_MM_DD_HH_MM_SS);
+        DateFormat format = new SimpleDateFormat(YYYY_MM_DD_HH_MM_SS);
         return format.format(new Date(timestamp));
     }
 
