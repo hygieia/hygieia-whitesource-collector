@@ -35,6 +35,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
+import static com.capitalone.dashboard.collector.Constants.YYYY_MM_DD_HH_MM_SS;
 
 @Component
 public class DefaultWhiteSourceClient implements WhiteSourceClient {
@@ -289,7 +290,7 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
         long time = 0;
 
         if(StringUtils.isNotEmpty(timestamp)){
-            time = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss").parseMillis(timestamp);
+            time = DateTimeFormat.forPattern(YYYY_MM_DD_HH_MM_SS).parseMillis(timestamp);
 
         }
 
@@ -320,16 +321,10 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
         libraryPolicyResult.setTimestamp(System.currentTimeMillis());
         libraryPolicyResult.setCollectorItemId(collectorItem.getId());
         libraryPolicyResult.setBuildUrl(whiteSourceRequest.getBuildUrl());
-        return processCollectorItem(collectorItem,libraryPolicyResult);
-    }
-
-
-
-    public String processCollectorItem(CollectorItem collectorItem, LibraryPolicyResult libraryPolicyResult){
         libraryPolicyResult =libraryPolicyResultsRepository.save(libraryPolicyResult);
         LOG.info("Successfully updated library policy result  "+ libraryPolicyResult.getId());
-        return " Successfully updated library policy result " + libraryPolicyResult.getId();
-    }
+        return " Successfully updated library policy result " + libraryPolicyResult.getId();    }
+
 
     private void setAllLibraryLicenses(JSONArray licenses, LibraryPolicyResult libraryPolicyResult, String componentName) {
         for (Object l : licenses) {
@@ -457,16 +452,16 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
         Object obj = json.get(key);
         if (obj != null) {
             try {
-                return new SimpleDateFormat(Constants.YYYY_MM_DD_HH_MM_SS).parse(obj.toString()).getTime();
+                return new SimpleDateFormat(YYYY_MM_DD_HH_MM_SS).parse(obj.toString()).getTime();
             } catch (java.text.ParseException e) {
-                LOG.error(obj + " is not in expected format " + Constants.YYYY_MM_DD_HH_MM_SS, e);
+                LOG.error(obj + " is not in expected format " + YYYY_MM_DD_HH_MM_SS, e);
             }
         }
         return 0;
     }
 
     private String getTime(long timestamp){
-        DateFormat format = new SimpleDateFormat(Constants.YYYY_MM_DD_HH_MM_SS);
+        DateFormat format = new SimpleDateFormat(YYYY_MM_DD_HH_MM_SS);
         return format.format(new Date(timestamp));
     }
 

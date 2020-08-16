@@ -45,6 +45,7 @@ public final class Constants {
     public static final String WHITE_SOURCE = "WhiteSource";
     public static final String YYYY_MM_DD_HH_MM_SS = "yyyy-MM-dd HH:mm:ss";
 
+
     public enum RequestType {
         getAllProducts,
         getAllProjects,
