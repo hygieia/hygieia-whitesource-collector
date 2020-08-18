@@ -33,7 +33,7 @@ public class DefaultWhiteSourceController {
             @ApiResponse(code = 401, message = "BAD REQUEST"),
             @ApiResponse(code = 403, message = "forbidden( Unauthorized)"),
             @ApiResponse(code = 500, message = "System Internal Error") })
-    @RequestMapping(value = "/whitesource/project-alerts", method = POST,
+    @RequestMapping(value = "/project-alerts", method = POST,
             consumes = "application/json", produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<String> setProjectVitalsAndAlerts(@Valid @RequestBody WhiteSourceRequest request) throws HygieiaException {
         String response = defaultWhiteSourceClient.process(request);

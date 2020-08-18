@@ -1,6 +1,7 @@
 package com.capitalone.dashboard.collector;
 
 import com.capitalone.dashboard.client.RestClient;
+import com.capitalone.dashboard.client.RestClientSettings;
 import com.capitalone.dashboard.misc.HygieiaException;
 import com.capitalone.dashboard.model.CollectorItem;
 import com.capitalone.dashboard.model.LibraryPolicyResult;
@@ -254,7 +255,7 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
     }
 
     private LibraryPolicyResult getQualityData(CollectorItem component, LibraryPolicyResult libraryPolicyResult) {
-        return libraryPolicyResultsRepository.findByCollectorItemIdAndTimestamp(
+        return libraryPolicyResultsRepository.findByCollectorItemIdAndEvaluationTimestamp(
                 component.getId(), libraryPolicyResult.getEvaluationTimestamp());
     }
 
@@ -318,7 +319,7 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
             }
         }
         transform(libraryPolicyResult, alerts);
-        libraryPolicyResult.setTimestamp(timestamp);
+        libraryPolicyResult.setTimestamp(System.currentTimeMillis());
         libraryPolicyResult.setCollectorItemId(collectorItem.getId());
         libraryPolicyResult.setBuildUrl(whiteSourceRequest.getBuildUrl());
         libraryPolicyResult =libraryPolicyResultsRepository.save(libraryPolicyResult);

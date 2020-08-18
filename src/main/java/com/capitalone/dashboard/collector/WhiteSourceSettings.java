@@ -1,5 +1,6 @@
 package com.capitalone.dashboard.collector;
 
+import com.capitalone.dashboard.client.RestClientSettings;
 import com.capitalone.dashboard.model.LicensePolicyType;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -14,7 +15,7 @@ import java.util.Map;
  */
 @Component
 @ConfigurationProperties(prefix = "whitesource")
-public class WhiteSourceSettings {
+public class WhiteSourceSettings implements RestClientSettings {
 
 
     private String cron;
