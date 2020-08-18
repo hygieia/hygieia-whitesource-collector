@@ -318,7 +318,7 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
             }
         }
         transform(libraryPolicyResult, alerts);
-        libraryPolicyResult.setTimestamp(System.currentTimeMillis());
+        libraryPolicyResult.setTimestamp(timestamp);
         libraryPolicyResult.setCollectorItemId(collectorItem.getId());
         libraryPolicyResult.setBuildUrl(whiteSourceRequest.getBuildUrl());
         libraryPolicyResult =libraryPolicyResultsRepository.save(libraryPolicyResult);
