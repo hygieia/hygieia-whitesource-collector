@@ -18,6 +18,7 @@ import com.capitalone.dashboard.repository.LibraryPolicyResultsRepository;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -291,7 +292,7 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
         long time = 0;
 
         if(StringUtils.isNotEmpty(timestamp)){
-            time = DateTimeFormat.forPattern(YYYY_MM_DD_HH_MM_SS).parseMillis(timestamp);
+            time = DateTimeFormat.forPattern(YYYY_MM_DD_HH_MM_SS+" Z").parseMillis(timestamp);
 
         }
 
@@ -304,19 +305,21 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
         JSONArray alerts = (JSONArray) decodeJsonPayload(whiteSourceRequest.getAlerts());
         String orgName = whiteSourceRequest.getOrgName();
         String name =  (String) projectVital.get("name");
-        String productName =  (String) projectVital.get("productName");
+        String token =  (String) projectVital.get("token");
         String lastUpdatedDate = (String) projectVital.get("lastUpdatedDate");
         LibraryPolicyResult libraryPolicyResult = new LibraryPolicyResult();
         long timestamp = convertTimestamp(lastUpdatedDate);
         libraryPolicyResult.setEvaluationTimestamp(timestamp);
-        CollectorItem collectorItem = collectorItemRepository.findByOrgNameAndProjectNameAndProductName(orgName, name, productName);
-        LOG.info("WhiteSourceRequest collecting  analysis for orgName= "+ orgName + "name : " + name + "productName : " + productName + "timestamp : "+ timestamp );
+        CollectorItem collectorItem = collectorItemRepository.findByOrgNameAndProjectNameAndProjectToken(orgName, name, token);
+        LOG.info("WhiteSourceRequest collecting  analysis for orgName= "+ orgName + " name : " + name + " token : " + token + " timestamp : "+ timestamp );
         if(collectorItem != null){
             LibraryPolicyResult lp = getQualityData(collectorItem,libraryPolicyResult);
             if(lp != null){
                 LOG.info("Record already exist in LibraryPolicy " + lp.getId());
                 return "Record already exist in LibraryPolicy  " + lp.getId();
             }
+        }else{
+            throw new HygieiaException("WhiteSource request is not a valid json",HygieiaException.BAD_DATA);
         }
         transform(libraryPolicyResult, alerts);
         libraryPolicyResult.setTimestamp(System.currentTimeMillis());
