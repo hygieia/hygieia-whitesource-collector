@@ -15,7 +15,7 @@ import java.util.Map;
  */
 @Component
 @ConfigurationProperties(prefix = "whitesource")
-public class WhiteSourceSettings implements RestClientSettings {
+public class WhiteSourceSettings  {
 
 
     private String cron;
