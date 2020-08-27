@@ -137,6 +137,12 @@ public class WhiteSourceCollectorTask extends CollectorTask<WhiteSourceCollector
                 elapsedTime, count.getFetched(), count.getAdded(), count.getUpdated(), count.getInstanceCount()));
     }
 
+    @Override
+    public int getCount() {
+        return 0;
+    }
+
+
     private Map<String, Object> getOptions(WhiteSourceChangeRequest changeRequest){
             Map<String, Object> options = new HashMap<>();
             options.put(Constants.ORG_NAME,changeRequest.getOrgName());
