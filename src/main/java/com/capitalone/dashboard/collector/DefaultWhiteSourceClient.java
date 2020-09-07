@@ -35,6 +35,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+
 import static com.capitalone.dashboard.collector.Constants.YYYY_MM_DD_HH_MM_SS;
 
 @Component
@@ -187,7 +189,6 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
         }else{
             for (Object c : changes) {
                 JSONObject change = (JSONObject) c;
-                if(! getStringValue(change, Constants.SCOPE).equalsIgnoreCase(Constants.PROJECT)) continue;
                 WhiteSourceChangeRequest whiteSourceChangeRequest = new WhiteSourceChangeRequest();
                 whiteSourceChangeRequest.setScope(getStringValue(change, Constants.SCOPE));
                 whiteSourceChangeRequest.setStartDateTime(timestamp(change, Constants.START_DATE_TIME));
@@ -197,6 +198,12 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
                 whiteSourceChangeRequest.setOrgName(getStringValue(change,Constants.ORG_NAME));
                 whiteSourceChangeRequest.setProductName(getStringValue(change,Constants.PRODUCT_NAME));
                 whiteSourceChangeRequest.setProjectName(getStringValue(change,Constants.PROJECT_NAME));
+                whiteSourceChangeRequest.setScopeName(getStringValue(change, Constants.SCOPE_NAME));
+                whiteSourceChangeRequest.setChangeScopeId(getLongValue(change, Constants.CHANGE_SCOPE_ID));
+                whiteSourceChangeRequest.setOperator(getStringValue(change, Constants.OPERATOR));
+                whiteSourceChangeRequest.setUserEmail(getStringValue(change, Constants.USER_EMAIL));
+                whiteSourceChangeRequest.setBeforeChange(getListValue(change, Constants.BEFORE_CHANGE));
+                whiteSourceChangeRequest.setAfterChange(getListValue(change, Constants.AFTER_CHANGE));
                 changeRequests.add(whiteSourceChangeRequest);
             }
         }
@@ -398,6 +405,16 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
     private String getStringValue(JSONObject jsonObject, String key) {
         if (jsonObject == null || jsonObject.get(key) == null) return null;
         return (String) jsonObject.get(key);
+    }
+
+    private List getListValue(JSONObject jsonObject, String key) {
+        if (jsonObject == null || jsonObject.get(key) == null) return null;
+        JSONArray jsonArray = (JSONArray) jsonObject.get(key);
+        List<String> list = new ArrayList<>();
+        for (Object o : jsonArray) {
+            list.add((String)o);
+        }
+        return list;
     }
 
     private Long getLongValue(JSONObject jsonObject, String key) {
