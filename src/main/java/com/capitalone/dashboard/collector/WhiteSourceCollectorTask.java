@@ -3,23 +3,19 @@ package com.capitalone.dashboard.collector;
 
 import com.capitalone.dashboard.misc.HygieiaException;
 import com.capitalone.dashboard.model.CollectionError;
-import com.capitalone.dashboard.model.CollectorItem;
 import com.capitalone.dashboard.model.Count;
 import com.capitalone.dashboard.model.LibraryPolicyReference;
 import com.capitalone.dashboard.model.LibraryPolicyResult;
-import com.capitalone.dashboard.model.LibraryPolicyType;
 import com.capitalone.dashboard.model.WhiteSourceChangeRequest;
 import com.capitalone.dashboard.model.WhiteSourceCollector;
 import com.capitalone.dashboard.model.WhiteSourceComponent;
 import com.capitalone.dashboard.model.WhiteSourceProduct;
 import com.capitalone.dashboard.repository.BaseCollectorRepository;
-import com.capitalone.dashboard.repository.CustomRepositoryQuery;
 import com.capitalone.dashboard.repository.LibraryPolicyResultsRepository;
 import com.capitalone.dashboard.repository.LibraryReferenceRepository;
 import com.capitalone.dashboard.repository.WhiteSourceCollectorRepository;
 import com.capitalone.dashboard.repository.WhiteSourceComponentRepository;
 import com.capitalone.dashboard.repository.WhiteSourceCustomComponentRepository;
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bson.types.ObjectId;
@@ -29,7 +25,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestClientException;
 
-import java.awt.image.ImageProducer;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -108,7 +103,7 @@ public class WhiteSourceCollectorTask extends CollectorTask<WhiteSourceCollector
         Count count = new Count();
         List<WhiteSourceComponent> existingComponents = whiteSourceComponentRepository.findByCollectorIdIn(Stream.of(collector.getId()).collect(Collectors.toList()));
         collector.getWhiteSourceServers().forEach(instanceUrl -> {
-            logBanner(instanceUrl);
+            log(instanceUrl);
             whiteSourceSettings.getOrgTokens().forEach(orgToken -> {
                 String logMessage = "WhiteSourceCollector :";
                 Map<String, LibraryPolicyReference> libraryLookUp = new HashMap<>();
@@ -130,10 +125,10 @@ public class WhiteSourceCollectorTask extends CollectorTask<WhiteSourceCollector
                     List<WhiteSourceComponent> changedCollectorItems = new ArrayList<>();
                     // find al collectorItems with scope PROJECT
                     for (WhiteSourceChangeRequest changeRequest: changeRequests) {
-                        if(changeRequest.getScope().equalsIgnoreCase("PROJECT")){
+                        if(changeRequest.getScope().equalsIgnoreCase(Constants.PROJECT)){
                             changedCollectorItems.addAll(whiteSourceCustomComponentRepository.findCollectorItemsByUniqueOptions(collector.getId(),getOptions(changeRequest),getOptions(changeRequest),collector.getUniqueFields()));
                         }
-                        if(changeRequest.getScope().equalsIgnoreCase("LIBRARY")){
+                        if(changeRequest.getScope().equalsIgnoreCase(Constants.LIBRARY_SCOPE)){
                             LibraryPolicyReference lpr = libraryReferenceRepository.findByLibraryNameAndOrgName(changeRequest.getScopeName(),orgName);
                             if(Objects.nonNull(lpr)){
                                 changedCollectorItems.addAll(lpr.getProjectReferences());
@@ -334,7 +329,7 @@ public class WhiteSourceCollectorTask extends CollectorTask<WhiteSourceCollector
 
     private long getHistoryTimestamp(long collectorLastUpdated) {
         if(collectorLastUpdated > 0) {
-            return collectorLastUpdated - whiteSourceSettings.getHistoryTimestamp();
+            return collectorLastUpdated - whiteSourceSettings.getOffSet();
         }else{
             return System.currentTimeMillis() - whiteSourceSettings.getHistoryTimestamp();
         }

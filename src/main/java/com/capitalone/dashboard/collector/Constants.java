@@ -51,6 +51,7 @@ public final class Constants {
     public static final String ORG_ID = "orgId";
     public static final String BEFORE_CHANGE = "beforeChange";
     public static final String AFTER_CHANGE = "afterChange";
+    public static final String LIBRARY_SCOPE = "LIBRARY";
 
 
     public enum RequestType {
