@@ -9,6 +9,7 @@ import com.capitalone.dashboard.model.LibraryPolicyResult;
 import com.capitalone.dashboard.model.WhiteSourceComponent;
 import com.capitalone.dashboard.model.WhiteSourceRefreshRequest;
 import com.capitalone.dashboard.model.WhiteSourceRequest;
+import com.capitalone.dashboard.model.WhiteSourceServerSettings;
 import com.capitalone.dashboard.repository.CollectorItemRepository;
 import com.capitalone.dashboard.repository.LibraryPolicyResultsRepository;
 import io.swagger.annotations.ApiResponse;
@@ -68,7 +69,7 @@ public class DefaultWhiteSourceController {
         }
         List<WhiteSourceComponent> components = defaultWhiteSourceClient.getWhiteSourceComponents(request.getOrgName(),request.getProductName(),request.getProjectName());
         for (WhiteSourceComponent component : components) {
-           LibraryPolicyResult libraryPolicyResult = defaultWhiteSourceClient.getProjectAlerts(whiteSourceSettings.getServers().get(0),component);
+           LibraryPolicyResult libraryPolicyResult = defaultWhiteSourceClient.getProjectAlerts(whiteSourceSettings.getServers().get(0),component,whiteSourceSettings.getWhiteSourceServerSettings().get(0));
            if (Objects.nonNull(libraryPolicyResult)){
                libraryPolicyResult.setCollectorItemId(component.getId());
                LibraryPolicyResult libraryPolicyResultExisting = defaultWhiteSourceClient.getQualityData(component,libraryPolicyResult);
@@ -82,4 +83,5 @@ public class DefaultWhiteSourceController {
                 .status(HttpStatus.OK)
                 .body("Updated Whitesource component:: OrgName="+request.getOrgName()+", productName="+request.getProductName()+", projectName="+request.getProjectName());
     }
+
 }
