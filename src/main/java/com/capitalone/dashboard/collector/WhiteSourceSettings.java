@@ -1,6 +1,5 @@
 package com.capitalone.dashboard.collector;
 
-import com.capitalone.dashboard.client.RestClientSettings;
 import com.capitalone.dashboard.model.LicensePolicyType;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -46,6 +45,7 @@ public class WhiteSourceSettings  {
     private List<LicensePolicyType> highLicensePolicyTypes = new ArrayList<>();
     private List<LicensePolicyType> mediumLicensePolicyTypes = new ArrayList<>();
     private List<LicensePolicyType> lowLicensePolicyTypes = new ArrayList<>();
+    private String ignoredChangeClass;
 
     public long getHistoryTimestamp() {
         return historyTimestamp;
@@ -235,5 +235,13 @@ public class WhiteSourceSettings  {
 
     public void setConnectTimeout(int connectTimeout) {
         this.connectTimeout = connectTimeout;
+    }
+
+    public String getIgnoredChangeClass() {
+        return ignoredChangeClass;
+    }
+
+    public void setIgnoredChangeClass(String ignoredChangeClass) {
+        this.ignoredChangeClass = ignoredChangeClass;
     }
 }

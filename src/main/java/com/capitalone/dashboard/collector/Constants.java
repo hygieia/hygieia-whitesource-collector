@@ -44,6 +44,14 @@ public final class Constants {
     public static final String CHANGE_CLASS = "changeClass";
     public static final String WHITE_SOURCE = "WhiteSource";
     public static final String YYYY_MM_DD_HH_MM_SS = "yyyy-MM-dd HH:mm:ss";
+    public static final String SCOPE_NAME = "scopeName";
+    public static final String CHANGE_SCOPE_ID = "changeScopeId";
+    public static final String OPERATOR = "operator";
+    public static final String USER_EMAIL = "userEmail";
+    public static final String ORG_ID = "orgId";
+    public static final String BEFORE_CHANGE = "beforeChange";
+    public static final String AFTER_CHANGE = "afterChange";
+    public static final String LIBRARY_SCOPE = "LIBRARY";
 
 
     public enum RequestType {

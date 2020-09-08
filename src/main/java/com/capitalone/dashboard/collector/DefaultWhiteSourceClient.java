@@ -2,6 +2,7 @@ package com.capitalone.dashboard.collector;
 
 import com.capitalone.dashboard.client.RestClient;
 import com.capitalone.dashboard.misc.HygieiaException;
+import com.capitalone.dashboard.model.Collector;
 import com.capitalone.dashboard.model.CollectorItem;
 import com.capitalone.dashboard.model.LibraryPolicyResult;
 import com.capitalone.dashboard.model.LibraryPolicyThreatDisposition;
@@ -13,6 +14,7 @@ import com.capitalone.dashboard.model.WhiteSourceComponent;
 import com.capitalone.dashboard.model.WhiteSourceProduct;
 import com.capitalone.dashboard.model.WhiteSourceRequest;
 import com.capitalone.dashboard.repository.CollectorItemRepository;
+import com.capitalone.dashboard.repository.CollectorRepository;
 import com.capitalone.dashboard.repository.LibraryPolicyResultsRepository;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
@@ -30,11 +32,17 @@ import org.springframework.util.CollectionUtils;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import static com.capitalone.dashboard.collector.Constants.YYYY_MM_DD_HH_MM_SS;
 
 @Component
@@ -45,14 +53,18 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
     private final WhiteSourceSettings whiteSourceSettings;
     private final CollectorItemRepository collectorItemRepository;
     private final LibraryPolicyResultsRepository libraryPolicyResultsRepository;
+    private final CollectorRepository collectorRepository;
 
 
     @Autowired
-    public DefaultWhiteSourceClient(RestClient restClient, WhiteSourceSettings settings, CollectorItemRepository collectorItemRepository, LibraryPolicyResultsRepository libraryPolicyResultsRepository) {
+    public DefaultWhiteSourceClient(RestClient restClient, WhiteSourceSettings settings, CollectorItemRepository collectorItemRepository,
+                                    LibraryPolicyResultsRepository libraryPolicyResultsRepository,
+                                    CollectorRepository collectorRepository) {
         this.restClient = restClient;
         this.whiteSourceSettings = settings;
         this.collectorItemRepository = collectorItemRepository;
         this.libraryPolicyResultsRepository = libraryPolicyResultsRepository;
+        this.collectorRepository = collectorRepository;
     }
 
     @Override
@@ -187,7 +199,6 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
         }else{
             for (Object c : changes) {
                 JSONObject change = (JSONObject) c;
-                if(! getStringValue(change, Constants.SCOPE).equalsIgnoreCase(Constants.PROJECT)) continue;
                 WhiteSourceChangeRequest whiteSourceChangeRequest = new WhiteSourceChangeRequest();
                 whiteSourceChangeRequest.setScope(getStringValue(change, Constants.SCOPE));
                 whiteSourceChangeRequest.setStartDateTime(timestamp(change, Constants.START_DATE_TIME));
@@ -197,6 +208,12 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
                 whiteSourceChangeRequest.setOrgName(getStringValue(change,Constants.ORG_NAME));
                 whiteSourceChangeRequest.setProductName(getStringValue(change,Constants.PRODUCT_NAME));
                 whiteSourceChangeRequest.setProjectName(getStringValue(change,Constants.PROJECT_NAME));
+                whiteSourceChangeRequest.setScopeName(getStringValue(change, Constants.SCOPE_NAME));
+                whiteSourceChangeRequest.setChangeScopeId(getLongValue(change, Constants.CHANGE_SCOPE_ID));
+                whiteSourceChangeRequest.setOperator(getStringValue(change, Constants.OPERATOR));
+                whiteSourceChangeRequest.setUserEmail(getStringValue(change, Constants.USER_EMAIL));
+                whiteSourceChangeRequest.setBeforeChange(getListValue(change, Constants.BEFORE_CHANGE));
+                whiteSourceChangeRequest.setAfterChange(getListValue(change, Constants.AFTER_CHANGE));
                 changeRequests.add(whiteSourceChangeRequest);
             }
         }
@@ -253,7 +270,7 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
                 component.getId(), libraryPolicyResult.getEvaluationTimestamp()) == null;
     }
 
-    private LibraryPolicyResult getQualityData(CollectorItem component, LibraryPolicyResult libraryPolicyResult) {
+    public LibraryPolicyResult getQualityData(CollectorItem component, LibraryPolicyResult libraryPolicyResult) {
         return libraryPolicyResultsRepository.findByCollectorItemIdAndEvaluationTimestamp(
                 component.getId(), libraryPolicyResult.getEvaluationTimestamp());
     }
@@ -324,8 +341,46 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
         libraryPolicyResult.setCollectorItemId(collectorItem.getId());
         libraryPolicyResult.setBuildUrl(whiteSourceRequest.getBuildUrl());
         libraryPolicyResult =libraryPolicyResultsRepository.save(libraryPolicyResult);
+        if(!collectorItem.isEnabled()){
+            collectorItem.setEnabled(true);
+            collectorItemRepository.save(collectorItem);
+        }
         LOG.info("Successfully updated library policy result  "+ libraryPolicyResult.getId());
-        return " Successfully updated library policy result " + libraryPolicyResult.getId();    }
+        return " Successfully updated library policy result " + libraryPolicyResult.getId();
+    }
+
+    public List<WhiteSourceComponent> getWhiteSourceComponents(String orgName, String productName, String projectName){
+        Collector collector = collectorRepository.findByName(Constants.WHITE_SOURCE);
+        Map<String, Object> options = getOptions(orgName, productName, projectName);
+        Iterable<CollectorItem> collectorItems = collectorItemRepository.findAllByOptionMapAndCollectorIdsIn(options, Stream.of(collector.getId()).collect(Collectors.toList()));
+        List<WhiteSourceComponent> whiteSourceComponents = new ArrayList<>();
+        for (CollectorItem collectorItem : collectorItems) {
+            whiteSourceComponents.add(buildWhiteSourceComponent(collectorItem));
+        }
+        return whiteSourceComponents;
+    }
+
+    private WhiteSourceComponent buildWhiteSourceComponent(CollectorItem collectorItem) {
+        WhiteSourceComponent whiteSourceComponent = new WhiteSourceComponent();
+        whiteSourceComponent.setOrgName((String)collectorItem.getOptions().get(Constants.ORG_NAME));
+        whiteSourceComponent.setProductName((String)collectorItem.getOptions().get(Constants.PRODUCT_NAME));
+        whiteSourceComponent.setProjectName((String)collectorItem.getOptions().get(Constants.PROJECT_NAME));
+        whiteSourceComponent.setProjectToken((String)collectorItem.getOptions().get(Constants.PROJECT_TOKEN));
+        whiteSourceComponent.setProductToken((String)collectorItem.getOptions().get(Constants.PRODUCT_TOKEN));
+        whiteSourceComponent.setId(collectorItem.getId());
+        whiteSourceComponent.setCollectorId(collectorItem.getCollectorId());
+        whiteSourceComponent.setEnabled(collectorItem.isEnabled());
+        whiteSourceComponent.setLastUpdated(collectorItem.getLastUpdated());
+        return  whiteSourceComponent;
+    }
+
+    private Map<String, Object> getOptions(String orgName, String productName, String projectName) {
+        Map<String, Object> options = new HashMap<>();
+        options.put(Constants.ORG_NAME,orgName);
+        options.put(Constants.PRODUCT_NAME,productName);
+        options.put(Constants.PROJECT_NAME,projectName);
+        return options;
+    }
 
 
     private void setAllLibraryLicenses(JSONArray licenses, LibraryPolicyResult libraryPolicyResult, String componentName) {
@@ -398,6 +453,16 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
     private String getStringValue(JSONObject jsonObject, String key) {
         if (jsonObject == null || jsonObject.get(key) == null) return null;
         return (String) jsonObject.get(key);
+    }
+
+    private List getListValue(JSONObject jsonObject, String key) {
+        if (jsonObject == null || jsonObject.get(key) == null) return null;
+        JSONArray jsonArray = (JSONArray) jsonObject.get(key);
+        List<String> list = new ArrayList<>();
+        for (Object o : jsonArray) {
+            list.add((String)o);
+        }
+        return list;
     }
 
     private Long getLongValue(JSONObject jsonObject, String key) {
