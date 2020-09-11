@@ -188,8 +188,9 @@ public class WhiteSourceCollectorTask extends CollectorTask<WhiteSourceCollector
                                 libraryPolicyResult.setId(libraryPolicyResultExisting.getId());
                             }
                             libraryPolicyResultsRepository.save(libraryPolicyResult);
+                            component.setLastUpdated(System.currentTimeMillis());
+                            whiteSourceComponentRepository.save(component);
                         }
-                        component.setLastUpdated(System.currentTimeMillis());
                     } catch (HttpStatusCodeException hc) {
                         exception429TooManyRequestsComponentsList.add(component);
                         LOG.error("Error fetching details for:" + component.getDescription(), hc);
@@ -200,7 +201,7 @@ public class WhiteSourceCollectorTask extends CollectorTask<WhiteSourceCollector
                         CollectionError error = new CollectionError(CollectionError.UNKNOWN_HOST, instanceUrl);
                         component.getErrors().add(error);
                     }
-                    whiteSourceComponentRepository.save(component);
+
 
                     if (requestRateLimit > 0 && throttleRequests(startTime, rateCount, waitTime, requestRateLimit, requestRateLimitTimeWindow)) {
                         startTime = System.currentTimeMillis();
