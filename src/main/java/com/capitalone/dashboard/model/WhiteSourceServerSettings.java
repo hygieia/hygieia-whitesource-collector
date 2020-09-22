@@ -5,6 +5,7 @@ public class WhiteSourceServerSettings {
   private String instanceUrl;
   private String orgToken;
   private String userKey;
+  private String deeplink;
 
     public String getInstanceUrl() {
         return instanceUrl;
@@ -28,6 +29,14 @@ public class WhiteSourceServerSettings {
 
     public void setUserKey(String userKey) {
         this.userKey = userKey;
+    }
+
+    public String getDeeplink() {
+        return deeplink;
+    }
+
+    public void setDeeplink(String deeplink) {
+        this.deeplink = deeplink;
     }
 }
 

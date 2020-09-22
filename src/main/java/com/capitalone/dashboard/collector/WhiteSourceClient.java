@@ -18,7 +18,7 @@ public interface WhiteSourceClient {
     LibraryPolicyResult getProjectAlerts(String instanceUrl, WhiteSourceComponent whiteSourceComponent, WhiteSourceServerSettings serverSettings);
     String getOrgDetails(String instanceUrl, WhiteSourceServerSettings serverSettings) throws HygieiaException;
     List<WhiteSourceChangeRequest> getChangeRequestLog(String instanceUrl, String orgToken, String orgName,long collectorLastUpdatedTime,WhiteSourceServerSettings serverSettings);
-    void getEvaluationTimeStamp(LibraryPolicyResult libraryPolicyResult, JSONObject projectVitalsObject);
+    void getEvaluationTimeStamp(LibraryPolicyResult libraryPolicyResult, JSONObject projectVitalsObject, WhiteSourceServerSettings serverSettings);
     void transform(LibraryPolicyResult libraryPolicyResult, JSONArray alerts);
 
 }

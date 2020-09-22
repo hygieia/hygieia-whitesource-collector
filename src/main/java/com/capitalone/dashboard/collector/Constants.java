@@ -52,6 +52,7 @@ public final class Constants {
     public static final String BEFORE_CHANGE = "beforeChange";
     public static final String AFTER_CHANGE = "afterChange";
     public static final String LIBRARY_SCOPE = "LIBRARY";
+    public static final String ID = "id";
 
 
     public enum RequestType {

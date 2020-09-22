@@ -123,21 +123,7 @@ public class WhiteSourceCollectorTask extends CollectorTask<WhiteSourceCollector
                     // find change request log
                     List<WhiteSourceChangeRequest> changeRequests = whiteSourceClient.getChangeRequestLog(instanceUrl,orgToken,orgName,historyTimestamp,whiteSourceServerSettings);
                     Set<WhiteSourceChangeRequest> changeSet = changeRequests.stream().collect(Collectors.toSet());
-                    // get collectorItems from changeRequests
-                    List<WhiteSourceComponent> changedCollectorItems = new ArrayList<>();
-                    // find al collectorItems with scope PROJECT
-                    for (WhiteSourceChangeRequest changeRequest: changeRequests) {
-                        if(changeRequest.getScope().equalsIgnoreCase(Constants.PROJECT)){
-                            changedCollectorItems.addAll(whiteSourceCustomComponentRepository.findCollectorItemsByUniqueOptions(collector.getId(),getOptions(changeRequest),getOptions(changeRequest),collector.getUniqueFields()));
-                        }
-                        if(changeRequest.getScope().equalsIgnoreCase(Constants.LIBRARY_SCOPE)){
-                            LibraryPolicyReference lpr = libraryReferenceRepository.findByLibraryNameAndOrgName(changeRequest.getScopeName(),orgName);
-                            if(Objects.nonNull(lpr)){
-                                changedCollectorItems.addAll(lpr.getProjectReferences());
-                            }
-                        }
-                    }
-                    refreshData(changedCollectorItems,enabledApplications(collector), getRequestRateLimit(),
+                    refreshData(enabledApplications(collector), getRequestRateLimit(),
                             getRequestRateLimitTimeWindow(), getWaitTime(), instanceUrl,count,libraryLookUp,orgName,changeSet,whiteSourceServerSettings);
                     libraryReferenceRepository.save(libraryLookUp.values());
                     logMessage="SUCCESS, orgName="+orgName+", fetched projects="+projects.size()+", New projects="+count.getAdded()+", updated-projects="+count.getUpdated()+", updated instance-data="+count.getInstanceCount();
@@ -156,25 +142,14 @@ public class WhiteSourceCollectorTask extends CollectorTask<WhiteSourceCollector
     }
 
 
-    private Map<String, Object> getOptions(WhiteSourceChangeRequest changeRequest){
-            Map<String, Object> options = new HashMap<>();
-            options.put(Constants.ORG_NAME,changeRequest.getOrgName());
-            options.put(Constants.PRODUCT_NAME,changeRequest.getProductName());
-            options.put(Constants.PROJECT_NAME,changeRequest.getProjectName());
-            return options;
-    }
-
-    private void refreshData(List<WhiteSourceComponent> changedProjects, List<WhiteSourceComponent> enabledProjects, int requestRateLimit, long requestRateLimitTimeWindow, long waitTime, String instanceUrl, Count count, Map<String, LibraryPolicyReference> libraryLookUp,
+    private void refreshData(List<WhiteSourceComponent> enabledProjects, int requestRateLimit, long requestRateLimitTimeWindow, long waitTime, String instanceUrl, Count count, Map<String, LibraryPolicyReference> libraryLookUp,
                              String orgName, Set<WhiteSourceChangeRequest> changeRequests, WhiteSourceServerSettings serverSettings) {
         int rateCount = 0;
         long startTime = System.currentTimeMillis();
         List<WhiteSourceComponent> exception429TooManyRequestsComponentsList = new ArrayList<>();
         int counter = 0;
-        HashMap<WhiteSourceComponent,WhiteSourceComponent> changedMap = (HashMap<WhiteSourceComponent, WhiteSourceComponent>) changedProjects.stream().collect(Collectors.toMap(Function.identity(),Function.identity()));
         HashMap<WhiteSourceChangeRequest,WhiteSourceChangeRequest> changeRequestMap = (HashMap<WhiteSourceChangeRequest, WhiteSourceChangeRequest>) changeRequests.stream().collect(Collectors.toMap(Function.identity(),Function.identity()));
         for(WhiteSourceComponent component : enabledProjects) {
-            boolean firstRun = component.getLastUpdated()== 0;
-             if(isEligible(component,firstRun,changedMap)){
                 if (component.checkErrorOrReset(whiteSourceSettings.getErrorResetWindow(), whiteSourceSettings.getErrorThreshold())) {
                     try {
                         LibraryPolicyResult libraryPolicyResult = whiteSourceClient.getProjectAlerts(instanceUrl, component,serverSettings);
@@ -210,7 +185,6 @@ public class WhiteSourceCollectorTask extends CollectorTask<WhiteSourceCollector
                 } else {
                     LOG.info(component.getProjectName() + ":: errorThreshold exceeded");
                 }
-            }
         }
         count.addInstanceCount(counter);
     }
@@ -231,18 +205,19 @@ public class WhiteSourceCollectorTask extends CollectorTask<WhiteSourceCollector
                                 libraryLookUp.put(name,lpr);
                             }
                         }
-                        LibraryPolicyReference libraryPolicyReference = libraryLookUp.get(name);
                         WhiteSourceChangeRequest whiteSourceChangeRequest = new WhiteSourceChangeRequest();
                         whiteSourceChangeRequest.setScopeName(name);
                         WhiteSourceChangeRequest changed = changeRequestMap.get(whiteSourceChangeRequest);
                             // Add or update lprs
-                            if (Objects.nonNull(libraryPolicyReference)) {
-                                addOrUpdateLibraryPolicyReference(orgName, whiteSourceComponent, libraryPolicyReference, changed);
+                            if (Objects.nonNull(lpr)) {
+                                lpr.setLibraryName(name);
+                                addOrUpdateLibraryPolicyReference(orgName, whiteSourceComponent, lpr, changed);
                             } else {
-                                libraryPolicyReference = new LibraryPolicyReference();
-                                addOrUpdateLibraryPolicyReference(orgName, whiteSourceComponent, libraryPolicyReference, changed);
+                                lpr = new LibraryPolicyReference();
+                                lpr.setLibraryName(name);
+                                addOrUpdateLibraryPolicyReference(orgName, whiteSourceComponent, lpr, changed);
                             }
-                        libraryLookUp.put(name, libraryPolicyReference);
+                        libraryLookUp.put(name, lpr);
                     }
                 });
             });
@@ -322,12 +297,6 @@ public class WhiteSourceCollectorTask extends CollectorTask<WhiteSourceCollector
         }
         count.addNewCount(newCount);
         count.addUpdatedCount(updatedCount);
-    }
-
-    private boolean isEligible(WhiteSourceComponent enabledComponent, boolean firstRun, HashMap<WhiteSourceComponent,WhiteSourceComponent> changedMap){
-        if(enabledComponent.isEnabled() && firstRun) return true;
-        if(enabledComponent.isEnabled() && changedMap.get(enabledComponent)!=null) return true;
-        return false;
     }
 
     private long getHistoryTimestamp(long collectorLastUpdated) {
