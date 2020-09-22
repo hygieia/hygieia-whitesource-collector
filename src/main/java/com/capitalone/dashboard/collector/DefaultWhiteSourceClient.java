@@ -177,7 +177,7 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
                 return null;
             } else {
                 JSONObject projectVitalsObject = makeRestCall(getApiBaseUrl(instanceUrl), Constants.RequestType.getProjectVitals, null, null, whiteSourceComponent.getProjectToken(),whiteSourceComponent.getOrgName(),null,serverSettings);
-                getEvaluationTimeStamp(libraryPolicyResult, projectVitalsObject);
+                getEvaluationTimeStamp(libraryPolicyResult, projectVitalsObject,serverSettings);
                 libraryPolicyResult.setCollectorItemId(whiteSourceComponent.getId());
                 libraryPolicyResult.setTimestamp(System.currentTimeMillis());
                 transform(libraryPolicyResult, alerts);
@@ -238,12 +238,14 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
     }
 
     @Override
-    public void getEvaluationTimeStamp(LibraryPolicyResult libraryPolicyResult, JSONObject projectVitalsObject) {
+    public void getEvaluationTimeStamp(LibraryPolicyResult libraryPolicyResult, JSONObject projectVitalsObject, WhiteSourceServerSettings serverSettings) {
         JSONArray projectVitals = (JSONArray)  Objects.requireNonNull(projectVitalsObject).get(Constants.PROJECT_VITALS);
         if (!CollectionUtils.isEmpty(projectVitals)) {
             for (Object projectVital : projectVitals){
                 JSONObject projectVitalObject = (JSONObject) projectVital;
                 libraryPolicyResult.setEvaluationTimestamp(timestamp(projectVitalObject, Constants.LAST_UPDATED_DATE));
+                Long projectId = getLongValue(projectVitalObject, Constants.ID);
+                libraryPolicyResult.setReportUrl(String.format(serverSettings.getDeeplink(),projectId));
             }
         }
     }
@@ -443,7 +445,7 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
 
     private boolean getLicenseSeverity(List<LicensePolicyType> licensePolicyTypes, String alertType, String description){
         return licensePolicyTypes.stream().anyMatch(licensePolicyType -> licensePolicyType.getPolicyName().equalsIgnoreCase(alertType)
-        && licensePolicyType.getDescriptions().contains(description));
+        && licensePolicyType.getDescriptions().stream().anyMatch(description::equalsIgnoreCase));
     }
 
     private String getApiBaseUrl(String instanceUrl) {
