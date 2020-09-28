@@ -293,7 +293,6 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
             JSONArray licenses = (JSONArray) Objects.requireNonNull(library).get(Constants.LICENSES);
             if (!CollectionUtils.isEmpty(licenses)) {
                 setAllLibraryLicensesAlerts(licenses, libraryPolicyResult, componentName, getDays(creationDate) + "", getLicenseThreatLevel(alertType, alertLevel, description),description);
-                //setAllLibraryLicensesAlerts(licenses, libraryPolicyResult, componentName, getDays(creationDate) + "", getLicenseThreatLevel(alertType, alertLevel, description));
             }
             // add threat for Security vulns
             JSONObject vulns = (JSONObject) Objects.requireNonNull(alert).get(Constants.VULNERABILITY);
