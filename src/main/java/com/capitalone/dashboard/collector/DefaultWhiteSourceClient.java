@@ -287,17 +287,17 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
             String alertLevel = getStringValue(alert, Constants.LEVEL);
             JSONObject library = (JSONObject) Objects.requireNonNull(alert).get(Constants.LIBRARY);
             String creationDate = getStringValue(alert, Constants.CREATION_DATE);
-            String description = getStringValue(alert, Constants.DESCRIPTION);
+            String description = (StringUtils.isNotEmpty(getStringValue(alert, Constants.DESCRIPTION))) ? getStringValue(alert, Constants.DESCRIPTION): "None";
             String componentName = getStringValue(library, Constants.FILENAME);
             // add threat for license
             JSONArray licenses = (JSONArray) Objects.requireNonNull(library).get(Constants.LICENSES);
             if (!CollectionUtils.isEmpty(licenses)) {
-                setAllLibraryLicensesAlerts(licenses, libraryPolicyResult, componentName, getDays(creationDate) + "", getLicenseThreatLevel(alertType, alertLevel, description));
+                setAllLibraryLicensesAlerts(licenses, libraryPolicyResult, componentName, getDays(creationDate) + "", getLicenseThreatLevel(alertType, alertLevel, description),description);
             }
             // add threat for Security vulns
             JSONObject vulns = (JSONObject) Objects.requireNonNull(alert).get(Constants.VULNERABILITY);
             if (!CollectionUtils.isEmpty(vulns)) {
-                setSecurityVulns(vulns, libraryPolicyResult, componentName, getDays(creationDate) + "");
+                setSecurityVulns(vulns, libraryPolicyResult, componentName, getDays(creationDate) + "",description);
             }
 
         }
@@ -392,9 +392,9 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
         }
     }
 
-    private void setAllLibraryLicensesAlerts(JSONArray licenses, LibraryPolicyResult libraryPolicyResult, String componentName, String age, LibraryPolicyThreatLevel severity) {
+    private void setAllLibraryLicensesAlerts(JSONArray licenses, LibraryPolicyResult libraryPolicyResult, String componentName, String age, LibraryPolicyThreatLevel severity,String policyName) {
         for (Object l : licenses) {
-            libraryPolicyResult.addThreat(LibraryPolicyType.License, severity, LibraryPolicyThreatDisposition.Open, Constants.OPEN, componentName, age, Constants.ZERO);
+            libraryPolicyResult.addThreat(LibraryPolicyType.License, severity, LibraryPolicyThreatDisposition.Open, Constants.OPEN, componentName, age, Constants.ZERO,policyName);
         }
     }
 
@@ -407,8 +407,8 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
         }
     }
 
-    private void setSecurityVulns(JSONObject vuln, LibraryPolicyResult libraryPolicyResult, String componentName, String age) {
-        libraryPolicyResult.addThreat(LibraryPolicyType.Security, LibraryPolicyThreatLevel.fromString(getSecurityVulnSeverity(vuln)), LibraryPolicyThreatDisposition.Open, Constants.OPEN, componentName, age, getScore(vuln));
+    private void setSecurityVulns(JSONObject vuln, LibraryPolicyResult libraryPolicyResult, String componentName, String age, String policyName) {
+        libraryPolicyResult.addThreat(LibraryPolicyType.Security, LibraryPolicyThreatLevel.fromString(getSecurityVulnSeverity(vuln)), LibraryPolicyThreatDisposition.Open, Constants.OPEN, componentName, age, getScore(vuln),policyName);
     }
 
     private String getScore(JSONObject vuln) {
