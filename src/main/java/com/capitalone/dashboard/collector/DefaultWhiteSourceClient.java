@@ -445,7 +445,7 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
 
     private boolean getLicenseSeverity(List<LicensePolicyType> licensePolicyTypes, String alertType, String description){
         return licensePolicyTypes.stream().anyMatch(licensePolicyType -> licensePolicyType.getPolicyName().equalsIgnoreCase(alertType)
-        && licensePolicyType.getDescriptions().stream().anyMatch(description::equalsIgnoreCase));
+        && licensePolicyType.getDescriptions().stream().anyMatch(description::contains));
     }
 
     private String getApiBaseUrl(String instanceUrl) {
