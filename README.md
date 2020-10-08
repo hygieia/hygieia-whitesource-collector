@@ -51,7 +51,7 @@ To configure parameters for the WhiteSource Collector, refer to the sample [appl
 
 For information about sourcing the application properties file, refer to the [Spring Boot Documentation](http://docs.spring.io/spring-boot/docs/current-SNAPSHOT/reference/htmlsingle/#boot-features-external-config-application-property-files).
 
-*   **Step 4: Deploy the Executable File**
+*   **Step 3: Deploy the Executable File**
 
 To deploy the `[collector name].jar` file, change directory to `hygieia-whitesource-collectorr\target`, and then execute the following from the command prompt:
 
