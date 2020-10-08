@@ -1,48 +1,53 @@
----
-title: Hygieia WhiteSource Collector
-tags:
-keywords:
-summary:
-sidebar: hygieia_sidebar
-permalink: 
----
+## Hygieia collector for collecting Library Policy results from Whitesource
+
+Hygieia WhiteSource Collector
+
+[![License](https://img.shields.io/badge/license-Apache%202-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0)
+[![Maven Central](https://img.shields.io/maven-central/v/com.capitalone.dashboard/whitesource-collector.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:%22com.capitalone.dashboard%22%20AND%20a:%22whitesource-collector%22)
+[![Build Status](https://travis-ci.com/Hygieia/hygieia-whitesource-collector.svg?branch=main)](https://travis-ci.com/Hygieia/hygieia-whitesource-collector)
+[![Gitter Chat](https://badges.gitter.im/Join%20Chat.svg)](https://www.apache.org/licenses/LICENSE-2.0)
+<br>
+<br>
 
 Configure the WhiteSource Collector to display and monitor information (related to library policies) on the Hygieia Dashboard, from WhiteSource. Hygieia uses Spring Boot to package the collector as an executable JAR file with dependencies.
 Please refer https://whitesource.atlassian.net/wiki/spaces/WD/pages/814612683/HTTP+API+v1.3 for api documentation.
 
+# Table of Contents
+* [Setup Instructions](#setup-instructions)
+* [Sample Application Properties](#sample-application-properties)
+* [Run collector with Docker](#run-collector-with-docker)
+
 ### Setup Instructions
 
-## Fork and Clone the Collector 
+To configure your collector, execute the following steps: 
 
-Fork and clone the WhiteSource Collector from the [GitHub repo](https://github.com/Hygieia/hygieia-whitesource-collector). 
+*	**Step 1 - Artifact Preparation:**
 
-To configure the WhiteSource Collector, execute the following steps:
+	Please review the two options in Step 1 to find the best fit for you. 
 
-*   **Step 1: Change Directory**
+	***Option 1 - Download the artifact:***
 
-Change the current working directory to the `hygieia-whitesource-collector` directory of your Hygieia source code installation.
+	You can download the SNAPSHOTs from the SNAPSHOT directory [here](https://oss.sonatype.org/content/repositories/snapshots/com/capitalone/dashboard/whitesource-collector/) or from the maven central repository [here](https://search.maven.org/artifact/com.capitalone.dashboard/whitesource-collector).  
 
-For example, in the Windows command prompt, run the following command:
+	***Option 2 - Build locally:***
 
-```
-cd C:\Users\[username]\hygieia-whitesource-collector
-```
+	To configure your collector, git clone the [whitesource collector repo](https://github.com/Hygieia/hygieia-whitesource-collector).  Then, execute the following steps:
 
-*   **Step 2: Run Maven Build**
+	To package the whitesource collector source code into an executable JAR file, run the maven build from the `\hygieia-whitesource-collector` directory of your source code installation:
 
-Run the maven build to package the collector into an executable JAR file:
+	```bash
+	mvn install
+	```
 
-```bash
-mvn install
-```
+	The output file `[collector name].jar` is generated in the `hygieia-whitesource-collector\target` folder.
 
-The output file `[collector name].jar` is generated in the `hygieia-whitesource-collector\target` folder.
+	Once you have chosen an option in Step 1, please proceed: 
 
-*   **Step 3: Set Parameters in Application Properties File**
+*   **Step 2: Set Parameters in Application Properties File**
 
 Set the configurable parameters in the `application.properties` file to connect to the Dashboard MongoDB database instance, including properties required by the WhiteSource Collector.
 
-To configure parameters for the WhiteSource Collector, refer to the sample [application.properties](#sample-application-properties-file) file.
+To configure parameters for the WhiteSource Collector, refer to the sample [application.properties](#sample-application-properties) section.
 
 For information about sourcing the application properties file, refer to the [Spring Boot Documentation](http://docs.spring.io/spring-boot/docs/current-SNAPSHOT/reference/htmlsingle/#boot-features-external-config-application-property-files).
 
@@ -54,9 +59,9 @@ To deploy the `[collector name].jar` file, change directory to `hygieia-whitesou
 java -jar [collector name].jar --spring.config.name=whitesource --spring.config.location=[path to application.properties file]
 ```
 
-### Sample Application Properties File
+### Sample Application Properties
 
-The sample `application.properties` file lists parameters with sample values to configure the WhiteSource Collector. Set the parameters based on your environment setup.
+The sample `application.properties` lists parameters with sample values to configure the WhiteSource Collector. Set the parameters based on your environment setup.
 
 ```properties
 		# Database Name
@@ -116,4 +121,22 @@ The sample `application.properties` file lists parameters with sample values to 
 		whitesource.lowLicensePolicyTypes[0].policyName=
 		whitesource.lowLicensePolicyTypes[0].descriptions[0]=
     
-```		
+```
+
+## Run collector with Docker
+
+You can install Hygieia by using a docker image from docker hub. This section gives detailed instructions on how to download and run with Docker. 
+
+*	**Step 1: Download**
+
+	Navigate to the docker hub location of your collector [here](https://hub.docker.com/u/hygieiadoc) and download the latest image (most recent version is preferred).  Tags can also be used, if needed.
+
+*	**Step 2: Run with Docker**
+
+	```Docker run -e SKIP_PROPERTIES_BUILDER=true -v properties_location:/hygieia/config image_name```
+	
+	- <code>-e SKIP_PROPERTIES_BUILDER=true</code>  <br />
+	indicates whether you want to supply a properties file for the java application. If false/omitted, the script will build a properties file with default values
+	- <code>-v properties_location:/hygieia/config</code> <br />
+	if you want to use your own properties file that located outside of docker container, supply the path here. 
+		- Example: <code>-v /Home/User/Document/application.properties:/hygieia/config</code>
