@@ -20,7 +20,10 @@ import com.capitalone.dashboard.repository.LibraryPolicyResultsRepository;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -135,8 +138,8 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
                 return null;
             } else {
                 libraryPolicyResult.setCollectorItemId(whiteSourceComponent.getId());
-                libraryPolicyResult.setTimestamp(timestamp(projectVitals, Constants.LAST_UPDATED_DATE));
-                libraryPolicyResult.setEvaluationTimestamp(timestamp(projectVitals, Constants.LAST_UPDATED_DATE));
+                libraryPolicyResult.setTimestamp(convertTimestamp(timeUtils(dateTime(projectVitals, Constants.LAST_UPDATED_DATE))));
+                libraryPolicyResult.setEvaluationTimestamp(convertTimestamp(timeUtils(dateTime(projectVitals, Constants.LAST_UPDATED_DATE))));
                 libraryPolicyResult.setProjectName(getStringValue(projectVitals, Constants.NAME));
                 libraryPolicyResult.setProductName(getStringValue(projectVitals, Constants.PRODUCT_NAME));
                 JSONArray libraries = (JSONArray) Objects.requireNonNull(jsonObject).get(Constants.LIBRARIES);
@@ -243,7 +246,7 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
         if (!CollectionUtils.isEmpty(projectVitals)) {
             for (Object projectVital : projectVitals){
                 JSONObject projectVitalObject = (JSONObject) projectVital;
-                libraryPolicyResult.setEvaluationTimestamp(timestamp(projectVitalObject, Constants.LAST_UPDATED_DATE));
+                libraryPolicyResult.setEvaluationTimestamp(convertTimestamp(timeUtils(dateTime(projectVitalObject, Constants.LAST_UPDATED_DATE))));
                 Long projectId = getLongValue(projectVitalObject, Constants.ID);
                 libraryPolicyResult.setReportUrl(String.format(serverSettings.getDeeplink(),projectId));
             }
@@ -303,20 +306,21 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
         }
     }
 
-
-
-    private long convertTimestamp (String timestamp){
-
+    private long convertTimestamp(String timestamp) {
         long time = 0;
-
-        if(StringUtils.isNotEmpty(timestamp)){
-            time = DateTimeFormat.forPattern(YYYY_MM_DD_HH_MM_SS+" Z").parseMillis(timestamp);
-
+        if (StringUtils.isNotEmpty(timestamp)) {
+            time = DateTimeFormat.forPattern(YYYY_MM_DD_HH_MM_SS).parseMillis(timestamp);
         }
-
         return time;
     }
 
+    private String timeUtils(String sourceTime) {
+        DateTimeFormatter inputFormat = DateTimeFormat.forPattern(YYYY_MM_DD_HH_MM_SS+" Z");
+        DateTimeFormatter outputFormat = DateTimeFormat.forPattern(YYYY_MM_DD_HH_MM_SS);
+        DateTime sourceDateTime = inputFormat.parseDateTime(sourceTime);
+        DateTime destinationDateTime = sourceDateTime.toDateTime(DateTimeZone.forID(whiteSourceSettings.getZone()));
+        return destinationDateTime.toString(outputFormat);
+    }
 
     public String process(WhiteSourceRequest whiteSourceRequest) throws HygieiaException {
         JSONObject projectVital = (JSONObject) decodeJsonPayload(whiteSourceRequest.getProjectVitals());
@@ -326,7 +330,7 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
         String token =  (String) projectVital.get("token");
         String lastUpdatedDate = (String) projectVital.get("lastUpdatedDate");
         LibraryPolicyResult libraryPolicyResult = new LibraryPolicyResult();
-        long timestamp = convertTimestamp(lastUpdatedDate);
+        long timestamp = convertTimestamp(timeUtils(lastUpdatedDate));
         libraryPolicyResult.setEvaluationTimestamp(timestamp);
         CollectorItem collectorItem = collectorItemRepository.findByOrgNameAndProjectNameAndProjectToken(orgName, name, token);
         LOG.info("WhiteSourceRequest collecting  analysis for orgName= "+ orgName + " name : " + name + " token : " + token + " timestamp : "+ timestamp );
@@ -412,17 +416,13 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
     }
 
     private String getScore(JSONObject vuln) {
-        Double cvss3_score = toDouble(vuln, Constants.CVSS_3_SCORE);
         Double score = toDouble(vuln, Constants.SCORE1);
-        if (Objects.nonNull(cvss3_score)) return cvss3_score.toString();
         if (Objects.nonNull(score)) return score.toString();
         return Constants.ZERO;
     }
 
     private String getSecurityVulnSeverity(JSONObject vuln) {
-        String cvss3_severity = getStringValue(vuln, Constants.CVSS_3_SEVERITY);
         String severity = getStringValue(vuln, Constants.SEVERITY);
-        if (Objects.nonNull(cvss3_severity)) return cvss3_severity;
         if (Objects.nonNull(severity)) return severity;
         return Constants.NONE;
     }
@@ -528,6 +528,14 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
             }
         }
         return 0;
+    }
+
+    private String dateTime(JSONObject json, String key) {
+        Object obj = json.get(key);
+        if (obj != null) {
+           return obj.toString();
+        }
+        return null;
     }
 
     private String getTime(long timestamp){

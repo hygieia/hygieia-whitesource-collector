@@ -48,6 +48,8 @@ public class WhiteSourceSettings  {
     private List<LicensePolicyType> lowLicensePolicyTypes = new ArrayList<>();
     private String ignoredChangeClass;
     private List<WhiteSourceServerSettings> whiteSourceServerSettings = new ArrayList<>();
+    @Value("${whitesource.zone:America/New_York}")
+    private String zone;
 
     public long getHistoryTimestamp() {
         return historyTimestamp;
@@ -253,5 +255,13 @@ public class WhiteSourceSettings  {
 
     public void setWhiteSourceServerSettings(List<WhiteSourceServerSettings> whiteSourceServerSettings) {
         this.whiteSourceServerSettings = whiteSourceServerSettings;
+    }
+
+    public String getZone() {
+        return zone;
+    }
+
+    public void setZone(String zone) {
+        this.zone = zone;
     }
 }
