@@ -138,8 +138,8 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
                 return null;
             } else {
                 libraryPolicyResult.setCollectorItemId(whiteSourceComponent.getId());
-                libraryPolicyResult.setTimestamp(convertTimestamptoEST(timeUtils(dateTime(projectVitals, Constants.LAST_UPDATED_DATE))));
-                libraryPolicyResult.setEvaluationTimestamp(convertTimestamptoEST(timeUtils(dateTime(projectVitals, Constants.LAST_UPDATED_DATE))));
+                libraryPolicyResult.setTimestamp(convertTimestamp(timeUtils(dateTime(projectVitals, Constants.LAST_UPDATED_DATE))));
+                libraryPolicyResult.setEvaluationTimestamp(convertTimestamp(timeUtils(dateTime(projectVitals, Constants.LAST_UPDATED_DATE))));
                 libraryPolicyResult.setProjectName(getStringValue(projectVitals, Constants.NAME));
                 libraryPolicyResult.setProductName(getStringValue(projectVitals, Constants.PRODUCT_NAME));
                 JSONArray libraries = (JSONArray) Objects.requireNonNull(jsonObject).get(Constants.LIBRARIES);
@@ -246,7 +246,7 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
         if (!CollectionUtils.isEmpty(projectVitals)) {
             for (Object projectVital : projectVitals){
                 JSONObject projectVitalObject = (JSONObject) projectVital;
-                libraryPolicyResult.setEvaluationTimestamp(convertTimestamptoEST(timeUtils(dateTime(projectVitalObject, Constants.LAST_UPDATED_DATE))));
+                libraryPolicyResult.setEvaluationTimestamp(convertTimestamp(timeUtils(dateTime(projectVitalObject, Constants.LAST_UPDATED_DATE))));
                 Long projectId = getLongValue(projectVitalObject, Constants.ID);
                 libraryPolicyResult.setReportUrl(String.format(serverSettings.getDeeplink(),projectId));
             }
@@ -306,14 +306,13 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
         }
     }
 
-    private long convertTimestamptoEST (String timestamp){
+    private long convertTimestamp(String timestamp) {
         long time = 0;
-        if(StringUtils.isNotEmpty(timestamp)){
+        if (StringUtils.isNotEmpty(timestamp)) {
             time = DateTimeFormat.forPattern(YYYY_MM_DD_HH_MM_SS).parseMillis(timestamp);
         }
         return time;
     }
-
 
     private String timeUtils(String sourceTime) {
         DateTimeFormatter inputFormat = DateTimeFormat.forPattern(YYYY_MM_DD_HH_MM_SS+" Z");
@@ -331,7 +330,7 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
         String token =  (String) projectVital.get("token");
         String lastUpdatedDate = (String) projectVital.get("lastUpdatedDate");
         LibraryPolicyResult libraryPolicyResult = new LibraryPolicyResult();
-        long timestamp = convertTimestamptoEST(timeUtils(lastUpdatedDate));
+        long timestamp = convertTimestamp(timeUtils(lastUpdatedDate));
         libraryPolicyResult.setEvaluationTimestamp(timestamp);
         CollectorItem collectorItem = collectorItemRepository.findByOrgNameAndProjectNameAndProjectToken(orgName, name, token);
         LOG.info("WhiteSourceRequest collecting  analysis for orgName= "+ orgName + " name : " + name + " token : " + token + " timestamp : "+ timestamp );
