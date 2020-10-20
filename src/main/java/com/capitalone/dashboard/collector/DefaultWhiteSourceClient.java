@@ -341,7 +341,7 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
                 return "Record already exist in LibraryPolicy  " + lp.getId();
             }
         }else{
-            throw new HygieiaException("WhiteSource request is not a valid json",HygieiaException.BAD_DATA);
+            throw new HygieiaException("WhiteSource request : Invalid Whitesource project",HygieiaException.BAD_DATA);
         }
         transform(libraryPolicyResult, alerts);
         libraryPolicyResult.setTimestamp(System.currentTimeMillis());
