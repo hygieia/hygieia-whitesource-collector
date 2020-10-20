@@ -103,6 +103,7 @@ public class WhiteSourceCollectorTask extends CollectorTask<WhiteSourceCollector
         long start = System.currentTimeMillis();
         Count count = new Count();
         List<WhiteSourceComponent> existingComponents = whiteSourceComponentRepository.findByCollectorIdIn(Stream.of(collector.getId()).collect(Collectors.toList()));
+        Set<WhiteSourceComponent> existingComponentsSet = existingComponents.stream().collect(Collectors.toSet());
         collector.getWhiteSourceServers().forEach(instanceUrl -> {
             log(instanceUrl);
             whiteSourceSettings.getWhiteSourceServerSettings().forEach(whiteSourceServerSettings -> {
@@ -117,7 +118,7 @@ public class WhiteSourceCollectorTask extends CollectorTask<WhiteSourceCollector
                         projects.addAll(whiteSourceClient.getAllProjectsForProduct(instanceUrl, product, orgToken, orgName,whiteSourceServerSettings));
                     }
                     count.addFetched(projects.size());
-                    addNewApplications(projects, existingComponents, collector, count);
+                    addNewApplications(projects, existingComponentsSet, collector, count);
                     long historyTimestamp = getHistoryTimestamp(collector.getLastExecuted());
                     LOG.info("Look back time for processing changeRequestLog="+historyTimestamp+", collector lastExecutedTime="+collector.getLastExecuted());
                     // find change request log
@@ -272,7 +273,7 @@ public class WhiteSourceCollectorTask extends CollectorTask<WhiteSourceCollector
         return whiteSourceComponentRepository.findEnabledComponents(collector.getId());
     }
 
-    private void addNewApplications(List<WhiteSourceComponent> applications, List<WhiteSourceComponent> existingApplications, WhiteSourceCollector collector, Count count) {
+    private void addNewApplications(List<WhiteSourceComponent> applications, Set<WhiteSourceComponent> existingApplications, WhiteSourceCollector collector, Count count) {
         int newCount = 0;
         int updatedCount = 0;
         HashMap<WhiteSourceComponent,WhiteSourceComponent> existingMap = (HashMap<WhiteSourceComponent, WhiteSourceComponent>) existingApplications.stream().collect(Collectors.toMap(Function.identity(),Function.identity()));
