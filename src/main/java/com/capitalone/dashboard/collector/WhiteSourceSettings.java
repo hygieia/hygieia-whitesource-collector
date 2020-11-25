@@ -2,6 +2,8 @@ package com.capitalone.dashboard.collector;
 
 import com.capitalone.dashboard.model.LicensePolicyType;
 import com.capitalone.dashboard.model.WhiteSourceServerSettings;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
@@ -9,6 +11,7 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Bean to hold settings specific to the WhiteSource collector.
@@ -50,6 +53,14 @@ public class WhiteSourceSettings  {
     private List<WhiteSourceServerSettings> whiteSourceServerSettings = new ArrayList<>();
     @Value("${whitesource.zone:America/New_York}")
     private String zone;
+
+    private List<String> ignoreEndPoints = new ArrayList();
+    private List<String> ignoreApiUsers = new ArrayList();
+    private List<String> ignoreBodyEndPoints = new ArrayList();
+    @Value("${corsEnabled:false}")
+    private boolean corsEnabled;
+    private String corsWhitelist;
+
 
     public long getHistoryTimestamp() {
         return historyTimestamp;
@@ -264,4 +275,60 @@ public class WhiteSourceSettings  {
     public void setZone(String zone) {
         this.zone = zone;
     }
+
+    public List<String> getIgnoreEndPoints() {
+        return ignoreEndPoints;
+    }
+
+    public void setIgnoreEndPoints(List<String> ignoreEndPoints) {
+        this.ignoreEndPoints = ignoreEndPoints;
+    }
+
+    public List<String> getIgnoreApiUsers() {
+        return ignoreApiUsers;
+    }
+
+    public void setIgnoreApiUsers(List<String> ignoreApiUsers) {
+        this.ignoreApiUsers = ignoreApiUsers;
+    }
+
+    public List<String> getIgnoreBodyEndPoints() {
+        return ignoreBodyEndPoints;
+    }
+
+    public void setIgnoreBodyEndPoints(List<String> ignoreBodyEndPoints) {
+        this.ignoreBodyEndPoints = ignoreBodyEndPoints;
+    }
+
+    public boolean isCorsEnabled() {
+        return corsEnabled;
+    }
+
+    public void setCorsEnabled(boolean corsEnabled) {
+        this.corsEnabled = corsEnabled;
+    }
+
+    public String getCorsWhitelist() {
+        return corsWhitelist;
+    }
+
+    public void setCorsWhitelist(String corsWhitelist) {
+        this.corsWhitelist = corsWhitelist;
+    }
+
+    public boolean checkIgnoreEndPoint(String endPointURI) { return !getIgnoreEndPoints().isEmpty() && getIgnoreEndPoints().contains(endPointURI); }
+
+    public boolean checkIgnoreApiUser(String apiUser) {
+        if(CollectionUtils.isEmpty(this.ignoreApiUsers)) return false;
+        List<String> matchingElements  = ignoreApiUsers.parallelStream().filter (str -> StringUtils.equalsIgnoreCase(apiUser, str)).collect(Collectors.toList());
+        return CollectionUtils.isNotEmpty(matchingElements);
+    }
+
+
+    public boolean checkIgnoreBodyEndPoint(String endPointURI) {
+        if(CollectionUtils.isEmpty(this.ignoreBodyEndPoints)) return false;
+        List<String> matchingElements  = ignoreBodyEndPoints.parallelStream().filter (str -> StringUtils.equalsIgnoreCase(endPointURI, str)).collect(Collectors.toList());
+        return CollectionUtils.isNotEmpty(matchingElements);
+    }
+
 }

@@ -288,9 +288,10 @@ public class WhiteSourceCollectorTask extends CollectorTask<WhiteSourceCollector
                 whiteSourceComponentRepository.save(application);
                 newCount++;
             } else {
-                if (Objects.isNull(matched.getProductToken()) && Objects.isNull(matched.getProjectToken())) {
+                if (Objects.isNull(matched.getProjectName()) || Objects.isNull(matched.getProductName()) || Objects.isNull(matched.getProductToken())) {
                     matched.setProductToken(application.getProductToken());
-                    matched.setProjectToken(application.getProjectToken());
+                    matched.setProjectName(application.getProjectName());
+                    matched.setProductName(application.getProductName());
                     whiteSourceComponentRepository.save(matched);
                     updatedCount++;
                 }
