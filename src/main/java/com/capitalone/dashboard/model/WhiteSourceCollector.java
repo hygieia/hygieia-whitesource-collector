@@ -33,8 +33,7 @@ public class WhiteSourceCollector extends Collector {
         protoType.setAllFields(allOptions);
 
         Map<String, Object> uniqueOptions = new HashMap<>();
-        uniqueOptions.put(WhiteSourceComponent.PRODUCT_NAME, "");
-        uniqueOptions.put(WhiteSourceComponent.PROJECT_NAME, "");
+        uniqueOptions.put(WhiteSourceComponent.PROJECT_TOKEN, "");
         uniqueOptions.put(WhiteSourceComponent.ORG_NAME, "");
         protoType.setUniqueFields(uniqueOptions);
         return protoType;
