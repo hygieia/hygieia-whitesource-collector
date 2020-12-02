@@ -138,7 +138,7 @@ public class WhiteSourceCollectorTask extends CollectorTask<WhiteSourceCollector
         });
         long end = System.currentTimeMillis();
         long elapsedTime = (end-start) / 1000;
-        LOG.info(String.format("WhitesourceCollectorTask:collect stop, totalProcessSeconds=%d,  totalFetchedProjects=%d, totalNewProjects=%d, totalUpdatedProjects=%d, totalUpdatedInstanceData=%d ",
+        LOG.info(String.format("WhitesourceCollectorTask:collector stop, totalProcessSeconds=%d,  totalFetchedProjects=%d, totalNewProjects=%d, totalUpdatedProjects=%d, totalUpdatedInstanceData=%d ",
                 elapsedTime, count.getFetched(), count.getAdded(), count.getUpdated(), count.getInstanceCount()));
     }
 
