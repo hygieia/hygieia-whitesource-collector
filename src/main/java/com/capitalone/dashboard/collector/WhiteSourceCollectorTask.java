@@ -129,7 +129,7 @@ public class WhiteSourceCollectorTask extends CollectorTask<WhiteSourceCollector
                     libraryReferenceRepository.save(libraryLookUp.values());
                     logMessage="SUCCESS, orgName="+orgName+", fetched projects="+projects.size()+", New projects="+count.getAdded()+", updated-projects="+count.getUpdated()+", updated instance-data="+count.getInstanceCount();
                 }catch (HygieiaException he) {
-                    logMessage= "EXCEPTION, "+he.getClass().getCanonicalName();
+                    logMessage= "EXCEPTION occurred, "+he.getClass().getCanonicalName();
                     LOG.error("Unexpected error occurred while collecting data for url=" + instanceUrl, he);
                 } finally {
                     LOG.info(String.format("status=%s",logMessage));
@@ -138,7 +138,7 @@ public class WhiteSourceCollectorTask extends CollectorTask<WhiteSourceCollector
         });
         long end = System.currentTimeMillis();
         long elapsedTime = (end-start) / 1000;
-        LOG.info(String.format("WhitesourceCollectorTask:collect stop, totalProcessSeconds=%d,  totalFetchedProjects=%d, totalNewProjects=%d, totalUpdatedProjects=%d, totalUpdatedInstanceData=%d ",
+        LOG.info(String.format("WhitesourceCollectorTask:collector stop, totalProcessSeconds=%d,  totalFetchedProjects=%d, totalNewProjects=%d, totalUpdatedProjects=%d, totalUpdatedInstanceData=%d ",
                 elapsedTime, count.getFetched(), count.getAdded(), count.getUpdated(), count.getInstanceCount()));
     }
 
