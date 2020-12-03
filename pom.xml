@@ -9,7 +9,7 @@
   </description>
   <url>https://github.com/Hygieia/${repository.name}</url>
   <packaging>jar</packaging>
-  <version>1.0.17-SNAPSHOT</version>
+  <version>1.0.18-SNAPSHOT</version>
 
   <parent>
     <groupId>org.springframework.boot</groupId>
