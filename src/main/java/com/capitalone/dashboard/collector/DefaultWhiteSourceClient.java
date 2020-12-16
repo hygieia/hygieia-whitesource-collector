@@ -171,18 +171,15 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
 
     @Override
     public LibraryPolicyResult getProjectAlerts(String instanceUrl, WhiteSourceComponent whiteSourceComponent, WhiteSourceServerSettings serverSettings) {
-        String url = getApiBaseUrl(instanceUrl);
         LibraryPolicyResult libraryPolicyResult = new LibraryPolicyResult();
         try {
             JSONObject jsonObject = makeRestCall(getApiBaseUrl(instanceUrl), Constants.RequestType.getProjectAlerts, null, null, whiteSourceComponent.getProjectToken(),whiteSourceComponent.getOrgName(),null,serverSettings);
             JSONArray alerts = (JSONArray) Objects.requireNonNull(jsonObject).get(Constants.ALERTS);
-            if (CollectionUtils.isEmpty(alerts)) {
-                return null;
-            } else {
-                JSONObject projectVitalsObject = makeRestCall(getApiBaseUrl(instanceUrl), Constants.RequestType.getProjectVitals, null, null, whiteSourceComponent.getProjectToken(),whiteSourceComponent.getOrgName(),null,serverSettings);
-                getEvaluationTimeStamp(libraryPolicyResult, projectVitalsObject,serverSettings);
-                libraryPolicyResult.setCollectorItemId(whiteSourceComponent.getId());
-                libraryPolicyResult.setTimestamp(System.currentTimeMillis());
+            JSONObject projectVitalsObject = makeRestCall(getApiBaseUrl(instanceUrl), Constants.RequestType.getProjectVitals, null, null, whiteSourceComponent.getProjectToken(),whiteSourceComponent.getOrgName(),null,serverSettings);
+            getEvaluationTimeStamp(libraryPolicyResult, projectVitalsObject,serverSettings);
+            libraryPolicyResult.setCollectorItemId(whiteSourceComponent.getId());
+            libraryPolicyResult.setTimestamp(System.currentTimeMillis());
+            if(!CollectionUtils.isEmpty(alerts)){
                 transform(libraryPolicyResult, alerts);
             }
         } catch (Exception e) {
