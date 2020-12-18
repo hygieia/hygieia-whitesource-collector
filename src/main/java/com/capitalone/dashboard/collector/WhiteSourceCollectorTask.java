@@ -17,6 +17,7 @@ import com.capitalone.dashboard.repository.LibraryReferenceRepository;
 import com.capitalone.dashboard.repository.WhiteSourceCollectorRepository;
 import com.capitalone.dashboard.repository.WhiteSourceComponentRepository;
 import com.capitalone.dashboard.repository.WhiteSourceCustomComponentRepository;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bson.types.ObjectId;
@@ -113,6 +114,7 @@ public class WhiteSourceCollectorTask extends CollectorTask<WhiteSourceCollector
                     String orgToken = whiteSourceServerSettings.getOrgToken();
                     String orgName = whiteSourceClient.getOrgDetails(instanceUrl, whiteSourceServerSettings);
                     List<WhiteSourceProduct> products = whiteSourceClient.getProducts(instanceUrl, orgToken,orgName,whiteSourceServerSettings);
+                    LOG.info("Collecting projects for " + CollectionUtils.size(products) + " products.");
                     List<WhiteSourceComponent> projects = new ArrayList<>();
                     for (WhiteSourceProduct product : products) {
                         projects.addAll(whiteSourceClient.getAllProjectsForProduct(instanceUrl, product, orgToken, orgName,whiteSourceServerSettings));

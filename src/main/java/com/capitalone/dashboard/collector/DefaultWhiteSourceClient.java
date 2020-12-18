@@ -33,10 +33,10 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
@@ -86,6 +86,7 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
     public List<WhiteSourceProduct> getProducts(String instanceUrl, String orgToken,String orgName, WhiteSourceServerSettings serverSettings) throws HygieiaException {
         List<WhiteSourceProduct> whiteSourceProducts = new ArrayList<>();
         try {
+            final String searchCriteria = whiteSourceSettings.getSearchCriteria();
             JSONObject jsonObject = makeRestCall(getApiBaseUrl(instanceUrl), Constants.RequestType.getAllProducts, orgToken, null, null,orgName, null, serverSettings);
             if (Objects.isNull(jsonObject)) return new ArrayList<>();
             JSONArray jsonArray = (JSONArray) jsonObject.get(Constants.PRODUCTS);
@@ -93,6 +94,8 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
             for (Object product : jsonArray) {
                 JSONObject wsProduct = (JSONObject) product;
                 WhiteSourceProduct whiteSourceProduct = new WhiteSourceProduct();
+                String wsProductName = getStringValue(wsProduct, Constants.PRODUCT_NAME);
+                if(!processRecord(getGithubOrgname(wsProductName),searchCriteria)) continue;
                 whiteSourceProduct.setProductId(getLongValue(wsProduct, Constants.PRODUCT_ID));
                 whiteSourceProduct.setProductName(getStringValue(wsProduct, Constants.PRODUCT_NAME));
                 whiteSourceProduct.setProductToken(getStringValue(wsProduct, Constants.PRODUCT_TOKEN));
@@ -101,6 +104,7 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
         } catch (Exception e) {
             throw new HygieiaException("Exception occurred while retrieving getAllProducts for orgName="+orgName,e.getCause(),HygieiaException.BAD_DATA);
         }
+
         return whiteSourceProducts;
     }
 
@@ -534,6 +538,26 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
     private String getTime(long timestamp){
         DateFormat format = new SimpleDateFormat(YYYY_MM_DD_HH_MM_SS);
         return format.format(new Date(timestamp));
+    }
+
+    boolean processRecord(String value, String pattern) {
+        if(StringUtils.isEmpty(pattern)) return true;
+        String matchPattern = "^[" + pattern + "]+.*$";
+        return (value.matches(matchPattern));
+    }
+
+    String getGithubOrgname(String productName) {
+        String num ="^[\\$GH_]+[\\$0-9]+[\\$_]+.*$";
+        String no_num = "^[\\$GH]+[\\$_]+.*$";
+        if(productName.matches(num)) {
+            String[] split = productName.split("_",3);
+            if(split.length==3) {
+                return split[2];
+            }
+        } else if(productName.matches(no_num)) {
+            return StringUtils.substringAfter(productName,"GH_");
+        }
+        return "";
     }
 
 }
