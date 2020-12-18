@@ -95,7 +95,7 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
                 JSONObject wsProduct = (JSONObject) product;
                 WhiteSourceProduct whiteSourceProduct = new WhiteSourceProduct();
                 String wsProductName = getStringValue(wsProduct, Constants.PRODUCT_NAME);
-                if(!processRecord(getGithubOrgname(wsProductName),searchCriteria)) continue;
+                if(!processRecord(normalize(wsProductName),searchCriteria)) continue;
                 whiteSourceProduct.setProductId(getLongValue(wsProduct, Constants.PRODUCT_ID));
                 whiteSourceProduct.setProductName(getStringValue(wsProduct, Constants.PRODUCT_NAME));
                 whiteSourceProduct.setProductToken(getStringValue(wsProduct, Constants.PRODUCT_TOKEN));
@@ -546,7 +546,7 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
         return (value.matches(matchPattern));
     }
 
-    String getGithubOrgname(String productName) {
+    String normalize(String productName) {
         if(StringUtils.isEmpty(whiteSourceSettings.getProductNamePrefix())) return productName;
         String prefix = whiteSourceSettings.getProductNamePrefix();
         String number_pattern ="^[\\$" + prefix + "_]+[\\$0-9]+[\\$_]+.*$";
