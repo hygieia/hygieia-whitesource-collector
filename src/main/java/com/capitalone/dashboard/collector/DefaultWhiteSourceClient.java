@@ -33,10 +33,10 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
@@ -93,6 +93,8 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
             for (Object product : jsonArray) {
                 JSONObject wsProduct = (JSONObject) product;
                 WhiteSourceProduct whiteSourceProduct = new WhiteSourceProduct();
+                String wsProductName = getStringValue(wsProduct, Constants.PRODUCT_NAME);
+                if(!processRecord(wsProductName)) continue;
                 whiteSourceProduct.setProductId(getLongValue(wsProduct, Constants.PRODUCT_ID));
                 whiteSourceProduct.setProductName(getStringValue(wsProduct, Constants.PRODUCT_NAME));
                 whiteSourceProduct.setProductToken(getStringValue(wsProduct, Constants.PRODUCT_TOKEN));
@@ -101,6 +103,7 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
         } catch (Exception e) {
             throw new HygieiaException("Exception occurred while retrieving getAllProducts for orgName="+orgName,e.getCause(),HygieiaException.BAD_DATA);
         }
+
         return whiteSourceProducts;
     }
 
@@ -534,6 +537,15 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
     private String getTime(long timestamp){
         DateFormat format = new SimpleDateFormat(YYYY_MM_DD_HH_MM_SS);
         return format.format(new Date(timestamp));
+    }
+
+    boolean processRecord(String value) {
+
+        if(CollectionUtils.isEmpty(whiteSourceSettings.getSearchPatterns())) return true;
+        for(String pattern : whiteSourceSettings.getSearchPatterns()) {
+            if(value.matches(pattern)) return true;
+        }
+        return false;
     }
 
 }

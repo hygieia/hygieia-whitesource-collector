@@ -60,7 +60,7 @@ public class WhiteSourceSettings  {
     @Value("${corsEnabled:false}")
     private boolean corsEnabled;
     private String corsWhitelist;
-
+    private List<String> searchPatterns = new ArrayList();
 
     public long getHistoryTimestamp() {
         return historyTimestamp;
@@ -331,4 +331,11 @@ public class WhiteSourceSettings  {
         return CollectionUtils.isNotEmpty(matchingElements);
     }
 
+    public List<String> getSearchPatterns() {
+        return searchPatterns;
+    }
+
+    public void setSearchPatterns(List<String> searchPatterns) {
+        this.searchPatterns = searchPatterns;
+    }
 }
