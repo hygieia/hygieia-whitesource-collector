@@ -541,7 +541,7 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
 
     boolean processRecord(String value) {
 
-        if(org.apache.commons.collections4.CollectionUtils.isEmpty(whiteSourceSettings.getSearchPatterns())) return true;
+        if(CollectionUtils.isEmpty(whiteSourceSettings.getSearchPatterns())) return true;
         for(String pattern : whiteSourceSettings.getSearchPatterns()) {
             if(value.matches(pattern)) return true;
         }
