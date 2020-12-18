@@ -60,8 +60,7 @@ public class WhiteSourceSettings  {
     @Value("${corsEnabled:false}")
     private boolean corsEnabled;
     private String corsWhitelist;
-    private String searchCriteria;
-    private String productNamePrefix;
+    private List<String> searchPatterns = new ArrayList();
 
     public long getHistoryTimestamp() {
         return historyTimestamp;
@@ -332,11 +331,11 @@ public class WhiteSourceSettings  {
         return CollectionUtils.isNotEmpty(matchingElements);
     }
 
-    public String getSearchCriteria() { return searchCriteria; }
+    public List<String> getSearchPatterns() {
+        return searchPatterns;
+    }
 
-    public void setSearchCriteria(String searchCriteria) { this.searchCriteria = searchCriteria; }
-
-    public String getProductNamePrefix() { return productNamePrefix; }
-
-    public void setProductNamePrefix(String productNamePrefix) { this.productNamePrefix = productNamePrefix; }
+    public void setSearchPatterns(List<String> searchPatterns) {
+        this.searchPatterns = searchPatterns;
+    }
 }

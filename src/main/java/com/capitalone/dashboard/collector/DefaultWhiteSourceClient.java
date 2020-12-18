@@ -86,7 +86,6 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
     public List<WhiteSourceProduct> getProducts(String instanceUrl, String orgToken,String orgName, WhiteSourceServerSettings serverSettings) throws HygieiaException {
         List<WhiteSourceProduct> whiteSourceProducts = new ArrayList<>();
         try {
-            final String searchCriteria = whiteSourceSettings.getSearchCriteria();
             JSONObject jsonObject = makeRestCall(getApiBaseUrl(instanceUrl), Constants.RequestType.getAllProducts, orgToken, null, null,orgName, null, serverSettings);
             if (Objects.isNull(jsonObject)) return new ArrayList<>();
             JSONArray jsonArray = (JSONArray) jsonObject.get(Constants.PRODUCTS);
@@ -95,7 +94,7 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
                 JSONObject wsProduct = (JSONObject) product;
                 WhiteSourceProduct whiteSourceProduct = new WhiteSourceProduct();
                 String wsProductName = getStringValue(wsProduct, Constants.PRODUCT_NAME);
-                if(!processRecord(normalize(wsProductName),searchCriteria)) continue;
+                if(!processRecord(wsProductName)) continue;
                 whiteSourceProduct.setProductId(getLongValue(wsProduct, Constants.PRODUCT_ID));
                 whiteSourceProduct.setProductName(getStringValue(wsProduct, Constants.PRODUCT_NAME));
                 whiteSourceProduct.setProductToken(getStringValue(wsProduct, Constants.PRODUCT_TOKEN));
@@ -540,26 +539,13 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
         return format.format(new Date(timestamp));
     }
 
-    boolean processRecord(String value, String pattern) {
-        if(StringUtils.isEmpty(pattern)) return true;
-        String matchPattern = "^[" + pattern + "]+.*$";
-        return (value.matches(matchPattern));
-    }
+    boolean processRecord(String value) {
 
-    String normalize(String productName) {
-        if(StringUtils.isEmpty(whiteSourceSettings.getProductNamePrefix())) return productName;
-        String prefix = whiteSourceSettings.getProductNamePrefix();
-        String number_pattern ="^[\\$" + prefix + "_]+[\\$0-9]+[\\$_]+.*$";
-        String no_number_pattern = "^[\\$" + prefix + "]+[\\$_]+.*$";
-        if(productName.matches(number_pattern)) {
-            String[] split = productName.split("_",3);
-            if(split.length==3) {
-                return split[2];
-            }
-        } else if(productName.matches(no_number_pattern)) {
-            return StringUtils.substringAfter(productName,prefix+"_");
+        if(org.apache.commons.collections4.CollectionUtils.isEmpty(whiteSourceSettings.getSearchPatterns())) return true;
+        for(String pattern : whiteSourceSettings.getSearchPatterns()) {
+            if(value.matches(pattern)) return true;
         }
-        return "";
+        return false;
     }
 
 }
