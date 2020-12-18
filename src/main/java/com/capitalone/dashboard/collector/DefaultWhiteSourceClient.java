@@ -547,15 +547,17 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
     }
 
     String getGithubOrgname(String productName) {
-        String num ="^[\\$GH_]+[\\$0-9]+[\\$_]+.*$";
-        String no_num = "^[\\$GH]+[\\$_]+.*$";
-        if(productName.matches(num)) {
+        if(StringUtils.isEmpty(whiteSourceSettings.getProductNamePrefix())) return productName;
+        String prefix = whiteSourceSettings.getProductNamePrefix();
+        String number_pattern ="^[\\$" + prefix + "_]+[\\$0-9]+[\\$_]+.*$";
+        String no_number_pattern = "^[\\$" + prefix + "]+[\\$_]+.*$";
+        if(productName.matches(number_pattern)) {
             String[] split = productName.split("_",3);
             if(split.length==3) {
                 return split[2];
             }
-        } else if(productName.matches(no_num)) {
-            return StringUtils.substringAfter(productName,"GH_");
+        } else if(productName.matches(no_number_pattern)) {
+            return StringUtils.substringAfter(productName,prefix+"_");
         }
         return "";
     }

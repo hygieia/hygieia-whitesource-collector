@@ -61,7 +61,7 @@ public class WhiteSourceSettings  {
     private boolean corsEnabled;
     private String corsWhitelist;
     private String searchCriteria;
-
+    private String productNamePrefix;
 
     public long getHistoryTimestamp() {
         return historyTimestamp;
@@ -335,4 +335,8 @@ public class WhiteSourceSettings  {
     public String getSearchCriteria() { return searchCriteria; }
 
     public void setSearchCriteria(String searchCriteria) { this.searchCriteria = searchCriteria; }
+
+    public String getProductNamePrefix() { return productNamePrefix; }
+
+    public void setProductNamePrefix(String productNamePrefix) { this.productNamePrefix = productNamePrefix; }
 }
