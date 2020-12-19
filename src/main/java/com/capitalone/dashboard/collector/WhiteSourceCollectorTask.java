@@ -18,6 +18,7 @@ import com.capitalone.dashboard.repository.WhiteSourceCollectorRepository;
 import com.capitalone.dashboard.repository.WhiteSourceComponentRepository;
 import com.capitalone.dashboard.repository.WhiteSourceCustomComponentRepository;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bson.types.ObjectId;
@@ -153,7 +154,8 @@ public class WhiteSourceCollectorTask extends CollectorTask<WhiteSourceCollector
         int counter = 0;
         HashMap<WhiteSourceChangeRequest,WhiteSourceChangeRequest> changeRequestMap = (HashMap<WhiteSourceChangeRequest, WhiteSourceChangeRequest>) changeRequests.stream().collect(Collectors.toMap(Function.identity(),Function.identity()));
         for(WhiteSourceComponent component : enabledProjects) {
-                if (component.checkErrorOrReset(whiteSourceSettings.getErrorResetWindow(), whiteSourceSettings.getErrorThreshold())) {
+            if(StringUtils.isNotEmpty(component.getProductName()) && !processRecord(component.getProductName())) continue;
+            if (component.checkErrorOrReset(whiteSourceSettings.getErrorResetWindow(), whiteSourceSettings.getErrorThreshold())) {
                     try {
                         LibraryPolicyResult libraryPolicyResult = whiteSourceClient.getProjectAlerts(instanceUrl, component,serverSettings);
                         if (Objects.nonNull(libraryPolicyResult)) {
@@ -309,6 +311,15 @@ public class WhiteSourceCollectorTask extends CollectorTask<WhiteSourceCollector
         }else{
             return System.currentTimeMillis() - whiteSourceSettings.getHistoryTimestamp();
         }
+    }
+
+    boolean processRecord(String value) {
+
+        if(CollectionUtils.isEmpty(whiteSourceSettings.getSearchPatterns())) return true;
+        for(String pattern : whiteSourceSettings.getSearchPatterns()) {
+            if(value.matches(pattern)) return true;
+        }
+        return false;
     }
 
 }
