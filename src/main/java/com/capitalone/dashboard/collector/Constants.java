@@ -20,6 +20,7 @@ public final class Constants {
     public static final String LEVEL = "level";
     public static final String LIBRARY = "library";
     public static final String CREATION_DATE = "creation_date";
+    public static final String CREATIONDATE = "creationDate";
     public static final String DESCRIPTION = "description";
     public static final String FILENAME = "filename";
     public static final String TIME = "time";
@@ -53,6 +54,11 @@ public final class Constants {
     public static final String AFTER_CHANGE = "afterChange";
     public static final String LIBRARY_SCOPE = "LIBRARY";
     public static final String ID = "id";
+    public static final String TOKEN = "token";
+    public static final String FROM_DATE = "fromDate";
+    public static final String ALERT_TYPE = "alertType";
+    public static final String REJECTED_BY_POLICY = "REJECTED_BY_POLICY_RESOURCE";
+    public static final String SECURITY_VULNERABILITY = "SECURITY_VULNERABILITY";
 
 
     public enum RequestType {
@@ -60,9 +66,12 @@ public final class Constants {
         getAllProjects,
         getOrganizationDetails,
         getProjectAlerts,
+        getProductAlerts,
+        getOrganizationAlertsByType,
         getProjectInventory,
         getChangesReport,
-        getProjectVitals;
+        getProjectVitals,
+        getOrganizationProjectVitals;
 
         public static RequestType fromString(String value) {
             for (RequestType requestType : values()) {

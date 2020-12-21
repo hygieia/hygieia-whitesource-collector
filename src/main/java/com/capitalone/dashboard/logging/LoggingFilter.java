@@ -15,7 +15,6 @@ import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
-import org.tmatesoft.svn.core.internal.io.dav.http.HTTPStatus;
 
 import javax.activation.MimeType;
 import javax.activation.MimeTypeParseException;
