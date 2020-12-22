@@ -7,6 +7,7 @@ import com.capitalone.dashboard.model.WhiteSourceComponent;
 import com.capitalone.dashboard.model.WhiteSourceProduct;
 import com.capitalone.dashboard.model.WhiteSourceProjectVital;
 import com.capitalone.dashboard.model.WhiteSourceServerSettings;
+import com.capitalone.dashboard.model.WhitesourceOrg;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -15,15 +16,14 @@ import java.util.Map;
 import java.util.Set;
 
 public interface WhiteSourceClient {
-    List<WhiteSourceProduct> getProducts(String instanceUrl,String orgToken,String orgName,WhiteSourceServerSettings serverSettings) throws HygieiaException;
-    List<WhiteSourceComponent> getAllProjectsForProduct(String instanceUrl,WhiteSourceProduct product,String orgToken,String orgName,WhiteSourceServerSettings serverSettings);
-    LibraryPolicyResult getProjectInventory(String instanceUrl, WhiteSourceComponent whiteSourceComponent,WhiteSourceServerSettings serverSettings);
-    Map<String, LibraryPolicyResult> getProductAlerts(String instanceUrl, String orgName, String productToken, Map<String, WhiteSourceProjectVital> projectVitalMap, WhiteSourceServerSettings serverSettings);
-    LibraryPolicyResult getProjectAlerts(String instanceUrl, WhiteSourceComponent whiteSourceComponent, WhiteSourceProjectVital projectVital, WhiteSourceServerSettings serverSettings);
-    String getOrgDetails(String instanceUrl, WhiteSourceServerSettings serverSettings) throws HygieiaException;
-    List<WhiteSourceChangeRequest> getChangeRequestLog(String instanceUrl, String orgToken, String orgName,long collectorLastUpdatedTime,WhiteSourceServerSettings serverSettings);
-    void getEvaluationTimeStamp(LibraryPolicyResult libraryPolicyResult, JSONObject projectVitalsObject, WhiteSourceServerSettings serverSettings);
-    void transform(LibraryPolicyResult libraryPolicyResult, JSONArray alerts);
-    Map<String, WhiteSourceProjectVital> getOrgProjectVitals(String instanceUrl, String orgToken, String orgName, WhiteSourceServerSettings whiteSourceServerSettings);
-    Set<String> getAffectedProjectsForOrganization(String instanceUrl, String orgName, String orgToken, long historyTimestamp, WhiteSourceServerSettings serverSettings);
+    List<WhiteSourceProduct> getProducts(WhitesourceOrg whitesourceOrg,WhiteSourceServerSettings serverSettings) throws HygieiaException;
+    Map<String, LibraryPolicyResult> getProductAlerts(WhitesourceOrg whitesourceOrg, String productToken, Map<String, WhiteSourceProjectVital> projectVitalMap, WhiteSourceServerSettings serverSettings);
+    LibraryPolicyResult getProjectAlerts(WhiteSourceComponent whiteSourceComponent, WhiteSourceProjectVital projectVital, WhiteSourceServerSettings serverSettings);
+    WhitesourceOrg getOrgDetails(WhiteSourceServerSettings serverSettings) throws HygieiaException;
+    List<WhiteSourceChangeRequest> getChangeRequestLog(WhitesourceOrg whitesourceOrg, long collectorLastUpdatedTime, WhiteSourceServerSettings serverSettings);
+//    void getEvaluationTimeStamp(LibraryPolicyResult libraryPolicyResult, JSONObject projectVitalsObject, WhiteSourceServerSettings serverSettings);
+//    void transform(LibraryPolicyResult libraryPolicyResult, JSONArray alerts);
+    Map<String, WhiteSourceProjectVital> getOrgProjectVitals(WhitesourceOrg whitesourceOrg, WhiteSourceServerSettings whiteSourceServerSettings);
+    Set<String> getAffectedProjectsForOrganization(WhitesourceOrg whitesourceOrg, long historyTimestamp, WhiteSourceServerSettings serverSettings);
+    List<WhiteSourceComponent> getAllProjectsForProduct(WhitesourceOrg whitesourceOrg, WhiteSourceProduct product, WhiteSourceServerSettings serverSettings);
 }

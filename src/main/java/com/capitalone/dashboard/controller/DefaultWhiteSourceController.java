@@ -66,17 +66,17 @@ public class DefaultWhiteSourceController {
                     .body("Required fields are null");
         }
         List<WhiteSourceComponent> components = defaultWhiteSourceClient.getWhiteSourceComponents(request.getOrgName(),request.getProductName(),request.getProjectName());
-        for (WhiteSourceComponent component : components) {
-           LibraryPolicyResult libraryPolicyResult = defaultWhiteSourceClient.getProjectAlerts(whiteSourceSettings.getServers().get(0),component,null, whiteSourceSettings.getWhiteSourceServerSettings().get(0));
-           if (Objects.nonNull(libraryPolicyResult)){
-               libraryPolicyResult.setCollectorItemId(component.getId());
-               LibraryPolicyResult libraryPolicyResultExisting = defaultWhiteSourceClient.getQualityData(component,libraryPolicyResult);
-               if (Objects.nonNull(libraryPolicyResultExisting)){
-                   libraryPolicyResult.setId(libraryPolicyResultExisting.getId());
-               }
+        components.forEach(component -> {
+            LibraryPolicyResult libraryPolicyResult = defaultWhiteSourceClient.getProjectAlerts(component, null, whiteSourceSettings.getWhiteSourceServerSettings().get(0));
+            if (Objects.nonNull(libraryPolicyResult)) {
+                libraryPolicyResult.setCollectorItemId(component.getId());
+                LibraryPolicyResult libraryPolicyResultExisting = defaultWhiteSourceClient.getLibraryPolicyData(component, libraryPolicyResult);
+                if (Objects.nonNull(libraryPolicyResultExisting)) {
+                    libraryPolicyResult.setId(libraryPolicyResultExisting.getId());
+                }
                 libraryPolicyResultsRepository.save(libraryPolicyResult);
-           }
-        }
+            }
+        });
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body("Updated Whitesource component:: OrgName="+request.getOrgName()+", productName="+request.getProductName()+", projectName="+request.getProjectName());

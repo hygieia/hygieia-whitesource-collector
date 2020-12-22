@@ -2,7 +2,6 @@ package com.capitalone.dashboard.collector;
 
 
 import com.capitalone.dashboard.misc.HygieiaException;
-import com.capitalone.dashboard.model.CollectionError;
 import com.capitalone.dashboard.model.Count;
 import com.capitalone.dashboard.model.LibraryPolicyReference;
 import com.capitalone.dashboard.model.LibraryPolicyResult;
@@ -12,6 +11,7 @@ import com.capitalone.dashboard.model.WhiteSourceComponent;
 import com.capitalone.dashboard.model.WhiteSourceProduct;
 import com.capitalone.dashboard.model.WhiteSourceProjectVital;
 import com.capitalone.dashboard.model.WhiteSourceServerSettings;
+import com.capitalone.dashboard.model.WhitesourceOrg;
 import com.capitalone.dashboard.repository.BaseCollectorRepository;
 import com.capitalone.dashboard.repository.LibraryPolicyResultsRepository;
 import com.capitalone.dashboard.repository.LibraryReferenceRepository;
@@ -26,8 +26,6 @@ import org.springframework.scheduling.TaskScheduler;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
-import org.springframework.web.client.HttpStatusCodeException;
-import org.springframework.web.client.RestClientException;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -37,7 +35,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -53,7 +50,6 @@ public class WhiteSourceCollectorTask extends CollectorTask<WhiteSourceCollector
     private final WhiteSourceSettings whiteSourceSettings;
     private final WhiteSourceCustomComponentRepository whiteSourceCustomComponentRepository;
     private final LibraryReferenceRepository libraryReferenceRepository;
-
 
 
     @Autowired
@@ -106,13 +102,12 @@ public class WhiteSourceCollectorTask extends CollectorTask<WhiteSourceCollector
     @Override
     public void collect(WhiteSourceCollector collector) {
         long start = System.currentTimeMillis();
-        AtomicLong timeGetProducts = new AtomicLong(System.currentTimeMillis());
-        AtomicLong timeGetProjects = new AtomicLong(System.currentTimeMillis());
-        AtomicLong timeGetChangeRequestLog = new AtomicLong(System.currentTimeMillis());
-        AtomicLong timeGetProjectVitals = new AtomicLong(System.currentTimeMillis());
         Count count = new Count();
-        List<WhiteSourceComponent> existingComponents = whiteSourceComponentRepository.findByCollectorIdIn(Stream.of(collector.getId()).collect(Collectors.toList()));
-        Set<WhiteSourceComponent> existingComponentsSet = new HashSet<>(existingComponents);
+
+        // Get existing projects from collector item repository
+        List<WhiteSourceComponent> existingProjects = whiteSourceComponentRepository.findByCollectorIdIn(Stream.of(collector.getId()).collect(Collectors.toList()));
+        Set<WhiteSourceComponent> existingProjectsSet = new HashSet<>(existingProjects);
+
         collector.getWhiteSourceServers().forEach(instanceUrl -> {
             log(instanceUrl);
             whiteSourceSettings.getWhiteSourceServerSettings().forEach(whiteSourceServerSettings -> {
@@ -120,149 +115,249 @@ public class WhiteSourceCollectorTask extends CollectorTask<WhiteSourceCollector
                 Map<String, LibraryPolicyReference> libraryLookUp = new HashMap<>();
                 try {
                     // Get org details
-                    String orgToken = whiteSourceServerSettings.getOrgToken();
-                    String orgName = whiteSourceClient.getOrgDetails(instanceUrl, whiteSourceServerSettings);
+                    WhitesourceOrg whitesourceOrg = whiteSourceClient.getOrgDetails(whiteSourceServerSettings);
 
                     // Get the change request log
-                    long historyTimestamp = getHistoryTimestamp(collector.getLastExecuted());
-                    LOG.info("Look back time for processing changeRequestLog="+historyTimestamp+", collector lastExecutedTime="+collector.getLastExecuted());
-                    timeGetChangeRequestLog.set(System.currentTimeMillis());
-                    List<WhiteSourceChangeRequest> changeRequests = whiteSourceClient.getChangeRequestLog(instanceUrl,orgToken,orgName,historyTimestamp,whiteSourceServerSettings);
-                    timeGetChangeRequestLog.set(System.currentTimeMillis() - timeGetChangeRequestLog.get());
-                    LOG.info("WhitesourceCollectorTask: Time to get all change request logs: " + timeGetChangeRequestLog.get());
-                    Set<WhiteSourceChangeRequest> changeSet = new HashSet<>(changeRequests);
+                    Set<WhiteSourceChangeRequest> changeSet = getChangeRequests(collector, whitesourceOrg, whiteSourceServerSettings);
 
+                    // Add new projects
+                    List<WhiteSourceComponent> projects = addProjects(collector, whitesourceOrg, changeSet, existingProjectsSet, count, whiteSourceServerSettings);
 
-                    //For the first run OR anytime after that if there is a change in a project, fetch all projects
-                    List<WhiteSourceComponent> projects = new ArrayList<>();
-                    if (collector.getLastExecuted() == 0 || checkForProjectChange(changeSet)) {
-                        timeGetProducts.set(System.currentTimeMillis());
-                        List<WhiteSourceProduct> products = whiteSourceClient.getProducts(instanceUrl, orgToken, orgName, whiteSourceServerSettings);
-                        timeGetProducts.set(System.currentTimeMillis() - timeGetProducts.get());
-                        LOG.info("WhitesourceCollectorTask: Time to get all products: " + timeGetProducts.get());
-
-                        timeGetProjects.set(System.currentTimeMillis());
-                        products.stream().map(product -> whiteSourceClient.getAllProjectsForProduct(instanceUrl, product, orgToken, orgName, whiteSourceServerSettings)).forEach(projects::addAll);
-                        timeGetProjects.set(System.currentTimeMillis() - timeGetProjects.get());
-                        LOG.info("WhitesourceCollectorTask: Time to get all projects: " + timeGetProjects.get());
-
-                        count.addFetched(projects.size());
-                        addNewApplications(projects, existingComponentsSet, collector, count);
-                    } else {
-                        LOG.info("WhitesourceCollectorTask: No need to fetch all projects: ");
-                    }
-
-                    // Get project vitals in one shot
-                    timeGetProjectVitals.set(System.currentTimeMillis());
-                    Map<String, WhiteSourceProjectVital> projectVitalMap = whiteSourceClient.getOrgProjectVitals(instanceUrl,orgToken,orgName,whiteSourceServerSettings);
-                    timeGetProjectVitals.set(System.currentTimeMillis() - timeGetProjectVitals.get());
-                    LOG.info("WhitesourceCollectorTask: Time to get all project vitals: " + timeGetProjectVitals.get());
+                    // Get project vitals in a map
+                    Map<String, WhiteSourceProjectVital> projectVitalMap = whiteSourceClient.getOrgProjectVitals(whitesourceOrg, whiteSourceServerSettings);
 
                     //Refresh scan data
-                    refreshData(collector, enabledApplications(collector), instanceUrl,count,libraryLookUp,orgName, orgToken, changeSet,projectVitalMap, whiteSourceServerSettings);
+                    int refreshCount = refreshData(collector, libraryLookUp, whitesourceOrg, changeSet, projectVitalMap, whiteSourceServerSettings);
+                    count.addInstanceCount(refreshCount);
 
                     //Save Library Reference Data
                     libraryReferenceRepository.save(libraryLookUp.values());
 
-                    logMessage="SUCCESS, orgName="+orgName+", fetched projects="+projects.size()+", New projects="+count.getAdded()+", updated-projects="+count.getUpdated()+", updated instance-data="+count.getInstanceCount();
-                }catch (HygieiaException he) {
-                    logMessage= "EXCEPTION occurred, "+he.getClass().getCanonicalName();
+                    logMessage = "SUCCESS, orgName=" + whitesourceOrg.getName() + ", fetched projects=" + projects.size() + ", New projects=" + count.getAdded() + ", updated-projects=" + count.getUpdated() + ", updated instance-data=" + count.getInstanceCount();
+                } catch (HygieiaException he) {
+                    logMessage = "EXCEPTION occurred, " + he.getClass().getCanonicalName();
                     LOG.error("Unexpected error occurred while collecting data for url=" + instanceUrl, he);
                 } finally {
-                    LOG.info(String.format("status=%s",logMessage));
+                    LOG.info(String.format("status=%s", logMessage));
                 }
             });
         });
         long end = System.currentTimeMillis();
-        long elapsedTime = (end-start) / 1000;
+        long elapsedTime = (end - start) / 1000;
 
         LOG.info(String.format("WhitesourceCollectorTask:collector stop, totalProcessSeconds=%d,  totalFetchedProjects=%d, totalNewProjects=%d, totalUpdatedProjects=%d, totalUpdatedInstanceData=%d ",
                 elapsedTime, count.getFetched(), count.getAdded(), count.getUpdated(), count.getInstanceCount()));
     }
 
 
-    private void refreshData(WhiteSourceCollector collector, List<WhiteSourceComponent> enabledProjects, String instanceUrl, Count count, Map<String, LibraryPolicyReference> libraryLookUp,
-                             String orgName, String orgToken, Set<WhiteSourceChangeRequest> changeRequests, Map<String, WhiteSourceProjectVital> projectVitalMap, WhiteSourceServerSettings serverSettings) {
-        int rateCount = 0;
+    /**
+     * Gets the org level change requests log
+     *
+     * @param collector                 Whitesource collector
+     * @param whitesourceOrg            Whitesource Org
+     * @param whiteSourceServerSettings Whitesource Server Setting
+     * @return Set of Change Requests
+     */
+    private Set<WhiteSourceChangeRequest> getChangeRequests(WhiteSourceCollector collector, WhitesourceOrg whitesourceOrg, WhiteSourceServerSettings whiteSourceServerSettings) {
+        // Get the change request log
+        long historyTimestamp = getHistoryTimestamp(collector);
+        LOG.info("Look back time for processing changeRequestLog=" + historyTimestamp + ", collector lastExecutedTime=" + collector.getLastExecuted());
+        List<WhiteSourceChangeRequest> changeRequests = whiteSourceClient.getChangeRequestLog(whitesourceOrg, historyTimestamp, whiteSourceServerSettings);
+        return new HashSet<>(changeRequests);
+    }
+
+    /**
+     * Fetches all projects for an org and adds new collector items
+     *
+     * @param collector                 collector
+     * @param whitesourceOrg            white source org
+     * @param changeSet                 organization change set
+     * @param existingProjectsSet       existing projects
+     * @param count                     count
+     * @param whiteSourceServerSettings whitesource server settings
+     * @return List of Whitesource Projects
+     */
+    private List<WhiteSourceComponent> addProjects(WhiteSourceCollector collector, WhitesourceOrg whitesourceOrg,
+                                                   Set<WhiteSourceChangeRequest> changeSet,
+                                                   Set<WhiteSourceComponent> existingProjectsSet, Count count,
+                                                   WhiteSourceServerSettings whiteSourceServerSettings) {
+
+        long timeGetProjects = System.currentTimeMillis();
+        List<WhiteSourceComponent> projects = new ArrayList<>();
+        try {
+            if (collector.getLastExecuted() == 0 || checkForProjectChange(changeSet)) {
+                List<WhiteSourceProduct> products = whiteSourceClient.getProducts(whitesourceOrg,
+                        whiteSourceServerSettings);
+                products.stream().map(product -> whiteSourceClient.getAllProjectsForProduct(whitesourceOrg, product,
+                        whiteSourceServerSettings)).forEach(projects::addAll);
+                timeGetProjects = System.currentTimeMillis() - timeGetProjects;
+                LOG.info("WhitesourceCollectorTask: Time to get all projects: " + timeGetProjects);
+                count.addFetched(projects.size());
+                upsertProjects(projects, existingProjectsSet, collector, count);
+            } else {
+                LOG.info("WhitesourceCollectorTask: No need to fetch all projects: ");
+            }
+        } catch (HygieiaException he) {
+            LOG.error("Unexpected error occurred while collecting data for url=" + whiteSourceServerSettings.getInstanceUrl(), he);
+        }
+        return projects;
+    }
+
+
+    /**
+     * Adds or updates new whitesource projects to collector items
+     * @param projects all whitesource projects
+     * @param existingProjects existing whitesource projects
+     * @param collector whitesource collector
+     * @param count Count
+     */
+    private void upsertProjects(List<WhiteSourceComponent> projects, Set<WhiteSourceComponent> existingProjects, WhiteSourceCollector collector, Count count) {
+        int newCount = 0;
+        int updatedCount = 0;
+        HashMap<WhiteSourceComponent, WhiteSourceComponent> existingMap = (HashMap<WhiteSourceComponent, WhiteSourceComponent>) existingProjects.stream().collect(Collectors.toMap(Function.identity(), Function.identity()));
+        for (WhiteSourceComponent project : projects) {
+            WhiteSourceComponent matched = existingMap.get(project);
+            if (matched == null) {
+                project.setCollectorId(collector.getId());
+                project.setCollector(collector);
+                project.setEnabled(false);
+                project.setDescription(project.getProjectName());
+                project.setPushed(false);
+                whiteSourceComponentRepository.save(project);
+                newCount++;
+            } else {
+                if (Objects.isNull(matched.getProjectName()) || Objects.isNull(matched.getProductName()) || Objects.isNull(matched.getProductToken())) {
+                    matched.setProductToken(project.getProductToken());
+                    matched.setProjectName(project.getProjectName());
+                    matched.setProductName(project.getProductName());
+                    whiteSourceComponentRepository.save(matched);
+                    updatedCount++;
+                }
+            }
+        }
+        count.addNewCount(newCount);
+        count.addUpdatedCount(updatedCount);
+    }
+
+
+    /**
+     * Refresh Scan data
+     * Refresh logic -
+     * (1) First collect the project alerts for projects that have recent scans - find those from project vitals with
+     * last updated time greater than history time
+     * (2) Next collect the project alerts for projects that are impacted by change requests - such as license change.
+     * Identify the libraries from change requests with "scope" = "LIBRARY". Name of library  = "scopeName".
+     * For these libraries, look up Library Reference collection and identify the projects impacted and collect
+     * (3) Next collect the project alters for projects that are in org level alerts list for policy violations
+     * (4) Last collect rest of the projects in the enabled project list. Do not double collect the above
+     * <p>
+     * - For the first collector run, collect all project alerts (step 4)
+     * - For all project alert collection, collect alerts at the product level to reduce number of http calls
+     *
+     * @param collector       Whitesource collector
+     * @param libraryLookUp   Library Lookup Map
+     * @param whitesourceOrg  Whitesource Org
+     * @param changeRequests  Change Requests for the org
+     * @param projectVitalMap Project Vital Map
+     * @param serverSettings  Whitesource Server Setting
+     */
+    private int refreshData(WhiteSourceCollector collector, Map<String, LibraryPolicyReference> libraryLookUp,
+                            WhitesourceOrg whitesourceOrg, Set<WhiteSourceChangeRequest> changeRequests,
+                            Map<String, WhiteSourceProjectVital> projectVitalMap, WhiteSourceServerSettings serverSettings) {
+
+
         long startTime = System.currentTimeMillis();
-        long timeGetAlerts = System.currentTimeMillis();
+        long timeGetAlerts;
 
-        int requestRateLimit  = getRequestRateLimit();
-        long requestRateLimitTimeWindow = getRequestRateLimitTimeWindow();
-        long waitTime = getWaitTime();
 
-        List<WhiteSourceComponent> exception429TooManyRequestsComponentsList = new ArrayList<>();
         int counter = 0;
-        Map<WhiteSourceChangeRequest,WhiteSourceChangeRequest> changeRequestMap = changeRequests.stream().collect(Collectors.toMap(Function.identity(),Function.identity()));
-        Map<String,LibraryPolicyResult> libraryPolicyResultMap = new HashMap<>();
+        Map<WhiteSourceChangeRequest, WhiteSourceChangeRequest> changeRequestMap = changeRequests.stream().collect(Collectors.toMap(Function.identity(), Function.identity()));
+        Map<String, LibraryPolicyResult> libraryPolicyResultMap = new HashMap<>();
 
+        Set<WhiteSourceComponent> enabledProjects = getEnabledProjects(collector);
         Set<String> enabledProductTokens = enabledProjects.stream().map(WhiteSourceComponent::getProductToken).collect(Collectors.toSet());
+
         LOG.info("WhitesourceCollectorTask: Refresh Data - Total enabled products : " + (CollectionUtils.isEmpty(enabledProductTokens) ? 0 : enabledProductTokens.size()));
         LOG.info("WhitesourceCollectorTask: Refresh Data - Total enabled projects : " + (CollectionUtils.isEmpty(enabledProjects) ? 0 : enabledProjects.size()));
+
 
         // First will get project tokens that have at least 1 alert - get that from the org level alert
         Set<String> affectedProjectTokens = new HashSet<>();
         Set<String> affectedProductTokens = new HashSet<>();
         if (collector.getLastExecuted() > 0) {
-            affectedProjectTokens = whiteSourceClient.getAffectedProjectsForOrganization(instanceUrl, orgName, orgToken, getHistoryTimestamp(collector.getLastExecuted()), serverSettings);
-            affectedProjectTokens.addAll(getAffectedProjectsFromChanges(changeRequests,orgName));
+            affectedProjectTokens = whiteSourceClient.getAffectedProjectsForOrganization(whitesourceOrg, getHistoryTimestamp(collector), serverSettings);
+            affectedProjectTokens.addAll(getAffectedProjectsFromChanges(changeRequests, whitesourceOrg.getName()));
             for (WhiteSourceComponent whiteSourceComponent : enabledProjects) {
                 if (affectedProjectTokens.contains(whiteSourceComponent.getProjectToken())) {
                     affectedProductTokens.add(whiteSourceComponent.getProductToken());
                 }
             }
             timeGetAlerts = System.currentTimeMillis();
-            affectedProductTokens.stream().map(ept -> whiteSourceClient.getProductAlerts(instanceUrl, orgName, ept, projectVitalMap, serverSettings)).forEach(libraryPolicyResultMap::putAll);
+            affectedProductTokens.stream().map(ept -> whiteSourceClient.getProductAlerts(whitesourceOrg, ept, projectVitalMap, serverSettings)).forEach(libraryPolicyResultMap::putAll);
             timeGetAlerts = System.currentTimeMillis() - timeGetAlerts;
             LOG.info("WhitesourceCollectorTask: Refresh Data - time to get only affected project alerts: " + timeGetAlerts);
         } else {
             timeGetAlerts = System.currentTimeMillis();
-            enabledProductTokens.stream().map(ept -> whiteSourceClient.getProductAlerts(instanceUrl, orgName, ept, projectVitalMap, serverSettings)).forEach(libraryPolicyResultMap::putAll);
+            enabledProductTokens.stream().map(ept -> whiteSourceClient.getProductAlerts(whitesourceOrg, ept, projectVitalMap, serverSettings)).forEach(libraryPolicyResultMap::putAll);
             timeGetAlerts = System.currentTimeMillis() - timeGetAlerts;
             LOG.info("WhitesourceCollectorTask: Refresh Data - time to get all product alerts: " + timeGetAlerts);
         }
 
-        for(WhiteSourceComponent component : enabledProjects) {
-                if (component.checkErrorOrReset(whiteSourceSettings.getErrorResetWindow(), whiteSourceSettings.getErrorThreshold())) {
-                    try {
-                        LibraryPolicyResult libraryPolicyResult = libraryPolicyResultMap.get(component.getProjectToken());
-                        if (Objects.nonNull(libraryPolicyResult)) {
-                            LibraryPolicyResult libraryPolicyResultExisting = getLibraryPolicyResultExisting(component.getId(),libraryPolicyResult.getEvaluationTimestamp());
-                            // add to lookup
-                             processLibraryLookUp(libraryPolicyResult,libraryLookUp,orgName,component,changeRequestMap);
-                            libraryPolicyResult.setCollectorItemId(component.getId());
-                            counter++;
-                            if (Objects.nonNull(libraryPolicyResultExisting)) {
-                                libraryPolicyResult.setId(libraryPolicyResultExisting.getId());
-                            }
-                            libraryPolicyResultsRepository.save(libraryPolicyResult);
-                            component.setLastUpdated(System.currentTimeMillis());
-                            whiteSourceComponentRepository.save(component);
-                        }
-                    } catch (HttpStatusCodeException hc) {
-                        exception429TooManyRequestsComponentsList.add(component);
-                        LOG.error("Error fetching details for:" + component.getDescription(), hc);
-                        CollectionError error = new CollectionError(hc.getStatusCode().toString(), hc.getMessage());
-                        component.getErrors().add(error);
-                    } catch (RestClientException re) {
-                        LOG.error("Error fetching details for:" + component.getDescription(), re);
-                        CollectionError error = new CollectionError(CollectionError.UNKNOWN_HOST, instanceUrl);
-                        component.getErrors().add(error);
-                    }
-
-
-                    if (requestRateLimit > 0 && throttleRequests(startTime, rateCount, waitTime, requestRateLimit, requestRateLimitTimeWindow)) {
-                        startTime = System.currentTimeMillis();
-                        rateCount = 0;
-                    }
-                } else {
-                    LOG.info(component.getProjectName() + ":: errorThreshold exceeded");
-                }
+        for (WhiteSourceComponent project : enabledProjects) {
+            saveScanData(whitesourceOrg, project, libraryPolicyResultMap, libraryLookUp, changeRequestMap);
+            counter++;
         }
-        count.addInstanceCount(counter);
+        return counter;
     }
 
-    private Set<String> getAffectedProjectsFromChanges (Set<WhiteSourceChangeRequest> changes, String orgName) {
+
+    /**
+     * Saves scan data to library policy collection. If existing, it overwrites. If new, it inserts. Also updates
+     * lookup reference collection
+     * @param whitesourceOrg whitesource org
+     * @param project whitesource project
+     * @param libraryPolicyResultMap library policy results map
+     * @param libraryLookUp reference lookup map
+     * @param changeRequestMap change request map
+     */
+    private void saveScanData(WhitesourceOrg whitesourceOrg, WhiteSourceComponent project, Map<String,
+            LibraryPolicyResult> libraryPolicyResultMap, Map<String, LibraryPolicyReference> libraryLookUp,
+                              Map<WhiteSourceChangeRequest, WhiteSourceChangeRequest> changeRequestMap) {
+        LibraryPolicyResult libraryPolicyResult = libraryPolicyResultMap.get(project.getProjectToken());
+
+        if (Objects.isNull(libraryPolicyResult)) return;
+        LibraryPolicyResult libraryPolicyResultExisting = getLibraryPolicyResultExisting(project.getId(), libraryPolicyResult.getEvaluationTimestamp());
+        // add to lookup
+        processLibraryLookUp(libraryPolicyResult, libraryLookUp, whitesourceOrg, project, changeRequestMap);
+        libraryPolicyResult.setCollectorItemId(project.getId());
+        if (Objects.nonNull(libraryPolicyResultExisting)) {
+            libraryPolicyResult.setId(libraryPolicyResultExisting.getId());
+        }
+        libraryPolicyResultsRepository.save(libraryPolicyResult);
+        project.setLastUpdated(System.currentTimeMillis());
+        whiteSourceComponentRepository.save(project);
+
+    }
+
+    /**
+     * Get all enabled project for a collector
+     *
+     * @param collector Whitesource collector
+     * @return List of enabled whitesource project
+     */
+    private Set<WhiteSourceComponent> getEnabledProjects(WhiteSourceCollector collector) {
+        return new HashSet<>(whiteSourceComponentRepository.findEnabledComponents(collector.getId()));
+    }
+
+
+    /**
+     * Get affected Projects from the org change requests
+     *
+     * @param changes org level chance requests
+     * @param orgName Org name
+     * @return
+     */
+    private Set<String> getAffectedProjectsFromChanges(Set<WhiteSourceChangeRequest> changes, String orgName) {
         return changes.stream()
                 .filter(changeRequest -> Constants.LIBRARY_SCOPE.equalsIgnoreCase(changeRequest.getScope()))
                 .map(WhiteSourceChangeRequest::getScopeName)
@@ -275,34 +370,46 @@ public class WhiteSourceCollectorTask extends CollectorTask<WhiteSourceCollector
                 .collect(Collectors.toSet());
     }
 
-    private void processLibraryLookUp(LibraryPolicyResult libraryPolicyResult, Map<String,LibraryPolicyReference> libraryLookUp,
-                                      String orgName , WhiteSourceComponent whiteSourceComponent, Map<WhiteSourceChangeRequest,WhiteSourceChangeRequest> changeRequestMap){
+    /**
+     * Process Library Lookup
+     *
+     * @param libraryPolicyResult  Library Policy Result
+     * @param libraryLookUp        Lookup map
+     * @param whitesourceOrg       Whitesource org
+     * @param whiteSourceComponent Whitesource component
+     * @param changeRequestMap     Org Change Request Map
+     */
+    private void processLibraryLookUp(LibraryPolicyResult libraryPolicyResult, Map<String, LibraryPolicyReference> libraryLookUp,
+                                      WhitesourceOrg whitesourceOrg, WhiteSourceComponent whiteSourceComponent, Map<WhiteSourceChangeRequest, WhiteSourceChangeRequest> changeRequestMap) {
         Collection<Set<LibraryPolicyResult.Threat>> libs = libraryPolicyResult.getThreats().values();
-        libs.forEach(lib-> lib.stream().map(LibraryPolicyResult.Threat::getComponents).forEach(components -> {
-            // Add or update lprs
-            components.stream().map(WhiteSourceCollectorTask::getComponentName).filter(Objects::nonNull).forEach(name -> {
-                LibraryPolicyReference lpr = libraryLookUp.get(name);
-                if (Objects.isNull(lpr)) {
-                    lpr = libraryReferenceRepository.findByLibraryNameAndOrgName(name, orgName);
-                    if (Objects.nonNull(lpr)) {
-                        libraryLookUp.put(name, lpr);
+        libs.forEach(lib -> {
+            lib.stream().map(LibraryPolicyResult.Threat::getComponents).forEach(components -> {
+                // Add or update lprs
+                components.stream().map(WhiteSourceCollectorTask::getComponentName).filter(Objects::nonNull).forEach(name -> {
+                    LibraryPolicyReference lpr = libraryLookUp.get(name);
+                    if (Objects.isNull(lpr)) {
+                        lpr = libraryReferenceRepository.findByLibraryNameAndOrgName(name, whitesourceOrg.getName());
+                        if (Objects.nonNull(lpr)) {
+                            libraryLookUp.put(name, lpr);
+                        }
                     }
-                }
-                WhiteSourceChangeRequest whiteSourceChangeRequest = new WhiteSourceChangeRequest();
-                whiteSourceChangeRequest.setScopeName(name);
-                WhiteSourceChangeRequest changed = changeRequestMap.get(whiteSourceChangeRequest);
-                if (Objects.nonNull(lpr)) {
-                    lpr.setLibraryName(name);
-                    addOrUpdateLibraryPolicyReference(orgName, whiteSourceComponent, lpr, changed);
-                } else {
-                    lpr = new LibraryPolicyReference();
-                    lpr.setLibraryName(name);
-                    addOrUpdateLibraryPolicyReference(orgName, whiteSourceComponent, lpr, changed);
-                }
-                libraryLookUp.put(name, lpr);
+                    WhiteSourceChangeRequest whiteSourceChangeRequest = new WhiteSourceChangeRequest();
+                    whiteSourceChangeRequest.setScopeName(name);
+                    WhiteSourceChangeRequest changed = changeRequestMap.get(whiteSourceChangeRequest);
+                    if (Objects.nonNull(lpr)) {
+                        lpr.setLibraryName(name);
+                        addOrUpdateLibraryPolicyReference(whitesourceOrg.getName(), whiteSourceComponent, lpr, changed);
+                    } else {
+                        lpr = new LibraryPolicyReference();
+                        lpr.setLibraryName(name);
+                        addOrUpdateLibraryPolicyReference(whitesourceOrg.getName(), whiteSourceComponent, lpr, changed);
+                    }
+                    libraryLookUp.put(name, lpr);
+                });
             });
-        }));
+        });
     }
+
 
     private void addOrUpdateLibraryPolicyReference(String orgName, WhiteSourceComponent whiteSourceComponent, LibraryPolicyReference libraryPolicyReference, WhiteSourceChangeRequest changed) {
         if (!checkForIgnoredLibrary(changed, libraryPolicyReference, orgName)) {
@@ -318,7 +425,7 @@ public class WhiteSourceCollectorTask extends CollectorTask<WhiteSourceCollector
         if (Objects.isNull(referencesMap.get(whiteSourceComponent))) {
             libraryPolicyReference.getProjectReferences().add(whiteSourceComponent);
         }
-        if (Objects.nonNull(changed)){
+        if (Objects.nonNull(changed)) {
             libraryPolicyReference.setChangeClass(changed.getChangeClass());
             libraryPolicyReference.setOperator(changed.getOperator());
             libraryPolicyReference.setUserEmail(changed.getUserEmail());
@@ -326,8 +433,8 @@ public class WhiteSourceCollectorTask extends CollectorTask<WhiteSourceCollector
 
     }
 
-    private  boolean checkForIgnoredLibrary(WhiteSourceChangeRequest changed, LibraryPolicyReference libraryPolicyReference, String orgName){
-        if (Objects.nonNull(changed) && changed.getChangeClass().equalsIgnoreCase(whiteSourceSettings.getIgnoredChangeClass())){
+    private boolean checkForIgnoredLibrary(WhiteSourceChangeRequest changed, LibraryPolicyReference libraryPolicyReference, String orgName) {
+        if (Objects.nonNull(changed) && changed.getChangeClass().equalsIgnoreCase(whiteSourceSettings.getIgnoredChangeClass())) {
             libraryPolicyReference.getProjectReferences().clear();
             libraryPolicyReference.setLastUpdated(System.currentTimeMillis());
             libraryPolicyReference.setOperator(changed.getOperator());
@@ -343,7 +450,7 @@ public class WhiteSourceCollectorTask extends CollectorTask<WhiteSourceCollector
      * return true if project change.
      */
 
-    private  boolean checkForProjectChange(Set<WhiteSourceChangeRequest> changes){
+    private static boolean checkForProjectChange(Set<WhiteSourceChangeRequest> changes) {
         if (CollectionUtils.isEmpty(changes)) {
             return false;
         }
@@ -351,55 +458,35 @@ public class WhiteSourceCollectorTask extends CollectorTask<WhiteSourceCollector
     }
 
 
-    private static String getComponentName(String component){
-        if(component.contains("#")) {
+    private static String getComponentName(String component) {
+        if (component.contains("#")) {
             return component.substring(0, component.indexOf('#'));
         }
         return null;
     }
+
+    /**
+     * Gets existing Library Policy Result
+     *
+     * @param collectorItemId     Collector Item Id
+     * @param evaluationTimestamp Evaluation Timestamp
+     * @return Library Policy Result
+     */
     private LibraryPolicyResult getLibraryPolicyResultExisting(ObjectId collectorItemId, long evaluationTimestamp) {
         return libraryPolicyResultsRepository.findByCollectorItemIdAndEvaluationTimestamp(collectorItemId, evaluationTimestamp);
     }
 
-    private List<WhiteSourceComponent> enabledApplications(WhiteSourceCollector collector) {
-//        return whiteSourceComponentRepository.findByCollectorIdIn(Lists.newArrayList(collector.getId()));
-        return whiteSourceComponentRepository.findEnabledComponents(collector.getId());
-    }
 
-    private void addNewApplications(List<WhiteSourceComponent> applications, Set<WhiteSourceComponent> existingApplications, WhiteSourceCollector collector, Count count) {
-        int newCount = 0;
-        int updatedCount = 0;
-        HashMap<WhiteSourceComponent,WhiteSourceComponent> existingMap = (HashMap<WhiteSourceComponent, WhiteSourceComponent>) existingApplications.stream().collect(Collectors.toMap(Function.identity(),Function.identity()));
-        for (WhiteSourceComponent application : applications) {
-            WhiteSourceComponent matched = existingMap.get(application);
-            if (matched == null) {
-                application.setCollectorId(collector.getId());
-                application.setCollector(collector);
-                application.setEnabled(false);
-                application.setDescription(application.getProjectName());
-                application.setPushed(false);
-                whiteSourceComponentRepository.save(application);
-                newCount++;
-            } else {
-                if (Objects.isNull(matched.getProjectName()) || Objects.isNull(matched.getProductName()) || Objects.isNull(matched.getProductToken())) {
-                    matched.setProductToken(application.getProductToken());
-                    matched.setProjectName(application.getProjectName());
-                    matched.setProductName(application.getProductName());
-                    whiteSourceComponentRepository.save(matched);
-                    updatedCount++;
-                }
-            }
-        }
-        count.addNewCount(newCount);
-        count.addUpdatedCount(updatedCount);
-    }
-
-    private long getHistoryTimestamp(long collectorLastUpdated) {
-        if(collectorLastUpdated > 0) {
-            return collectorLastUpdated - whiteSourceSettings.getOffSet();
-        }else{
-            return System.currentTimeMillis() - whiteSourceSettings.getHistoryTimestamp();
-        }
+    /**
+     * Get History Time Stamp
+     *
+     * @param collector White source Collector
+     * @return long history timestamp milliseconds
+     */
+    private long getHistoryTimestamp(WhiteSourceCollector collector) {
+        return collector.getLastExecuted() > 0
+                ? collector.getLastExecuted() - whiteSourceSettings.getOffSet()
+                : System.currentTimeMillis() - whiteSourceSettings.getHistoryTimestamp();
     }
 
 }
