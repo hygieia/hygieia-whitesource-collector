@@ -9,7 +9,6 @@ import com.capitalone.dashboard.model.WhiteSourceChangeRequest;
 import com.capitalone.dashboard.model.WhiteSourceCollector;
 import com.capitalone.dashboard.model.WhiteSourceComponent;
 import com.capitalone.dashboard.model.WhiteSourceProduct;
-import com.capitalone.dashboard.model.WhiteSourceProject;
 import com.capitalone.dashboard.model.WhiteSourceProjectVital;
 import com.capitalone.dashboard.model.WhiteSourceServerSettings;
 import com.capitalone.dashboard.model.WhitesourceOrg;
@@ -19,6 +18,12 @@ import com.capitalone.dashboard.repository.LibraryReferenceRepository;
 import com.capitalone.dashboard.repository.WhiteSourceCollectorRepository;
 import com.capitalone.dashboard.repository.WhiteSourceComponentRepository;
 import com.capitalone.dashboard.repository.WhiteSourceCustomComponentRepository;
+import com.capitalone.dashboard.utils.Constants;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
+import org.apache.commons.collections4.ListUtils;
+import org.apache.commons.collections4.SetUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bson.types.ObjectId;
@@ -27,15 +32,19 @@ import org.springframework.scheduling.TaskScheduler;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
+import sun.text.resources.cldr.zh.FormatData_zh_Hans_SG;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -123,8 +132,8 @@ public class WhiteSourceCollectorTask extends CollectorTask<WhiteSourceCollector
                     Set<WhiteSourceChangeRequest> changeSet = getChangeRequests(collector, whitesourceOrg, whiteSourceServerSettings);
 
                     // Add new projects
-                    List<WhiteSourceComponent> projects = addProjects(collector, whitesourceOrg, changeSet, existingProjectsSet, count, whiteSourceServerSettings);
-
+//                    List<WhiteSourceComponent> projects = addProjects(collector, whitesourceOrg, changeSet, existingProjectsSet, count, whiteSourceServerSettings);
+                    List<WhiteSourceComponent> projects = new ArrayList<>();
                     // Get project vitals in a map
                     Map<String, WhiteSourceProjectVital> projectVitalMap = whiteSourceClient.getOrgProjectVitals(whitesourceOrg, whiteSourceServerSettings);
 
@@ -160,7 +169,7 @@ public class WhiteSourceCollectorTask extends CollectorTask<WhiteSourceCollector
      * @param whiteSourceServerSettings Whitesource Server Setting
      * @return Set of Change Requests
      */
-    private Set<WhiteSourceChangeRequest> getChangeRequests(WhiteSourceCollector collector, WhitesourceOrg whitesourceOrg, WhiteSourceServerSettings whiteSourceServerSettings) {
+    private Set<WhiteSourceChangeRequest> getChangeRequests(WhiteSourceCollector collector, WhitesourceOrg whitesourceOrg, WhiteSourceServerSettings whiteSourceServerSettings) throws HygieiaException {
         // Get the change request log
         long historyTimestamp = getHistoryTimestamp(collector);
         LOG.info("Look back time for processing changeRequestLog=" + historyTimestamp + ", collector lastExecutedTime=" + collector.getLastExecuted());
@@ -288,29 +297,32 @@ public class WhiteSourceCollectorTask extends CollectorTask<WhiteSourceCollector
 
             //Note: This list contains only enabled projects
             Set<WhiteSourceComponent> recentScannedProjects = getRecentScannedProjects(projectVitalMap, enabledProjects);
-            count = getAndUpdateData(whitesourceOrg, recentScannedProjects, projectVitalMap, changeRequestMap, libraryLookUp, serverSettings);
-            collectedProjects.addAll(recentScannedProjects);
+            Set<WhiteSourceComponent> collected = getAndUpdateData(whitesourceOrg, enabledProjects, recentScannedProjects, projectVitalMap, changeRequestMap, libraryLookUp, serverSettings);
+            count = collected.size();
+            collectedProjects.addAll(collected);
 
 
             // (2)
             Set<String> newAlertProjectTokens = whiteSourceClient.getAffectedProjectsForOrganization(whitesourceOrg, getHistoryTimestamp(collector), serverSettings);
             Set<WhiteSourceComponent> newAlertProjects = enabledProjects.stream()
-                    .filter(e->newAlertProjectTokens.contains(e.getProjectToken()))
-                    .filter(e-> !collectedProjects.contains(e)) //not collected yet
+                    .filter(e -> newAlertProjectTokens.contains(e.getProjectToken()))
+                    .filter(e -> !collectedProjects.contains(e)) //not collected yet
                     .collect(Collectors.toSet());
 
-            count = count + getAndUpdateData(whitesourceOrg, recentScannedProjects, projectVitalMap, changeRequestMap, libraryLookUp, serverSettings);
-            collectedProjects.addAll(newAlertProjects);
+            collected = getAndUpdateData(whitesourceOrg, enabledProjects, newAlertProjects, projectVitalMap, changeRequestMap, libraryLookUp, serverSettings);
+            count = count + collected.size();
+            collectedProjects.addAll(collected);
 
             // (3)
             Set<String> changeRequestProjectTokens = getAffectedProjectsFromChanges(changeRequests, whitesourceOrg.getName());
             Set<WhiteSourceComponent> changeRequestProjects = enabledProjects.stream()
-                    .filter(e->changeRequestProjectTokens.contains(e.getProjectToken()))
-                    .filter(e-> !collectedProjects.contains(e)) //not collected yet
+                    .filter(e -> changeRequestProjectTokens.contains(e.getProjectToken()))
+                    .filter(e -> !collectedProjects.contains(e)) //not collected yet
                     .collect(Collectors.toSet());
 
-            count = count + getAndUpdateData(whitesourceOrg, recentScannedProjects, projectVitalMap, changeRequestMap, libraryLookUp, serverSettings);
-            collectedProjects.addAll(changeRequestProjects);
+            collected = getAndUpdateData(whitesourceOrg, enabledProjects, changeRequestProjects, projectVitalMap, changeRequestMap, libraryLookUp, serverSettings);
+            count = count + collected.size();
+            collectedProjects.addAll(collected);
 
             LOG.info("WhitesourceCollectorTask: Refresh Data - High Priority Changes - Total projects : " +
                     (CollectionUtils.isEmpty(collectedProjects) ? 0 : collectedProjects.size()) +
@@ -319,35 +331,89 @@ public class WhiteSourceCollectorTask extends CollectorTask<WhiteSourceCollector
         startTime = System.currentTimeMillis();
 
         // (4)
-        Set<WhiteSourceComponent> remainingProjects = enabledProjects.stream().filter(e-> !collectedProjects.contains(e)).collect(Collectors.toSet());
-        count = count + getAndUpdateData(whitesourceOrg, remainingProjects, projectVitalMap, changeRequestMap, libraryLookUp, serverSettings);
+        Set<WhiteSourceComponent> remainingProjects = enabledProjects.stream().filter(e -> !collectedProjects.contains(e)).collect(Collectors.toSet());
+
+        //Start multi threading now
+        Iterable<List<WhiteSourceComponent>> partitions = Iterables.partition(remainingProjects, remainingProjects.size() / 4);
+        Set<WhiteSourceComponent> collected = new HashSet<>();
+        CompletableFuture<Set<WhiteSourceComponent>>[] threads = new CompletableFuture[5];
+        int i = 0;
+        for (List<WhiteSourceComponent> partition : partitions) {
+            threads[i] = getAndUpdateDataThread(whitesourceOrg, enabledProjects, new HashSet<>(partition), projectVitalMap, changeRequestMap, libraryLookUp, serverSettings);
+            i++;
+        }
+        CompletableFuture.allOf(threads).join();
+
+//        Set<WhiteSourceComponent> collected = getAndUpdateData(whitesourceOrg, enabledProjects, remainingProjects, projectVitalMap, changeRequestMap, libraryLookUp, serverSettings);
+
+        for (int x = 0; x < threads.length; x++) {
+            if (threads[x] != null) {
+                try {
+                    count = count + threads[x].get().size();
+                    collected.addAll(threads[x].get());
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                }
+            }
+//            count = count + threads[x].
+            collectedProjects.addAll(collected);
+        }
+
         LOG.info("WhitesourceCollectorTask: Refresh Data - Normal changes - Total projects : " +
                 (CollectionUtils.isEmpty(remainingProjects) ? 0 : remainingProjects.size()) +
                 ". Time taken =" + (System.currentTimeMillis() - startTime));
         return count;
     }
 
-    private int getAndUpdateData (WhitesourceOrg whitesourceOrg, Set<WhiteSourceComponent> projectsToCollect,
-                                  Map<String, WhiteSourceProjectVital> projectVitalMap,
-                                  Map<WhiteSourceChangeRequest, WhiteSourceChangeRequest> changeRequestMap,
-                                  Map<String, LibraryPolicyReference> libraryLookUp,
-                                  WhiteSourceServerSettings serverSettings) {
+    private Set<WhiteSourceComponent> getAndUpdateData(WhitesourceOrg whitesourceOrg, Set<WhiteSourceComponent> enabledProjects, Set<WhiteSourceComponent> projectsToCollect,
+                                                       Map<String, WhiteSourceProjectVital> projectVitalMap,
+                                                       Map<WhiteSourceChangeRequest, WhiteSourceChangeRequest> changeRequestMap,
+                                                       Map<String, LibraryPolicyReference> libraryLookUp,
+                                                       WhiteSourceServerSettings serverSettings) {
         AtomicInteger counter = new AtomicInteger();
         Map<String, LibraryPolicyResult> libraryPolicyResultMap = new HashMap<>();
 
-        Set<String> roductTokensToCollect = projectsToCollect.stream().map(WhiteSourceComponent::getProductToken).collect(Collectors.toSet());
+        Set<String> productTokensToCollect = projectsToCollect.stream().map(WhiteSourceComponent::getProductToken).collect(Collectors.toSet());
 
-        roductTokensToCollect
+        productTokensToCollect
                 .stream()
                 .map(ept -> whiteSourceClient.getProductAlerts(whitesourceOrg, ept, projectVitalMap, serverSettings))
                 .forEach(libraryPolicyResultMap::putAll);
 
         //only save enabled projects
-        projectsToCollect.forEach(project -> {
+        Set<WhiteSourceComponent> collected = enabledProjects.stream().filter(e -> libraryPolicyResultMap.containsKey(e.getProjectToken())).collect(Collectors.toSet());
+        collected.forEach(project -> {
             saveScanData(whitesourceOrg, project, libraryPolicyResultMap, libraryLookUp, changeRequestMap);
             counter.getAndIncrement();
         });
-        return counter.get();
+        return collected;
+    }
+
+
+    private CompletableFuture<Set<WhiteSourceComponent>> getAndUpdateDataThread(WhitesourceOrg whitesourceOrg, Set<WhiteSourceComponent> enabledProjects, Set<WhiteSourceComponent> projectsToCollect,
+                                                       Map<String, WhiteSourceProjectVital> projectVitalMap,
+                                                       Map<WhiteSourceChangeRequest, WhiteSourceChangeRequest> changeRequestMap,
+                                                       Map<String, LibraryPolicyReference> libraryLookUp,
+                                                       WhiteSourceServerSettings serverSettings) {
+        AtomicInteger counter = new AtomicInteger();
+        Map<String, LibraryPolicyResult> libraryPolicyResultMap = new HashMap<>();
+
+        Set<String> productTokensToCollect = projectsToCollect.stream().map(WhiteSourceComponent::getProductToken).collect(Collectors.toSet());
+
+        productTokensToCollect
+                .stream()
+                .map(ept -> whiteSourceClient.getProductAlerts(whitesourceOrg, ept, projectVitalMap, serverSettings))
+                .forEach(libraryPolicyResultMap::putAll);
+
+        //only save enabled projects
+        Set<WhiteSourceComponent> collected = enabledProjects.stream().filter(e -> libraryPolicyResultMap.containsKey(e.getProjectToken())).collect(Collectors.toSet());
+        collected.forEach(project -> {
+            saveScanData(whitesourceOrg, project, libraryPolicyResultMap, libraryLookUp, changeRequestMap);
+            counter.getAndIncrement();
+        });
+        return  CompletableFuture.completedFuture(collected);
     }
 
     /**
@@ -361,7 +427,8 @@ public class WhiteSourceCollectorTask extends CollectorTask<WhiteSourceCollector
     private Set<WhiteSourceComponent> getRecentScannedProjects(Map<String, WhiteSourceProjectVital> projectVitalMap, Set<WhiteSourceComponent> enabledProjects) {
         return enabledProjects
                 .stream()
-                .filter(e -> e.getLastUpdated() - whiteSourceSettings.getOffSet() < projectVitalMap.get(e.getProjectToken()).getLastUpdateDate())
+                .filter(e -> Objects.nonNull(projectVitalMap.get(e.getProjectToken())) &&
+                        (e.getLastUpdated() - whiteSourceSettings.getOffSet() < projectVitalMap.get(e.getProjectToken()).getLastUpdateDate()))
                 .collect(Collectors.toSet());
     }
 

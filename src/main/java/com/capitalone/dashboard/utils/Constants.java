@@ -1,4 +1,4 @@
-package com.capitalone.dashboard.collector;
+package com.capitalone.dashboard.utils;
 
 public final class Constants {
 
@@ -44,7 +44,9 @@ public final class Constants {
     public static final String CHANGE_CATEGORY = "changeCategory";
     public static final String CHANGE_CLASS = "changeClass";
     public static final String WHITE_SOURCE = "WhiteSource";
-    public static final String YYYY_MM_DD_HH_MM_SS = "yyyy-MM-dd HH:mm:ss";
+    public static final String yyyy_MM_dd_HH_mm_ss = "yyyy-MM-dd HH:mm:ss";
+    public static final String yyyy_MM_dd = "yyyy-MM-dd";
+    public static final String yyyy_MM_dd_HH_mm_ss_z = yyyy_MM_dd_HH_mm_ss + " Z";
     public static final String SCOPE_NAME = "scopeName";
     public static final String CHANGE_SCOPE_ID = "changeScopeId";
     public static final String OPERATOR = "operator";
@@ -59,6 +61,7 @@ public final class Constants {
     public static final String ALERT_TYPE = "alertType";
     public static final String REJECTED_BY_POLICY = "REJECTED_BY_POLICY_RESOURCE";
     public static final String SECURITY_VULNERABILITY = "SECURITY_VULNERABILITY";
+    public static final String DEFAULT_WHITESOURCE_TIMEZONE = "UTC";
 
 
     public enum RequestType {
