@@ -7,11 +7,12 @@ import com.capitalone.dashboard.model.WhiteSourceChangeRequest;
 import com.capitalone.dashboard.model.WhiteSourceComponent;
 import com.capitalone.dashboard.model.WhiteSourceProduct;
 import com.capitalone.dashboard.model.WhiteSourceProjectVital;
-import com.capitalone.dashboard.model.WhiteSourceServerSettings;
 import com.capitalone.dashboard.model.WhitesourceOrg;
 import com.capitalone.dashboard.repository.LibraryPolicyResultsRepository;
 import com.capitalone.dashboard.repository.LibraryReferenceRepository;
 import com.capitalone.dashboard.repository.WhiteSourceComponentRepository;
+import com.capitalone.dashboard.settings.WhiteSourceServerSettings;
+import com.capitalone.dashboard.settings.WhiteSourceSettings;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bson.types.ObjectId;
@@ -32,8 +33,8 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
-public class AsynchService {
-    private static final Log LOG = LogFactory.getLog(AsynchService.class);
+public class AsyncService {
+    private static final Log LOG = LogFactory.getLog(AsyncService.class);
     private final WhiteSourceComponentRepository whiteSourceComponentRepository;
     private final LibraryPolicyResultsRepository libraryPolicyResultsRepository;
     private final WhiteSourceClient whiteSourceClient;
@@ -41,10 +42,10 @@ public class AsynchService {
     private final LibraryReferenceRepository libraryReferenceRepository;
 
     @Autowired
-    public AsynchService(WhiteSourceComponentRepository whiteSourceComponentRepository,
-                         LibraryPolicyResultsRepository libraryPolicyResultsRepository,
-                         WhiteSourceClient whiteSourceClient, WhiteSourceSettings whiteSourceSettings,
-                         LibraryReferenceRepository libraryReferenceRepository) {
+    public AsyncService(WhiteSourceComponentRepository whiteSourceComponentRepository,
+                        LibraryPolicyResultsRepository libraryPolicyResultsRepository,
+                        WhiteSourceClient whiteSourceClient, WhiteSourceSettings whiteSourceSettings,
+                        LibraryReferenceRepository libraryReferenceRepository) {
         this.whiteSourceComponentRepository = whiteSourceComponentRepository;
         this.libraryPolicyResultsRepository = libraryPolicyResultsRepository;
         this.whiteSourceClient = whiteSourceClient;
@@ -131,7 +132,7 @@ public class AsynchService {
         Collection<Set<LibraryPolicyResult.Threat>> libs = libraryPolicyResult.getThreats().values();
         libs.forEach(lib -> lib.stream().map(LibraryPolicyResult.Threat::getComponents).forEach(components -> {
             // Add or update lprs
-            components.stream().map(AsynchService::getComponentName).forEach(name -> {
+            components.stream().map(AsyncService::getComponentName).forEach(name -> {
                 LibraryPolicyReference lpr = libraryLookUp.get(name);
                 if (Objects.isNull(lpr)) {
                     lpr = libraryReferenceRepository.findByLibraryNameAndOrgName(name, whitesourceOrg.getName());

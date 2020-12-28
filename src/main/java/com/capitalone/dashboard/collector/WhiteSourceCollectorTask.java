@@ -10,12 +10,13 @@ import com.capitalone.dashboard.model.WhiteSourceCollector;
 import com.capitalone.dashboard.model.WhiteSourceComponent;
 import com.capitalone.dashboard.model.WhiteSourceProduct;
 import com.capitalone.dashboard.model.WhiteSourceProjectVital;
-import com.capitalone.dashboard.model.WhiteSourceServerSettings;
 import com.capitalone.dashboard.model.WhitesourceOrg;
 import com.capitalone.dashboard.repository.BaseCollectorRepository;
 import com.capitalone.dashboard.repository.LibraryReferenceRepository;
 import com.capitalone.dashboard.repository.WhiteSourceCollectorRepository;
 import com.capitalone.dashboard.repository.WhiteSourceComponentRepository;
+import com.capitalone.dashboard.settings.WhiteSourceServerSettings;
+import com.capitalone.dashboard.settings.WhiteSourceSettings;
 import com.capitalone.dashboard.utils.Constants;
 import com.google.common.collect.Iterables;
 import org.apache.commons.logging.Log;
@@ -49,7 +50,7 @@ public class WhiteSourceCollectorTask extends CollectorTask<WhiteSourceCollector
     private final WhiteSourceClient whiteSourceClient;
     private final WhiteSourceSettings whiteSourceSettings;
     private final LibraryReferenceRepository libraryReferenceRepository;
-    private final AsynchService dataRefreshService;
+    private final AsyncService dataRefreshService;
 
 
     @Autowired
@@ -59,7 +60,7 @@ public class WhiteSourceCollectorTask extends CollectorTask<WhiteSourceCollector
                                     WhiteSourceClient whiteSourceClient,
                                     WhiteSourceSettings whiteSourceSettings,
                                     LibraryReferenceRepository libraryReferenceRepository,
-                                    AsynchService dataRefreshService) {
+                                    AsyncService dataRefreshService) {
         super(taskScheduler, Constants.WHITE_SOURCE);
         this.whiteSourceCollectorRepository = whiteSourceCollectorRepository;
         this.whiteSourceComponentRepository = whiteSourceComponentRepository;

@@ -2,13 +2,13 @@ package com.capitalone.dashboard.controller;
 
 
 import com.capitalone.dashboard.collector.DefaultWhiteSourceClient;
-import com.capitalone.dashboard.collector.WhiteSourceSettings;
 import com.capitalone.dashboard.misc.HygieiaException;
 import com.capitalone.dashboard.model.LibraryPolicyResult;
 import com.capitalone.dashboard.model.WhiteSourceComponent;
 import com.capitalone.dashboard.model.WhiteSourceRefreshRequest;
 import com.capitalone.dashboard.model.WhiteSourceRequest;
 import com.capitalone.dashboard.repository.LibraryPolicyResultsRepository;
+import com.capitalone.dashboard.settings.WhiteSourceSettings;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;

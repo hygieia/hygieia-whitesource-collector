@@ -1,4 +1,4 @@
-package com.capitalone.dashboard.model;
+package com.capitalone.dashboard.settings;
 
 public class WhiteSourceServerSettings {
 

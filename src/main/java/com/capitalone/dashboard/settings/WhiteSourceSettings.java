@@ -1,7 +1,6 @@
-package com.capitalone.dashboard.collector;
+package com.capitalone.dashboard.settings;
 
 import com.capitalone.dashboard.model.LicensePolicyType;
-import com.capitalone.dashboard.model.WhiteSourceServerSettings;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -45,6 +44,9 @@ public class WhiteSourceSettings  {
     private long offSet;
     @Value("${whitesource.historyTimestamp:345600000}") // 4days in millis
     private long historyTimestamp;
+    @Value("${whitesource.maxOrgLevelQueryTimeWindow:3600000}") // 1 hr in millis
+    private long maxOrgLevelQueryTimeWindow;
+
     private List<LicensePolicyType> criticalLicensePolicyTypes = new ArrayList<>();
     private List<LicensePolicyType> highLicensePolicyTypes = new ArrayList<>();
     private List<LicensePolicyType> mediumLicensePolicyTypes = new ArrayList<>();
@@ -59,6 +61,8 @@ public class WhiteSourceSettings  {
     private boolean corsEnabled;
     private String corsWhitelist;
 
+
+    private ThreadPoolSettings threadPoolSettings = new ThreadPoolSettings();
 
     public long getHistoryTimestamp() {
         return historyTimestamp;
@@ -304,6 +308,22 @@ public class WhiteSourceSettings  {
 
     public void setCorsWhitelist(String corsWhitelist) {
         this.corsWhitelist = corsWhitelist;
+    }
+
+    public long getMaxOrgLevelQueryTimeWindow() {
+        return maxOrgLevelQueryTimeWindow;
+    }
+
+    public void setMaxOrgLevelQueryTimeWindow(long maxOrgLevelQueryTimeWindow) {
+        this.maxOrgLevelQueryTimeWindow = maxOrgLevelQueryTimeWindow;
+    }
+
+    public ThreadPoolSettings getThreadPoolSettings() {
+        return threadPoolSettings;
+    }
+
+    public void setThreadPoolSettings(ThreadPoolSettings threadPoolSettings) {
+        this.threadPoolSettings = threadPoolSettings;
     }
 
     public boolean checkIgnoreEndPoint(String endPointURI) { return !ignoreEndPoints.isEmpty() && ignoreEndPoints.contains(endPointURI); }

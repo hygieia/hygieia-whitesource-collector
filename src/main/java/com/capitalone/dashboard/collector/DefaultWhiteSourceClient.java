@@ -14,11 +14,12 @@ import com.capitalone.dashboard.model.WhiteSourceComponent;
 import com.capitalone.dashboard.model.WhiteSourceProduct;
 import com.capitalone.dashboard.model.WhiteSourceProjectVital;
 import com.capitalone.dashboard.model.WhiteSourceRequest;
-import com.capitalone.dashboard.model.WhiteSourceServerSettings;
 import com.capitalone.dashboard.model.WhitesourceOrg;
 import com.capitalone.dashboard.repository.CollectorItemRepository;
 import com.capitalone.dashboard.repository.CollectorRepository;
 import com.capitalone.dashboard.repository.LibraryPolicyResultsRepository;
+import com.capitalone.dashboard.settings.WhiteSourceServerSettings;
+import com.capitalone.dashboard.settings.WhiteSourceSettings;
 import com.capitalone.dashboard.utils.Constants;
 import com.capitalone.dashboard.utils.DateTimeUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -272,30 +273,30 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
     /**
      * Gets Project Alerts
      *
-     * @param whiteSourceComponent Whitesource Component
+     * @param project Whitesource Component
      * @param projectVital         Project Vitals Map
      * @param serverSettings       Whitesource Server Setting
      * @return Library Policy Result
      */
 
     @Override
-    public LibraryPolicyResult getProjectAlerts(WhiteSourceComponent whiteSourceComponent, WhiteSourceProjectVital projectVital, WhiteSourceServerSettings serverSettings) {
+    public LibraryPolicyResult getProjectAlerts(WhiteSourceComponent project, WhiteSourceProjectVital projectVital, WhiteSourceServerSettings serverSettings) {
         LibraryPolicyResult libraryPolicyResult = new LibraryPolicyResult();
         try {
-            JSONObject jsonObject = makeRestCall(Constants.RequestType.getProjectAlerts, null, null, whiteSourceComponent.getProjectToken(), null, null, serverSettings);
+            JSONObject jsonObject = makeRestCall(Constants.RequestType.getProjectAlerts, null, null, project.getProjectToken(), null, null, serverSettings);
             JSONArray alerts = (JSONArray) Objects.requireNonNull(jsonObject).get(Constants.ALERTS);
             if (projectVital == null) {
-                JSONObject projectVitalsObject = makeRestCall(Constants.RequestType.getProjectVitals, null, null, whiteSourceComponent.getProjectToken(), null, null, serverSettings);
+                JSONObject projectVitalsObject = makeRestCall(Constants.RequestType.getProjectVitals, null, null, project.getProjectToken(), null, null, serverSettings);
                 getEvaluationTimeStamp(libraryPolicyResult, projectVitalsObject, serverSettings);
             } else {
                 getEvaluationTimeStamp(libraryPolicyResult, projectVital, serverSettings);
             }
-            libraryPolicyResult.setCollectorItemId(whiteSourceComponent.getId());
+            libraryPolicyResult.setCollectorItemId(project.getId());
             if (!CollectionUtils.isEmpty(alerts)) {
                 transformAlerts(libraryPolicyResult, alerts);
             }
         } catch (Exception e) {
-            LOG.info("Exception occurred while calling getProjectAlerts for projectName=" + whiteSourceComponent.getProjectName() , e);
+            LOG.info("Exception occurred while calling getProjectAlerts for projectName=" + project.getProjectName() , e);
         }
         return libraryPolicyResult;
     }
@@ -364,7 +365,7 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
             whiteSourceProjectVital.setId(getLongValue(vital, Constants.ID));
             String token = getStringValue(vital, Constants.TOKEN);
             whiteSourceProjectVital.setToken(token);
-            whiteSourceProjectVital.setCreationDate(DateTimeUtils.timeFromStringToMillis(getStringValue(vital, Constants.LAST_UPDATED_DATE), serverSettings.getTimeZone(), yyyy_MM_dd_HH_mm_ss_z));
+            whiteSourceProjectVital.setLastUpdateDate(DateTimeUtils.timeFromStringToMillis(getStringValue(vital, Constants.LAST_UPDATED_DATE), serverSettings.getTimeZone(), yyyy_MM_dd_HH_mm_ss_z));
             whiteSourceProjectVital.setCreationDate(DateTimeUtils.timeFromStringToMillis(getStringValue(vital, Constants.CREATIONDATE), serverSettings.getTimeZone(), yyyy_MM_dd_HH_mm_ss_z));
             projectVitalMap.put(token, whiteSourceProjectVital);
         }
