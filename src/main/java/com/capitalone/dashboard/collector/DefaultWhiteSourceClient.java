@@ -21,7 +21,6 @@ import com.capitalone.dashboard.repository.CollectorRepository;
 import com.capitalone.dashboard.repository.LibraryPolicyResultsRepository;
 import com.capitalone.dashboard.utils.Constants;
 import com.capitalone.dashboard.utils.DateTimeUtils;
-import com.sun.istack.internal.Nullable;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -37,6 +36,7 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -73,7 +73,7 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
     }
 
 
-    /** A note about whitesouce date time stamps - they are all over the place.
+    /*  A note about whitesouce date time stamps - they are all over the place.
      * Whitesource server is UTC timezone.
      *
      * This client class need to make sure that the date times are correctly
@@ -177,9 +177,9 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
         List<WhiteSourceComponent> whiteSourceProjects = new ArrayList<>();
         try {
             JSONObject jsonObject = makeRestCall(Constants.RequestType.getAllProjects, whitesourceOrg, product.getProductToken(), null, null, null, serverSettings);
-            if (Objects.isNull(jsonObject)) return new ArrayList<>();
+            if (Objects.isNull(jsonObject)) return whiteSourceProjects;
             JSONArray jsonArray = (JSONArray) jsonObject.get(Constants.PROJECTS);
-            if (jsonArray == null) return new ArrayList<>();
+            if (jsonArray == null) return whiteSourceProjects;
             for (Object project : jsonArray) {
                 JSONObject wsProject = (JSONObject) project;
                 WhiteSourceComponent whiteSourceProject = new WhiteSourceComponent();
@@ -192,7 +192,7 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
             }
             //TODO: Refactor Exception Handling
         } catch (Exception e) {
-            LOG.error("Exception occurred while retrieving getAllProjectsForProduct for productName=" + product.getProductName() + ", Exception=" + e.getMessage());
+            LOG.error("Exception occurred while retrieving getAllProjectsForProduct for productName=" + product.getProductName(), e);
         }
         return whiteSourceProjects;
     }
@@ -222,9 +222,10 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
      * @param serverSettings   Whitesource Server Setting
      * @return Set of Project Tokens
      */
-    private Set<String> getAffectedProjectTokens(WhitesourceOrg whitesourceOrg, String alertType, long historyTimestamp, WhiteSourceServerSettings serverSettings) {
+
+    public Set<String> getAffectedProjectTokens(WhitesourceOrg whitesourceOrg, String alertType, long historyTimestamp, WhiteSourceServerSettings serverSettings) {
         Set<String> affectedProjectTokens = new HashSet<>();
-        String startDateTime = DateTimeUtils.timeFromLongToString(historyTimestamp,serverSettings.getTimeZone(), yyyy_MM_dd_HH_mm_ss);
+        String startDateTime = DateTimeUtils.timeFromLongToString(historyTimestamp, serverSettings.getTimeZone(), yyyy_MM_dd_HH_mm_ss);
         try {
             // Get policy alerts
             JSONObject jsonObject = makeRestCall(Constants.RequestType.getOrganizationAlertsByType, whitesourceOrg, null, null, alertType, startDateTime, serverSettings);
@@ -238,7 +239,7 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
             }
             //TODO: Refactor Exception Handling
         } catch (Exception e) {
-            LOG.info("Exception occurred while calling getAffectedProjectsForOrganization for orgToken =" + whitesourceOrg.getToken() + ", Exception=" + e.getMessage());
+            LOG.info("Exception occurred while calling getAffectedProjectsForOrganization for orgToken =" + whitesourceOrg.getToken() , e);
         }
         return affectedProjectTokens;
     }
@@ -263,7 +264,7 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
             }
             //TODO: Refactor Exception Handling
         } catch (Exception e) {
-            LOG.info("Exception occurred while calling getProductAlerts for productToken =" + productToken + ", Exception=" + e.getMessage());
+            LOG.info("Exception occurred while calling getProductAlerts for productToken =" + productToken ,e);
         }
         return libraryPolicyResultMap;
     }
@@ -291,10 +292,10 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
             }
             libraryPolicyResult.setCollectorItemId(whiteSourceComponent.getId());
             if (!CollectionUtils.isEmpty(alerts)) {
-                transformAlerts(libraryPolicyResult, alerts, serverSettings);
+                transformAlerts(libraryPolicyResult, alerts);
             }
         } catch (Exception e) {
-            LOG.info("Exception occurred while calling getProjectAlerts for projectName=" + whiteSourceComponent.getProjectName() + ", Exception=" + e.getMessage());
+            LOG.info("Exception occurred while calling getProjectAlerts for projectName=" + whiteSourceComponent.getProjectName() , e);
         }
         return libraryPolicyResult;
     }
@@ -311,7 +312,7 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
     @Override
     public List<WhiteSourceChangeRequest> getChangeRequestLog(WhitesourceOrg whitesourceOrg, long historyTimestamp, WhiteSourceServerSettings serverSettings) throws HygieiaException {
         long timeGetChangeRequestLog = System.currentTimeMillis();
-        String startDateT = DateTimeUtils.timeFromLongToString(historyTimestamp,serverSettings.getTimeZone(), yyyy_MM_dd_HH_mm_ss);
+        String startDateT = DateTimeUtils.timeFromLongToString(historyTimestamp, serverSettings.getTimeZone(), yyyy_MM_dd_HH_mm_ss);
         JSONObject jsonObject = makeRestCall(Constants.RequestType.getChangesReport, whitesourceOrg, null, null, null, startDateT, serverSettings);
         JSONArray changes = (JSONArray) Objects.requireNonNull(jsonObject).get(Constants.CHANGES);
         List<WhiteSourceChangeRequest> changeRequests = new ArrayList<>();
@@ -333,8 +334,8 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
                 whiteSourceChangeRequest.setChangeScopeId(getLongValue(change, Constants.CHANGE_SCOPE_ID));
                 whiteSourceChangeRequest.setOperator(getStringValue(change, Constants.OPERATOR));
                 whiteSourceChangeRequest.setUserEmail(getStringValue(change, Constants.USER_EMAIL));
-                whiteSourceChangeRequest.setBeforeChange(getListValue(change, Constants.BEFORE_CHANGE));
-                whiteSourceChangeRequest.setAfterChange(getListValue(change, Constants.AFTER_CHANGE));
+                whiteSourceChangeRequest.setBeforeChange(getStringList(change, Constants.BEFORE_CHANGE));
+                whiteSourceChangeRequest.setAfterChange(getStringList(change, Constants.AFTER_CHANGE));
                 changeRequests.add(whiteSourceChangeRequest);
             }
         }
@@ -363,7 +364,7 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
             whiteSourceProjectVital.setId(getLongValue(vital, Constants.ID));
             String token = getStringValue(vital, Constants.TOKEN);
             whiteSourceProjectVital.setToken(token);
-            whiteSourceProjectVital.setCreationDate(DateTimeUtils.timeFromStringToMillis(getStringValue(vital, Constants.LAST_UPDATED_DATE), serverSettings.getTimeZone(),yyyy_MM_dd_HH_mm_ss_z));
+            whiteSourceProjectVital.setCreationDate(DateTimeUtils.timeFromStringToMillis(getStringValue(vital, Constants.LAST_UPDATED_DATE), serverSettings.getTimeZone(), yyyy_MM_dd_HH_mm_ss_z));
             whiteSourceProjectVital.setCreationDate(DateTimeUtils.timeFromStringToMillis(getStringValue(vital, Constants.CREATIONDATE), serverSettings.getTimeZone(), yyyy_MM_dd_HH_mm_ss_z));
             projectVitalMap.put(token, whiteSourceProjectVital);
         }
@@ -380,10 +381,10 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
      * and Library Policy Result
      *
      * @param whitesourceOrg  Whitesource Org
-     * @param alerts
-     * @param projectVitalMap
-     * @param serverSettings
-     * @return
+     * @param alerts project alerts
+     * @param projectVitalMap project vital map
+     * @param serverSettings whitesource server setting
+     * @return Map of project token and LibraryPolicyResult
      */
     private Map<String, LibraryPolicyResult> transformProductAlerts(WhitesourceOrg whitesourceOrg, JSONArray alerts, Map<String, WhiteSourceProjectVital> projectVitalMap, WhiteSourceServerSettings serverSettings) throws HygieiaException {
         Map<String, LibraryPolicyResult> libraryPolicyResultMap = new HashMap<>();
@@ -413,7 +414,7 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
      * @param libraryPolicyResult Library Policy Result that needs to be enriched with alerts data
      * @param alerts              project alerts
      */
-    private void transformAlerts(LibraryPolicyResult libraryPolicyResult, JSONArray alerts, WhiteSourceServerSettings serverSettings) throws HygieiaException {
+    private void transformAlerts(LibraryPolicyResult libraryPolicyResult, JSONArray alerts) {
         for (Object alert : alerts) {
             translateAlertJSON((JSONObject) alert, libraryPolicyResult);
         }
@@ -422,18 +423,18 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
 
     /**
      * Helper method to Translates alert json object
-     *  @param alert               JSONObject of project alert
+     *
+     * @param alert               JSONObject of project alert
      * @param libraryPolicyResult Library Policy Result that need to be enriched
      */
-    private void translateAlertJSON(JSONObject alert, LibraryPolicyResult libraryPolicyResult) throws HygieiaException {
+    private void translateAlertJSON(JSONObject alert, LibraryPolicyResult libraryPolicyResult) {
         String alertType = getStringValue(alert, Constants.TYPE);
         JSONObject library = (JSONObject) Objects.requireNonNull(alert).get(Constants.LIBRARY);
-        Long creationDateTimeStamp = getLongValue(alert, Constants.TIME);
+        long creationDateTimeStamp = getLongValue(alert, Constants.TIME);
         String description = (StringUtils.isNotEmpty(getStringValue(alert, Constants.DESCRIPTION))) ? getStringValue(alert, Constants.DESCRIPTION) : "None";
         String componentName = getStringValue(library, Constants.FILENAME);
         // add threat for license
-        JSONArray licenses = (JSONArray) Objects.requireNonNull(library).get(Constants.LICENSES);
-        setAllLibraryLicensesAlerts(licenses, libraryPolicyResult, componentName, String.valueOf(DateTimeUtils.getDays(creationDateTimeStamp)), getLicenseThreatLevel(alertType, description), description);
+        setAllLibraryLicensesAlerts(libraryPolicyResult, componentName, String.valueOf(DateTimeUtils.getDays(creationDateTimeStamp)), getLicenseThreatLevel(alertType, description), description);
         // add threat for Security vulns
         JSONObject vulns = (JSONObject) Objects.requireNonNull(alert).get(Constants.VULNERABILITY);
         if (!CollectionUtils.isEmpty(vulns)) {
@@ -454,19 +455,18 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
      * @param serverSettings server settings
      * @return JSON Object
      */
-    private JSONObject makeRestCall(Constants.RequestType requestType, @Nullable WhitesourceOrg whitesourceOrg, @Nullable String productToken,
-                                    @Nullable String projectToken, @Nullable String alertType, @Nullable String startDateTime,
+    private JSONObject makeRestCall(Constants.RequestType requestType, WhitesourceOrg whitesourceOrg, String productToken,
+                                    String projectToken, String alertType, String startDateTime,
                                     WhiteSourceServerSettings serverSettings) {
         LOG.info("collecting analysis for orgName=" + whitesourceOrg.getName() + " and requestType=" + requestType);
         JSONObject requestJSON = getRequest(requestType, whitesourceOrg.getToken(), productToken, projectToken, startDateTime, serverSettings, alertType);
         JSONParser parser = new JSONParser();
-        String orgNameToLog = (whitesourceOrg == null) ? "UNKNOWN" : whitesourceOrg.getName();
         try {
             ResponseEntity<String> response = restClient.makeRestCallPost(getApiBaseUrl(serverSettings.getInstanceUrl()), new HttpHeaders(), requestJSON);
             if ((response == null) || (response.toString().isEmpty())) return new JSONObject();
             return (JSONObject) parser.parse(response.getBody());
-        } catch (Exception e) {
-            LOG.error("Exception occurred while calling REST for orgName=" + orgNameToLog + " and requestType=" + requestType + ", Exception=" + e.getMessage());
+        } catch (ParseException e) {
+            LOG.error("Exception occurred while parsing json object", e);
         }
         return new JSONObject();
     }
@@ -542,7 +542,7 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
         } else {
             throw new HygieiaException("WhiteSource request : Invalid Whitesource project", HygieiaException.BAD_DATA);
         }
-        transformAlerts(libraryPolicyResult, alerts, null);
+        transformAlerts(libraryPolicyResult, alerts);
         libraryPolicyResult.setCollectorItemId(collectorItem.getId());
         libraryPolicyResult.setBuildUrl(whiteSourceRequest.getBuildUrl());
         libraryPolicyResult = libraryPolicyResultsRepository.save(libraryPolicyResult);
@@ -588,21 +588,20 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
     }
 
 
-    private static void setAllLibraryLicensesAlerts(JSONArray licenses, LibraryPolicyResult libraryPolicyResult, String componentName, String age, LibraryPolicyThreatLevel severity, String policyName) {
+    private static void setAllLibraryLicensesAlerts(LibraryPolicyResult libraryPolicyResult, String componentName, String age, LibraryPolicyThreatLevel severity, String policyName) {
         libraryPolicyResult.addThreat(LibraryPolicyType.License, severity, LibraryPolicyThreatDisposition.Open, Constants.OPEN, componentName, age, Constants.ZERO, policyName);
     }
 
-    private static void setSecurityVulns(JSONObject vuln, LibraryPolicyResult libraryPolicyResult, String componentName, String age, String policyName) throws HygieiaException {
+    private static void setSecurityVulns(JSONObject vuln, LibraryPolicyResult libraryPolicyResult, String componentName, String age, String policyName) {
         libraryPolicyResult.addThreat(LibraryPolicyType.Security, LibraryPolicyThreatLevel.fromString(getSecurityVulnSeverity(vuln)), LibraryPolicyThreatDisposition.Open, Constants.OPEN, componentName, age, getScore(vuln), policyName);
     }
 
-    private static String getScore(JSONObject vuln) throws HygieiaException {
+    private static String getScore(JSONObject vuln) {
         Double score = toDouble(vuln, Constants.SCORE1);
-        if (Objects.nonNull(score)) return score.toString();
-        return Constants.ZERO;
+        return score.toString();
     }
 
-    private static String getSecurityVulnSeverity(JSONObject vuln) throws HygieiaException {
+    private static String getSecurityVulnSeverity(JSONObject vuln) {
         String severity = getStringValue(vuln, Constants.SEVERITY);
         if (Objects.nonNull(severity)) return severity;
         return Constants.NONE;
@@ -669,38 +668,27 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
 
     // Helper methods to extract Json elements ///
 
-    private static String getStringValue(JSONObject jsonObject, String key) throws HygieiaException {
-        if ((jsonObject == null || jsonObject.get(key) == null)) {
-            throw new HygieiaException("getStringValue: jsonObject or key is null", HygieiaException.BAD_DATA);
-        }
-        return (String) jsonObject.get(key);
+    private static String getStringValue(JSONObject jsonObject, String key) {
+        return Objects.toString(jsonObject.get(key), "");
     }
 
-    private static List<String> getListValue(JSONObject jsonObject, String key) throws HygieiaException {
+    private static List<String> getStringList(JSONObject jsonObject, String key) {
         if ((jsonObject == null || jsonObject.get(key) == null)) {
-            throw new HygieiaException("getStringValue: jsonObject or key is null", HygieiaException.BAD_DATA);
+            return Collections.emptyList();
         }
         JSONArray jsonArray = (JSONArray) jsonObject.get(key);
-        List<String> list = new ArrayList<>();
-        for (Object o : jsonArray) {
-            list.add((String) o);
-        }
-        return list;
+        Stream<String> stringStream = jsonArray.stream();
+        return stringStream.collect(Collectors.toList());
     }
 
-    private static Long getLongValue(JSONObject jsonObject, String key) throws HygieiaException {
-        if ((jsonObject == null || jsonObject.get(key) == null)) {
-            throw new HygieiaException("getStringValue: jsonObject or key is null", HygieiaException.BAD_DATA);
-        }
-        return (Long) jsonObject.get(key);
+    private static Long getLongValue(JSONObject jsonObject, String key) {
+        Object obj = jsonObject.get(key);
+        return obj == null ? 0L : (Long) obj;
     }
 
-    private static Double toDouble(JSONObject json, String key) throws HygieiaException {
-        Object obj = json.get(key);
-        if (obj == null) {
-            throw new HygieiaException("getStringValue: jsonObject or key is null", HygieiaException.BAD_DATA);
-        }
-        return (Double) obj;
+    private static Double toDouble(JSONObject jsonObject, String key) {
+        Object obj = jsonObject.get(key);
+        return obj == null ? 0 : (Double) obj;
     }
 
 }

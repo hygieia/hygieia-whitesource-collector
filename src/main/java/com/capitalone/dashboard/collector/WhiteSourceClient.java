@@ -8,12 +8,11 @@ import com.capitalone.dashboard.model.WhiteSourceProduct;
 import com.capitalone.dashboard.model.WhiteSourceProjectVital;
 import com.capitalone.dashboard.model.WhiteSourceServerSettings;
 import com.capitalone.dashboard.model.WhitesourceOrg;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ExecutionException;
 
 public interface WhiteSourceClient {
     List<WhiteSourceProduct> getProducts(WhitesourceOrg whitesourceOrg,WhiteSourceServerSettings serverSettings) throws HygieiaException;
@@ -22,6 +21,6 @@ public interface WhiteSourceClient {
     WhitesourceOrg getOrgDetails(WhiteSourceServerSettings serverSettings) throws HygieiaException;
     List<WhiteSourceChangeRequest> getChangeRequestLog(WhitesourceOrg whitesourceOrg, long collectorLastUpdatedTime, WhiteSourceServerSettings serverSettings) throws HygieiaException;
     Map<String, WhiteSourceProjectVital> getOrgProjectVitals(WhitesourceOrg whitesourceOrg, WhiteSourceServerSettings whiteSourceServerSettings) throws HygieiaException;
-    Set<String> getAffectedProjectsForOrganization(WhitesourceOrg whitesourceOrg, long historyTimestamp, WhiteSourceServerSettings serverSettings);
+    Set<String> getAffectedProjectsForOrganization(WhitesourceOrg whitesourceOrg, long historyTimestamp, WhiteSourceServerSettings serverSettings) throws ExecutionException, InterruptedException;
     List<WhiteSourceComponent> getAllProjectsForProduct(WhitesourceOrg whitesourceOrg, WhiteSourceProduct product, WhiteSourceServerSettings serverSettings);
 }

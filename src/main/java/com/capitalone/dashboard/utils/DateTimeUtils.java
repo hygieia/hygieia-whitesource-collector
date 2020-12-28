@@ -2,19 +2,12 @@ package com.capitalone.dashboard.utils;
 
 import com.capitalone.dashboard.misc.HygieiaException;
 import org.apache.commons.lang3.StringUtils;
-
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.concurrent.TimeUnit;
-
-import static com.capitalone.dashboard.utils.Constants.yyyy_MM_dd_HH_mm_ss;
-import static com.capitalone.dashboard.utils.Constants.yyyy_MM_dd_HH_mm_ss_z;
 
 /**
  * Whitesource date time formats in different apis response
@@ -48,7 +41,7 @@ public class DateTimeUtils {
      * @param fromTimeZone Time zone of the input date time
      * @param fromPattern Pattern for the input date time
      * @return time in milliseconds
-     * @throws HygieiaException
+     * @throws HygieiaException Hygieia Exception
      */
     public static long timeFromStringToMillis (String fromDateTime, String fromTimeZone, String fromPattern) throws HygieiaException {
         if (StringUtils.isNotEmpty(fromDateTime)) {
@@ -93,16 +86,5 @@ public class DateTimeUtils {
      */
     public static long getDays(long fromTimeMillis) {
         return TimeUnit.MILLISECONDS.toDays(System.currentTimeMillis() - fromTimeMillis);
-    }
-
-    public static void main(String[] args) {
-        String date = "2020-12-21 15:37:48 +0000";
-        try {
-            long time = timeFromStringToMillis(date,"UTC", yyyy_MM_dd_HH_mm_ss_z);
-            System.out.println("done");
-        } catch (HygieiaException e) {
-            e.printStackTrace();
-        }
-
     }
 }

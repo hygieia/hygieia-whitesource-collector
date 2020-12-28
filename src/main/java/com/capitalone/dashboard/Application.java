@@ -9,6 +9,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
+import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.service.ApiInfo;
@@ -17,6 +19,8 @@ import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger.web.UiConfiguration;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
+
+import java.util.concurrent.Executor;
 
 import static springfox.documentation.builders.PathSelectors.regex;
 
@@ -27,6 +31,7 @@ import static springfox.documentation.builders.PathSelectors.regex;
 @SpringBootApplication
 @EnableSwagger2
 @EnableEncryptableProperties
+@EnableAsync
 public class Application extends SpringBootServletInitializer {
 
     @Override
@@ -64,7 +69,18 @@ public class Application extends SpringBootServletInitializer {
                 .build();
     }
 
-
+    @Bean("WSCollectorExecutor")
+    public Executor taskExecutor() {
+        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+        executor.setCorePoolSize(4);
+        executor.setMaxPoolSize(8);
+        executor.setQueueCapacity(100);
+        executor.setThreadNamePrefix("WSCollectorThread-");
+        executor.setWaitForTasksToCompleteOnShutdown(true);
+        executor.setBeanName("WSCollectorExecutor");
+        executor.initialize();
+        return executor;
+    }
 
 
 }

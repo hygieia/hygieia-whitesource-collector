@@ -52,9 +52,9 @@ public class WhiteSourceSettings  {
     private String ignoredChangeClass;
     private List<WhiteSourceServerSettings> whiteSourceServerSettings = new ArrayList<>();
 
-    private List<String> ignoreEndPoints = new ArrayList();
-    private List<String> ignoreApiUsers = new ArrayList();
-    private List<String> ignoreBodyEndPoints = new ArrayList();
+    private List<String> ignoreEndPoints = new ArrayList<>();
+    private List<String> ignoreApiUsers = new ArrayList<>();
+    private List<String> ignoreBodyEndPoints = new ArrayList<>();
     @Value("${corsEnabled:false}")
     private boolean corsEnabled;
     private String corsWhitelist;
@@ -306,7 +306,7 @@ public class WhiteSourceSettings  {
         this.corsWhitelist = corsWhitelist;
     }
 
-    public boolean checkIgnoreEndPoint(String endPointURI) { return !getIgnoreEndPoints().isEmpty() && getIgnoreEndPoints().contains(endPointURI); }
+    public boolean checkIgnoreEndPoint(String endPointURI) { return !ignoreEndPoints.isEmpty() && ignoreEndPoints.contains(endPointURI); }
 
     public boolean checkIgnoreApiUser(String apiUser) {
         if(CollectionUtils.isEmpty(this.ignoreApiUsers)) return false;
