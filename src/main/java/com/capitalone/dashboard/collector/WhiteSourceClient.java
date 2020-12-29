@@ -16,7 +16,7 @@ import java.util.concurrent.ExecutionException;
 
 public interface WhiteSourceClient {
     List<WhiteSourceProduct> getProducts(WhitesourceOrg whitesourceOrg,WhiteSourceServerSettings serverSettings) throws HygieiaException;
-    Map<String, LibraryPolicyResult> getProductAlerts(WhitesourceOrg whitesourceOrg, String productToken, Map<String, WhiteSourceProjectVital> projectVitalMap, WhiteSourceServerSettings serverSettings);
+    Map<String, LibraryPolicyResult> getProductAlerts(String productToken, Set<WhiteSourceComponent> enabledProjects, Map<String, WhiteSourceProjectVital> projectVitalMap, WhiteSourceServerSettings serverSettings);
     LibraryPolicyResult getProjectAlerts(WhiteSourceComponent whiteSourceComponent, WhiteSourceProjectVital projectVital, WhiteSourceServerSettings serverSettings);
     WhitesourceOrg getOrgDetails(WhiteSourceServerSettings serverSettings) throws HygieiaException;
     List<WhiteSourceChangeRequest> getChangeRequestLog(WhitesourceOrg whitesourceOrg, long collectorLastUpdatedTime, WhiteSourceServerSettings serverSettings) throws HygieiaException;

@@ -188,10 +188,10 @@ public class WhiteSourceCollectorTask extends CollectorTask<WhiteSourceCollector
 
                 List<CompletableFuture<List<WhiteSourceComponent>>> threads = new ArrayList<>();
                 for (List<WhiteSourceProduct> partition : partitions) {
-                    CompletableFuture<List<WhiteSourceComponent>> thread = dataRefreshService.getProjectsForProductsAsync(whitesourceOrg,partition,whiteSourceServerSettings);
+                    CompletableFuture<List<WhiteSourceComponent>> thread = dataRefreshService.getProjectsForProductsAsync(whitesourceOrg, partition, whiteSourceServerSettings);
                     threads.add(thread);
                 }
-                CompletableFuture.allOf(Iterables.toArray(threads,CompletableFuture.class)).join();
+                CompletableFuture.allOf(Iterables.toArray(threads, CompletableFuture.class)).join();
                 for (CompletableFuture<List<WhiteSourceComponent>> thread : threads) {
                     projects.addAll(thread.get());
                 }
@@ -272,7 +272,6 @@ public class WhiteSourceCollectorTask extends CollectorTask<WhiteSourceCollector
     private int refreshData(WhiteSourceCollector collector, WhitesourceOrg whitesourceOrg, Set<WhiteSourceChangeRequest> changeRequests,
                             Map<String, WhiteSourceProjectVital> projectVitalMap, WhiteSourceServerSettings serverSettings) throws ExecutionException, InterruptedException {
 
-        Set<WhiteSourceComponent> collectedProjects = new HashSet<>();
         Map<WhiteSourceChangeRequest, WhiteSourceChangeRequest> changeRequestMap = changeRequests.stream().collect(Collectors.toMap(Function.identity(), Function.identity()));
 
         Set<WhiteSourceComponent> enabledProjects = getEnabledProjects(collector);
@@ -286,61 +285,106 @@ public class WhiteSourceCollectorTask extends CollectorTask<WhiteSourceCollector
         long startTime = System.currentTimeMillis();
         int count = 0;
         DataRefresh cumulativeDataRefresh = new DataRefresh();
-        if (collector.getLastExecuted() > 0) {
-            // (1) Collect for recently scanned projects first
-            Set<WhiteSourceComponent> recentScannedProjects = getRecentScannedEnabledProjects(projectVitalMap, enabledProjects);
-            LOG.info("WhitesourceCollectorTask: Refresh Data - Step 1 - Collecting Recently Scanned Projects. To be collected =" + recentScannedProjects.size());
-            DataRefresh dataRefresh = updateData(whitesourceOrg, enabledProjects, recentScannedProjects, projectVitalMap, changeRequestMap, serverSettings);
+        if (whiteSourceSettings.isOptimizeCollection()) {
+            if (collector.getLastExecuted() > 0) {
+                // (1) Collect for recently scanned projects first
+                Set<WhiteSourceComponent> recentScannedProjects = getRecentScannedEnabledProjects(projectVitalMap, enabledProjects);
+                LOG.info("WhitesourceCollectorTask: Refresh Data - Step 1 - Collecting Recently Scanned Projects. To be collected =" + recentScannedProjects.size());
+                DataRefresh dataRefresh = updateData(enabledProjects, recentScannedProjects, projectVitalMap, serverSettings);
 
-            count = dataRefresh.getCollectedProjects().size();
-            LOG.info("WhitesourceCollectorTask: Refresh Data - Step 1 - Finished Collecting Recently Scanned Projects. Total collected =" + count + ". Time taken =" + (System.currentTimeMillis() - startTime)) ;
-            collectedProjects.addAll(dataRefresh.getCollectedProjects());
-            cumulativeDataRefresh.combine(dataRefresh);
+                count = dataRefresh.getCollectedProjects().size();
+                LOG.info("WhitesourceCollectorTask: Refresh Data - Step 1 - Finished Collecting Recently Scanned Projects. Total collected =" + count + ". Time taken =" + (System.currentTimeMillis() - startTime));
+                cumulativeDataRefresh.combine(dataRefresh);
+                totalTime += (System.currentTimeMillis() - startTime);
 
-            startTime = System.currentTimeMillis();
-            totalTime += (System.currentTimeMillis() - startTime);
+                startTime = System.currentTimeMillis();
 
-            // (2) Collect for any project that has a new alert
-            Set<String> newAlertProjectTokens = whiteSourceClient.getAffectedProjectsForOrganization(whitesourceOrg, getHistoryTimestamp(collector), serverSettings);
-            Set<WhiteSourceComponent> newAlertProjects = filterProjects(enabledProjects, collectedProjects, newAlertProjectTokens);
-            LOG.info("WhitesourceCollectorTask: Refresh Data - Step 2 - Collecting Projects with new alerts. To be collected =" + newAlertProjects.size());
-            dataRefresh = updateData(whitesourceOrg, enabledProjects, newAlertProjects, projectVitalMap, changeRequestMap, serverSettings);
+                // (2) Collect for any project that has a new alert
+                Set<String> newAlertProjectTokens = whiteSourceClient.getAffectedProjectsForOrganization(whitesourceOrg, getHistoryTimestamp(collector), serverSettings);
+                Set<WhiteSourceComponent> newAlertProjects = filterProjects(enabledProjects, cumulativeDataRefresh.getCollectedProjects(), newAlertProjectTokens);
+                LOG.info("WhitesourceCollectorTask: Refresh Data - Step 2 - Collecting Projects with new alerts. To be collected =" + newAlertProjects.size());
+                dataRefresh = updateData(enabledProjects, newAlertProjects, projectVitalMap, serverSettings);
+                count = count + dataRefresh.getCollectedProjects().size();
+                LOG.info("WhitesourceCollectorTask: Refresh Data - Step 2 - Finished Collecting Projects with new alert. Total collected =" + count + ". Time taken =" + (System.currentTimeMillis() - startTime));
+                cumulativeDataRefresh.combine(dataRefresh);
+                totalTime += (System.currentTimeMillis() - startTime);
+
+
+                startTime = System.currentTimeMillis();
+
+                // (3) Collect for any project that has related changes
+                Set<String> changeRequestProjectTokens = getAffectedProjectsFromChanges(changeRequests, whitesourceOrg.getName());
+                Set<WhiteSourceComponent> changeRequestProjects = filterProjects(enabledProjects, cumulativeDataRefresh.getCollectedProjects(), changeRequestProjectTokens);
+                LOG.info("WhitesourceCollectorTask: Refresh Data - Step 3 - Collecting Projects in change log. To be collected =" + changeRequestProjects.size());
+                dataRefresh = updateData(enabledProjects, changeRequestProjects, projectVitalMap, serverSettings);
+                count = count + dataRefresh.getCollectedProjects().size();
+                LOG.info("WhitesourceCollectorTask: Refresh Data - Step 3 - Finished Collecting Projects in change log. Total collected =" + count + ". Time taken =" + (System.currentTimeMillis() - startTime));
+                cumulativeDataRefresh.combine(dataRefresh);
+
+                LOG.info("WhitesourceCollectorTask: Refresh Data - High Priority Changes - Total projects : " + cumulativeDataRefresh.getCollectedProjects().size() + ". Time taken =" + (System.currentTimeMillis() - startTime));
+                totalTime += (System.currentTimeMillis() - startTime);
+
+                startTime = System.currentTimeMillis();
+            }
+
+            // (4) Collect everything enabled that is not collected yet in (1) through (3)
+            Set<WhiteSourceComponent> remainingProjects = enabledProjects.stream().filter(e -> !cumulativeDataRefresh.getCollectedProjects().contains(e)).collect(Collectors.toSet());
+            LOG.info("WhitesourceCollectorTask: Refresh Data - Step 4 - Collecting all remaining projects. To be collected =" + remainingProjects.size());
+            DataRefresh dataRefresh = updateData(enabledProjects, remainingProjects, projectVitalMap, serverSettings);
             count = count + dataRefresh.getCollectedProjects().size();
-            LOG.info("WhitesourceCollectorTask: Refresh Data - Step 2 - Finished Collecting Projects with new alert. Total collected =" + count + ". Time taken =" + (System.currentTimeMillis() - startTime));
-            collectedProjects.addAll(dataRefresh.getCollectedProjects());
+            LOG.info("WhitesourceCollectorTask: Refresh Data - Step 4 - Finished Collecting all remaining Projects. Total collected =" + count + ". Time taken =" + (System.currentTimeMillis() - startTime));
             cumulativeDataRefresh.combine(dataRefresh);
-
-            startTime = System.currentTimeMillis();
-            totalTime += (System.currentTimeMillis() - startTime);
-
-            // (3) Collect for any project that has related changes
-            Set<String> changeRequestProjectTokens = getAffectedProjectsFromChanges(changeRequests, whitesourceOrg.getName());
-            Set<WhiteSourceComponent> changeRequestProjects = filterProjects(enabledProjects, collectedProjects, changeRequestProjectTokens);
-            LOG.info("WhitesourceCollectorTask: Refresh Data - Step 3 - Collecting Projects in change log. To be collected =" + changeRequestProjects.size());
-            dataRefresh = updateData(whitesourceOrg, enabledProjects, changeRequestProjects, projectVitalMap, changeRequestMap, serverSettings);
-            count = count + dataRefresh.getCollectedProjects().size();
-            LOG.info("WhitesourceCollectorTask: Refresh Data - Step 3 - Finished Collecting Projects in change log. Total collected =" + count + ". Time taken =" + (System.currentTimeMillis() - startTime));
-            collectedProjects.addAll(dataRefresh.getCollectedProjects());
-            cumulativeDataRefresh.combine(dataRefresh);
-
-            LOG.info("WhitesourceCollectorTask: Refresh Data - High Priority Changes - Total projects : " + collectedProjects.size() + ". Time taken =" + (System.currentTimeMillis() - startTime));
-            startTime = System.currentTimeMillis();
             totalTime += (System.currentTimeMillis() - startTime);
         }
-
-        // (4) Collect everything enabled that is not collected yet in (1) through (3)
-
-        Set<WhiteSourceComponent> remainingProjects = enabledProjects.stream().filter(e -> !collectedProjects.contains(e)).collect(Collectors.toSet());
-        LOG.info("WhitesourceCollectorTask: Refresh Data - Step 4 - Collecting all remaining projects. To be collected =" + remainingProjects.size());
-        DataRefresh dataRefresh = updateData(whitesourceOrg, enabledProjects, remainingProjects, projectVitalMap, changeRequestMap, serverSettings);
-        count = count + dataRefresh.getCollectedProjects().size();
-        LOG.info("WhitesourceCollectorTask: Refresh Data - Step 4 - Finished Collecting all remaining Projects. Total collected =" + count + ". Time taken =" + (System.currentTimeMillis() - startTime));
+        // (5) Normal collection - Collect everything.
+        // In optimized mode, projects left to collect at this point were due to exceptions and most probably due to whitesource api calls timing out.
+        startTime = System.currentTimeMillis();
+        Set<WhiteSourceComponent> remainingProjects = enabledProjects.stream().filter(e -> !cumulativeDataRefresh.getCollectedProjects().contains(e)).collect(Collectors.toSet());
+        // Need to partition products
+        LOG.info("WhitesourceCollectorTask: Refresh Data - Step 5 - Collecting all remaining projects that failed. To be collected =" + remainingProjects.size());
+        int partitionCount = remainingProjects.size() >= whiteSourceSettings.getThreadPoolSettings().getCorePoolSize() ? whiteSourceSettings.getThreadPoolSettings().getCorePoolSize() : 1;
+        Iterable<List<WhiteSourceComponent>> partitions = Iterables.partition(remainingProjects, remainingProjects.size() / partitionCount);
+        List<CompletableFuture<DataRefresh>> threads = new ArrayList<>();
+        for (List<WhiteSourceComponent> partition : partitions) {
+            CompletableFuture<DataRefresh> thread = dataRefreshService.getAndUpdateDataByProjectAsync(partition,projectVitalMap,serverSettings);
+            threads.add(thread);
+        }
+        CompletableFuture.allOf(Iterables.toArray(threads, CompletableFuture.class)).join();
+        for (CompletableFuture<DataRefresh> thread : threads) {
+            cumulativeDataRefresh.combine(thread.get());
+        }
         totalTime += (System.currentTimeMillis() - startTime);
-        collectedProjects.addAll(dataRefresh.getCollectedProjects());
-        cumulativeDataRefresh.combine(dataRefresh);
-        libraryReferenceRepository.save(cumulativeDataRefresh.getLibraryLookUp().values());
-        LOG.info("WhitesourceCollectorTask: Refresh Data - Finished Collected All Steps. Total Projects Collected : " + collectedProjects.size() + ". Time taken =" + totalTime);
+        LOG.info("WhitesourceCollectorTask: Finished Collected All Steps. Total Projects Collected : " + cumulativeDataRefresh.getCollectedProjects().size() + ". Time taken =" + totalTime);
+
+        startTime = System.currentTimeMillis();
+        saveLibraryReferenceData(cumulativeDataRefresh.getLibraryReferenceMap());
+
+        LOG.info("WhitesourceCollectorTask: Saved refernece data. Total Libraries : " + cumulativeDataRefresh.getLibraryReferenceMap().size() + ". Time taken =" + (System.currentTimeMillis() - startTime));
         return count;
+    }
+
+    /**
+     * Save Library Reference
+     * @param referenceMap referenceMap
+     */
+    private void saveLibraryReferenceData(Map<String, LibraryPolicyReference> referenceMap) {
+        Collection<LibraryPolicyReference> referenceList = referenceMap.values();
+        referenceList.forEach(r -> {
+            LibraryPolicyReference existing = libraryReferenceRepository.findByLibraryNameAndOrgName(r.getLibraryName(),r.getOrgName());
+            if (existing == null) {
+                libraryReferenceRepository.save(r);
+            } else {
+                List<WhiteSourceComponent> existingProjects = existing.getProjectReferences();
+                List<WhiteSourceComponent> newProjects = r.getProjectReferences();
+                List<WhiteSourceComponent> missing = newProjects.stream().filter(n-> !existingProjects.contains(n)).collect(Collectors.toList());
+                if (!CollectionUtils.isEmpty(missing)) {
+                    existingProjects.addAll(missing);
+                    existing.setProjectReferences(existingProjects);
+                    existing.setLastUpdated(System.currentTimeMillis());
+                    libraryReferenceRepository.save(existing);
+                }
+            }
+        });
     }
 
     /**
@@ -360,18 +404,16 @@ public class WhiteSourceCollectorTask extends CollectorTask<WhiteSourceCollector
 
     /**
      * Updates data via calling DataRefresh Service in multi threads
-     * @param whitesourceOrg Whitesource org
-     * @param enabledProjects Enabled Projects
+     *
+     * @param enabledProjects   Enabled Projects
      * @param projectsToCollect Projects to collect
-     * @param projectVitalMap Project Vital Map
-     * @param changeRequestMap Change Request Map
-     * @param serverSettings Whitesource Server Setting
-     * @throws ExecutionException execution exception
+     * @param projectVitalMap   Project Vital Map
+     * @param serverSettings    Whitesource Server Setting
+     * @throws ExecutionException   execution exception
      * @throws InterruptedException interrupted exception
      */
-    private DataRefresh updateData(WhitesourceOrg whitesourceOrg, Set<WhiteSourceComponent> enabledProjects, Set<WhiteSourceComponent> projectsToCollect,
+    private DataRefresh updateData(Set<WhiteSourceComponent> enabledProjects, Set<WhiteSourceComponent> projectsToCollect,
                                    Map<String, WhiteSourceProjectVital> projectVitalMap,
-                                   Map<WhiteSourceChangeRequest, WhiteSourceChangeRequest> changeRequestMap,
                                    WhiteSourceServerSettings serverSettings) throws ExecutionException, InterruptedException {
 
         if (CollectionUtils.isEmpty(projectsToCollect)) {
@@ -386,17 +428,18 @@ public class WhiteSourceCollectorTask extends CollectorTask<WhiteSourceCollector
         LOG.info("WhitesourceCollectorTask: updateData: For " + projectsToCollect.size() + " projects, unique product tokens to be collected =" + productTokensToCollect.size());
 
         // Need to partition products
-        Iterable<List<String>> partitions = Iterables.partition(productTokensToCollect, productTokensToCollect.size() / 4);
+        int partitionCount = productTokensToCollect.size() >= whiteSourceSettings.getThreadPoolSettings().getCorePoolSize() ? whiteSourceSettings.getThreadPoolSettings().getCorePoolSize() : 1;
+
+        Iterable<List<String>> partitions = Iterables.partition(productTokensToCollect, productTokensToCollect.size() / partitionCount);
         List<CompletableFuture<DataRefresh>> threads = new ArrayList<>();
         for (List<String> partition : partitions) {
-            CompletableFuture<DataRefresh> thread = dataRefreshService.getAndUpdateDataAsynch(whitesourceOrg,partition,
-                    enabledProjects, projectVitalMap, changeRequestMap, serverSettings);
+            CompletableFuture<DataRefresh> thread = dataRefreshService.getAndUpdateDataByProductAsync(partition, enabledProjects, projectVitalMap, serverSettings);
             threads.add(thread);
         }
-        CompletableFuture.allOf(Iterables.toArray(threads,CompletableFuture.class)).join();
+        CompletableFuture.allOf(Iterables.toArray(threads, CompletableFuture.class)).join();
         DataRefresh dataRefresh = new DataRefresh();
         for (CompletableFuture<DataRefresh> thread : threads) {
-             dataRefresh.combine(thread.get());
+            dataRefresh.combine(thread.get());
         }
         return dataRefresh;
     }

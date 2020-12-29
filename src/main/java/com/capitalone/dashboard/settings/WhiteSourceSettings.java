@@ -63,6 +63,8 @@ public class WhiteSourceSettings  {
 
 
     private ThreadPoolSettings threadPoolSettings = new ThreadPoolSettings();
+    @Value("${whitesource.optimizeCollection:true}")
+    private boolean optimizeCollection;
 
     public long getHistoryTimestamp() {
         return historyTimestamp;
@@ -324,6 +326,14 @@ public class WhiteSourceSettings  {
 
     public void setThreadPoolSettings(ThreadPoolSettings threadPoolSettings) {
         this.threadPoolSettings = threadPoolSettings;
+    }
+
+    public boolean isOptimizeCollection() {
+        return optimizeCollection;
+    }
+
+    public void setOptimizeCollection(boolean optimizeCollection) {
+        this.optimizeCollection = optimizeCollection;
     }
 
     public boolean checkIgnoreEndPoint(String endPointURI) { return !ignoreEndPoints.isEmpty() && ignoreEndPoints.contains(endPointURI); }
