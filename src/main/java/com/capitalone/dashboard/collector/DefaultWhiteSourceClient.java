@@ -276,6 +276,7 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
         Map<String, LibraryPolicyResult> emptyLibraryPolicyMap = enabledProjects.stream()
                 .filter(p-> productToken.equals(p.getProductToken()))
                 .filter(p -> !finalLibraryPolicyResultMap.containsKey(p.getProjectToken()))
+                .filter(p -> Objects.nonNull(projectVitalMap.get(p.getProjectToken())))
                 .collect(Collectors.toMap(WhiteSourceComponent::getProjectToken, p -> getEmptyProjectAlert(p, projectVitalMap.get(p.getProjectToken()), serverSettings), (a, b) -> b));
         libraryPolicyResultMap.putAll(emptyLibraryPolicyMap);
         return libraryPolicyResultMap;
@@ -520,6 +521,7 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
 
     // Gets evaluation time stamp
     public static void setEvaluationTimeStampAndReportUrl(LibraryPolicyResult libraryPolicyResult, WhiteSourceProjectVital projectVital, WhiteSourceServerSettings serverSettings) {
+        if (projectVital == null) return;
         libraryPolicyResult.setEvaluationTimestamp(projectVital.getLastUpdateDate());
         Long projectId = projectVital.getId();
         libraryPolicyResult.setReportUrl(String.format(serverSettings.getDeeplink(), projectId));
