@@ -184,7 +184,11 @@ public class WhiteSourceCollectorTask extends CollectorTask<WhiteSourceCollector
                 List<WhiteSourceProduct> products = whiteSourceClient.getProducts(whitesourceOrg,
                         whiteSourceServerSettings);
 
-                Iterable<List<WhiteSourceProduct>> partitions = Iterables.partition(products, products.size() / 4);
+                if (CollectionUtils.isEmpty(products)) {
+                    return projects;
+                }
+
+                Iterable<List<WhiteSourceProduct>> partitions = Iterables.partition(products, products.size() / whiteSourceSettings.getThreadPoolSettings().getCorePoolSize());
 
                 List<CompletableFuture<List<WhiteSourceComponent>>> threads = new ArrayList<>();
                 for (List<WhiteSourceProduct> partition : partitions) {
@@ -340,18 +344,20 @@ public class WhiteSourceCollectorTask extends CollectorTask<WhiteSourceCollector
         // In optimized mode, projects left to collect at this point were due to exceptions and most probably due to whitesource api calls timing out.
         startTime = System.currentTimeMillis();
         Set<WhiteSourceComponent> remainingProjects = enabledProjects.stream().filter(e -> !cumulativeDataRefresh.getCollectedProjects().contains(e)).collect(Collectors.toSet());
-        // Need to partition products
-        LOG.info("WhitesourceCollectorTask: Refresh Data - Step 5 - Collecting all remaining projects that failed. To be collected =" + remainingProjects.size());
-        int partitionCount = remainingProjects.size() >= whiteSourceSettings.getThreadPoolSettings().getCorePoolSize() ? whiteSourceSettings.getThreadPoolSettings().getCorePoolSize() : 1;
-        Iterable<List<WhiteSourceComponent>> partitions = Iterables.partition(remainingProjects, remainingProjects.size() / partitionCount);
-        List<CompletableFuture<DataRefresh>> threads = new ArrayList<>();
-        for (List<WhiteSourceComponent> partition : partitions) {
-            CompletableFuture<DataRefresh> thread = dataRefreshService.getAndUpdateDataByProjectAsync(partition,projectVitalMap,serverSettings);
-            threads.add(thread);
-        }
-        CompletableFuture.allOf(Iterables.toArray(threads, CompletableFuture.class)).join();
-        for (CompletableFuture<DataRefresh> thread : threads) {
-            cumulativeDataRefresh.combine(thread.get());
+        if (!CollectionUtils.isEmpty(remainingProjects)) {
+            // Need to partition products
+            LOG.info("WhitesourceCollectorTask: Refresh Data - Step 5 - Collecting all remaining projects that failed. To be collected =" + remainingProjects.size());
+            int partitionCount = remainingProjects.size() >= whiteSourceSettings.getThreadPoolSettings().getCorePoolSize() ? whiteSourceSettings.getThreadPoolSettings().getCorePoolSize() : 1;
+            Iterable<List<WhiteSourceComponent>> partitions = Iterables.partition(remainingProjects, remainingProjects.size() / partitionCount);
+            List<CompletableFuture<DataRefresh>> threads = new ArrayList<>();
+            for (List<WhiteSourceComponent> partition : partitions) {
+                CompletableFuture<DataRefresh> thread = dataRefreshService.getAndUpdateDataByProjectAsync(partition, projectVitalMap, serverSettings);
+                threads.add(thread);
+            }
+            CompletableFuture.allOf(Iterables.toArray(threads, CompletableFuture.class)).join();
+            for (CompletableFuture<DataRefresh> thread : threads) {
+                cumulativeDataRefresh.combine(thread.get());
+            }
         }
         totalTime += (System.currentTimeMillis() - startTime);
         LOG.info("WhitesourceCollectorTask: Finished Collected All Steps. Total Projects Collected : " + cumulativeDataRefresh.getCollectedProjects().size() + ". Time taken =" + totalTime);
@@ -416,8 +422,9 @@ public class WhiteSourceCollectorTask extends CollectorTask<WhiteSourceCollector
                                    Map<String, WhiteSourceProjectVital> projectVitalMap,
                                    WhiteSourceServerSettings serverSettings) throws ExecutionException, InterruptedException {
 
+        DataRefresh dataRefresh = new DataRefresh();
         if (CollectionUtils.isEmpty(projectsToCollect)) {
-            return new DataRefresh();
+            return dataRefresh;
         }
 
         Set<String> productTokensToCollect = projectsToCollect.stream()
@@ -427,6 +434,10 @@ public class WhiteSourceCollectorTask extends CollectorTask<WhiteSourceCollector
 
         LOG.info("WhitesourceCollectorTask: updateData: For " + projectsToCollect.size() + " projects, unique product tokens to be collected =" + productTokensToCollect.size());
 
+        //The following shouldn't happen, but still....
+        if (CollectionUtils.isEmpty(productTokensToCollect)) {
+            return dataRefresh;
+        }
         // Need to partition products
         int partitionCount = productTokensToCollect.size() >= whiteSourceSettings.getThreadPoolSettings().getCorePoolSize() ? whiteSourceSettings.getThreadPoolSettings().getCorePoolSize() : 1;
 
@@ -437,7 +448,7 @@ public class WhiteSourceCollectorTask extends CollectorTask<WhiteSourceCollector
             threads.add(thread);
         }
         CompletableFuture.allOf(Iterables.toArray(threads, CompletableFuture.class)).join();
-        DataRefresh dataRefresh = new DataRefresh();
+
         for (CompletableFuture<DataRefresh> thread : threads) {
             dataRefresh.combine(thread.get());
         }

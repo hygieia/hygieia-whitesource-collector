@@ -1,0 +1,88 @@
+[
+  {
+    "id" : "5f8fa0f1cca54740be13e8cc",
+    "_class" : "com.capitalone.dashboard.model.WhiteSourceComponent",
+    "description" : "Test1",
+    "enabled" : true,
+    "errors" : [],
+    "pushed" : false,
+    "collectorId" : "5fdeb200c8a1d024ff3d27e4",
+    "lastUpdated" : 1609272207000,
+    "options" : {
+      "productToken" : "25987580b94e4bd5a0a70ffe4c68a890e7b218a0a000407bb249c2df2f25fea4",
+      "projectToken" : "05b07ce07a6f49c6b3ac7ad9fbbd383b123db8a4486c4cfe91065441d31267af",
+      "orgName" : "GitHub Enterprise",
+      "projectName" : "Test1Project",
+      "productName" : "Test1Product"
+    }
+  },
+  {
+    "id" : "5f8fa0f1cca54740be13e8f3",
+    "_class" : "com.capitalone.dashboard.model.WhiteSourceComponent",
+    "description" : "Test2Project",
+    "enabled" : true,
+    "errors" : [],
+    "pushed" : false,
+    "collectorId" : "5fdeb200c8a1d024ff3d27e4",
+    "lastUpdated" : 1609272206794,
+    "options" : {
+      "productToken" : "5aecc4760a2640afb7c98eb5aab6b22f614450a5404c4beaa683ce84309beab4",
+      "projectToken" : "e660acc1583745e793ac4435bbccbb6674f9b5bbcee94be09b183e5c34aac037",
+      "orgName" : "GitHub Enterprise",
+      "projectName" : "Test2Project",
+      "productName" : "Test2Product"
+    }
+  },
+  {
+    "id" : "5f8fa0f1cca54740be13e8f7",
+    "_class" : "com.capitalone.dashboard.model.WhiteSourceComponent",
+    "description" : "Test3Project",
+    "enabled" : true,
+    "errors" : [],
+    "pushed" : false,
+    "collectorId" : "5fdeb200c8a1d024ff3d27e4",
+    "lastUpdated" : 1609272335819,
+    "options" : {
+      "productToken" : "212d7082147b430dae7d92e4d56d511f21277b9ac8324259be002313d90b5e37",
+      "projectToken" : "95a82d2395bc4da98083bb9ab84cff349ed92e990ec745439ef37818b8ded1b3",
+      "orgName" : "GitHub Enterprise",
+      "projectName" : "Test3Project",
+      "productName" : "Test3Product"
+    }
+  },
+  {
+    "id" : "5f8fa0f1cca54740be13e8f9",
+    "_class" : "com.capitalone.dashboard.model.WhiteSourceComponent",
+    "description" : "Test4Project",
+    "enabled" : true,
+    "errors" : [],
+    "pushed" : false,
+    "collectorId" : "5fdeb200c8a1d024ff3d27e4",
+    "lastUpdated" : 1609272333628,
+    "options" : {
+      "productToken" : "212d7082147b430dae7d92e4d56d511f21277b9ac8324259be002313d90b5e37",
+      "projectToken" : "612123ad31d34ff5b47ab2fe9eabda3f3afe3a76d0534c2a9fa8d30db9e563bb",
+      "orgName" : "GitHub Enterprise",
+      "projectName" : "Test4Project",
+      "productName" : "Test3Product"
+    }
+  },
+  {
+    "id" : "5f8fa0f1cca54740be13e8ce",
+    "_class" : "com.capitalone.dashboard.model.WhiteSourceComponent",
+    "description" : "Test5Project",
+    "enabled" : false,
+    "errors" : [],
+    "pushed" : false,
+    "collectorId" : "5fdeb200c8a1d024ff3d27e4",
+    "lastUpdated" : 0,
+    "options" : {
+      "productToken" : "254dae3b01d2417f8b094fa6cdc821fd1ce635e8aea44516a899460e1eb0a4e0",
+      "projectToken" : "75d22af901e84194b5b4137854506895d94da4c616f941ae903c26bb3b74d786",
+      "orgName" : "GitHub Enterprise",
+      "projectName" : "Test5Project",
+      "productName" : "Test5Product"
+    }
+  }
+]
+

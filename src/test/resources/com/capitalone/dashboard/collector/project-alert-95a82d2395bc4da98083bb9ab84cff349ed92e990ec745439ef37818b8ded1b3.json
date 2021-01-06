@@ -1,0 +1,828 @@
+{
+  "alerts": [
+    {
+      "type": "REJECTED_BY_POLICY_RESOURCE",
+      "level": "MAJOR",
+      "library": {
+        "keyUuid": "05146de5-d9a4-47cc-b5d6-f9f700adb4e6",
+        "keyId": 72088049,
+        "filename": "ojdbc6-11.2.0.3.jar",
+        "type": "Java",
+        "description": "Artifactory auto generated POM",
+        "references": {
+          "pomUrl": "http://index.whitesourcesoftware.com/nexus/content/groups/public/com/oracle/ojdbc6/11.2.0.3/ojdbc6-11.2.0.3.pom"
+        },
+        "sha1": "de96f0060c7353532f4cb4a0b73d20545580fc91",
+        "name": "ojdbc6",
+        "artifactId": "ojdbc6",
+        "version": "11.2.0.3",
+        "groupId": "com.oracle",
+        "licenses": [
+          {
+            "name": "Oracle Technology Network License Agreement",
+            "url": "http://www.oracle.com/technetwork/licenses/distribution-license-152002.html",
+            "references": [
+              {
+                "referenceType": "Project home page",
+                "reference": "http://www.oracle.com/technology/software/htdocs/distlic.htm"
+              }
+            ]
+          }
+        ]
+      },
+      "project": "GH_sparkpost-event-collector",
+      "projectId": 1885347,
+      "projectToken": "95a82d2395bc4da98083bb9ab84cff349ed92e990ec745439ef37818b8ded1b3",
+      "directDependency": true,
+      "description": "Uncategorized License: Review with Legal high severity license in use within 60 days to avoid release escalation",
+      "date": "2020-12-10",
+      "modifiedDate": "2020-12-10",
+      "time": 1607565487000,
+      "creation_date": "2020-11-10",
+      "alertUuid": "d4cd46f2-777e-4944-83de-0d1eb584da54"
+    },
+    {
+      "vulnerability": {
+        "name": "CVE-2020-25649",
+        "type": "CVE",
+        "severity": "medium",
+        "score": 5.0,
+        "cvss3_severity": "high",
+        "cvss3_score": 7.5,
+        "scoreMetadataVector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:H/A:N",
+        "publishDate": "2020-12-03",
+        "url": "https://vuln.whitesourcesoftware.com/vulnerability/CVE-2020-25649",
+        "description": "A flaw was found in FasterXML Jackson Databind, where it did not have entity expansion secured properly. This flaw allows vulnerability to XML external entity (XXE) attacks. The highest threat from this vulnerability is data integrity.",
+        "topFix": {
+          "vulnerability": "CVE-2020-25649",
+          "type": "UPGRADE_VERSION",
+          "origin": "WHITESOURCE_EXPERT",
+          "url": "https://github.com/FasterXML/jackson-databind/issues/2589",
+          "fixResolution": "com.fasterxml.jackson.core:jackson-databind:2.11.0.rc1,2.10.5,2.9.10.7,2.6.7.4",
+          "date": "2020-12-03",
+          "message": "Upgrade to version"
+        },
+        "allFixes": [
+          {
+            "vulnerability": "CVE-2020-25649",
+            "type": "UPGRADE_VERSION",
+            "origin": "WHITESOURCE_EXPERT",
+            "url": "https://github.com/FasterXML/jackson-databind/issues/2589",
+            "fixResolution": "com.fasterxml.jackson.core:jackson-databind:2.11.0.rc1,2.10.5,2.9.10.7,2.6.7.4",
+            "date": "2020-12-03",
+            "message": "Upgrade to version"
+          },
+          {
+            "vulnerability": "CVE-2020-25649",
+            "type": "UPGRADE_VERSION",
+            "origin": "BUGZILLA",
+            "url": "https://bugzilla.redhat.com/show_bug.cgi?id=1887664",
+            "fixResolution": "jackson-databind-2.11.0",
+            "message": "CVE-2020-25649 jackson-databind: FasterXML DOMDeserializer insecure entity expansion is vulnerable to XML external entity (XXE)",
+            "extraData": "key=1887664&assignee=Red Hat Product Security"
+          },
+          {
+            "vulnerability": "CVE-2020-25649",
+            "type": "UPGRADE_VERSION",
+            "origin": "BUGZILLA",
+            "url": "https://bugzilla.redhat.com/show_bug.cgi?id=1887664",
+            "fixResolution": "jackson-databind-2.11.0",
+            "message": "CVE-2020-25649 jackson-databind: FasterXML DOMDeserializer insecure entity expansion is vulnerable to XML external entity (XXE)",
+            "extraData": "key=1887664&assignee=Red Hat Product Security"
+          },
+          {
+            "vulnerability": "CVE-2020-25649",
+            "type": "UPGRADE_VERSION",
+            "origin": "BUGZILLA",
+            "url": "https://bugzilla.redhat.com/show_bug.cgi?id=1887664",
+            "fixResolution": "jackson-databind-2.11.0",
+            "message": "CVE-2020-25649 jackson-databind: FasterXML DOMDeserializer insecure entity expansion is vulnerable to XML external entity (XXE)",
+            "extraData": "key=1887664&assignee=Red Hat Product Security"
+          },
+          {
+            "vulnerability": "CVE-2020-25649",
+            "type": "UPGRADE_VERSION",
+            "origin": "BUGZILLA",
+            "url": "https://bugzilla.redhat.com/show_bug.cgi?id=1887664",
+            "fixResolution": "jackson-databind-2.11.0",
+            "message": "CVE-2020-25649 jackson-databind: FasterXML DOMDeserializer insecure entity expansion is vulnerable to XML external entity (XXE)",
+            "extraData": "key=1887664&assignee=Red Hat Product Security"
+          },
+          {
+            "vulnerability": "CVE-2020-25649",
+            "type": "UPGRADE_VERSION",
+            "origin": "BUGZILLA",
+            "url": "https://bugzilla.redhat.com/show_bug.cgi?id=1887664",
+            "fixResolution": "jackson-databind-2.11.0",
+            "message": "CVE-2020-25649 jackson-databind: FasterXML DOMDeserializer insecure entity expansion is vulnerable to XML external entity (XXE)",
+            "extraData": "key=1887664&assignee=Red Hat Product Security"
+          },
+          {
+            "vulnerability": "CVE-2020-25649",
+            "type": "CHANGE_FILES",
+            "origin": "GITHUB_COMMIT",
+            "url": "https://github.com/FasterXML/jackson-databind/commit/612f971b78c60202e9cd75a299050c8f2d724a59#diff-d403961a0c15c596531f02ed007a8a186bd627099901cf3410cea35f7bf013b6",
+            "fixResolution": "release-notes/VERSION-2.x,release-notes/CREDITS-2.x,src/main/java/com/fasterxml/jackson/databind/ext/DOMDeserializer.java",
+            "date": "2020-01-10",
+            "message": "Fix #2589",
+            "extraData": "key=612f971&committerName=cowtowncoder&committerUrl=https://github.com/cowtowncoder&committerAvatar=https://avatars0.githubusercontent.com/u/55065?v=4"
+          }
+        ],
+        "fixResolutionText": "Upgrade to version com.fasterxml.jackson.core:jackson-databind:2.11.0.rc1,2.10.5,2.9.10.7,2.6.7.4",
+        "references": []
+      },
+      "type": "SECURITY_VULNERABILITY",
+      "level": "MAJOR",
+      "library": {
+        "keyUuid": "ed5e96d7-1902-475a-ad43-51b4a54af61c",
+        "keyId": 101401388,
+        "filename": "jackson-databind-2.10.2.jar",
+        "type": "Java",
+        "description": "General data-binding functionality for Jackson: works on core streaming API",
+        "references": {
+          "url": "http://github.com/FasterXML/jackson",
+          "pomUrl": "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/core/jackson-databind/2.10.2/jackson-databind-2.10.2.pom"
+        },
+        "sha1": "0528de95f198afafbcfb0c09d2e43b6e0ea663ec",
+        "name": "jackson-databind",
+        "artifactId": "jackson-databind",
+        "version": "2.10.2",
+        "groupId": "com.fasterxml.jackson.core",
+        "licenses": [
+          {
+            "name": "Apache 2.0",
+            "spdxName": "Apache-2.0",
+            "url": "http://www.opensource.org/licenses/Apache-2.0",
+            "profileInfo": {
+              "copyrightRiskScore": "THREE",
+              "patentRiskScore": "ONE",
+              "copyleft": "NO",
+              "linking": "DYNAMIC",
+              "royaltyFree": "CONDITIONAL"
+            },
+            "references": [
+              {
+                "referenceType": "POM file",
+                "reference": "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/core/jackson-databind/2.10.2/jackson-databind-2.10.2.pom"
+              }
+            ]
+          }
+        ]
+      },
+      "project": "GH_sparkpost-event-collector",
+      "projectId": 1885347,
+      "projectToken": "95a82d2395bc4da98083bb9ab84cff349ed92e990ec745439ef37818b8ded1b3",
+      "directDependency": true,
+      "description": "High:1,",
+      "date": "2020-12-14",
+      "modifiedDate": "2020-12-14",
+      "status": "OPEN",
+      "time": 1607950848000,
+      "creation_date": "2020-12-14",
+      "alertUuid": "25a328a3-7e76-477c-aaff-326ed79c1b9f"
+    },
+    {
+      "vulnerability": {
+        "name": "CVE-2020-13956",
+        "type": "CVE",
+        "severity": "medium",
+        "score": 5.0,
+        "cvss3_severity": "medium",
+        "cvss3_score": 5.3,
+        "scoreMetadataVector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:L/A:N",
+        "publishDate": "2020-12-02",
+        "url": "https://vuln.whitesourcesoftware.com/vulnerability/CVE-2020-13956",
+        "description": "Apache HttpClient versions prior to version 4.5.13 and 5.0.3 can misinterpret malformed authority component in request URIs passed to the library as java.net.URI object and pick the wrong target host for request execution.",
+        "topFix": {
+          "vulnerability": "CVE-2020-13956",
+          "type": "UPGRADE_VERSION",
+          "origin": "WHITESOURCE_EXPERT",
+          "url": "https://bugzilla.redhat.com/show_bug.cgi?id=CVE-2020-13956",
+          "fixResolution": "org.apache.httpcomponents:httpclient:4.5.13;org.apache.httpcomponents:httpclient-osgi:4.5.13;org.apache.httpcomponents.client5:httpclient5:5.0.3;org.apache.httpcomponents.client5:httpclient5-osgi:5.0.3",
+          "date": "2020-07-21",
+          "message": "Upgrade to version"
+        },
+        "allFixes": [
+          {
+            "vulnerability": "CVE-2020-13956",
+            "type": "UPGRADE_VERSION",
+            "origin": "WHITESOURCE_EXPERT",
+            "url": "https://bugzilla.redhat.com/show_bug.cgi?id=CVE-2020-13956",
+            "fixResolution": "org.apache.httpcomponents:httpclient:4.5.13;org.apache.httpcomponents:httpclient-osgi:4.5.13;org.apache.httpcomponents.client5:httpclient5:5.0.3;org.apache.httpcomponents.client5:httpclient5-osgi:5.0.3",
+            "date": "2020-07-21",
+            "message": "Upgrade to version"
+          },
+          {
+            "vulnerability": "CVE-2020-13956",
+            "type": "CHANGE_FILES",
+            "origin": "GITHUB_COMMIT",
+            "url": "https://github.com/apache/httpcomponents-client/commit/894234a5aeb9958e7e466c383e4d0ded17a9a813",
+            "fixResolution": "httpclient5/src/test/java/org/apache/hc/client5/http/utils/TestURIUtils.java,httpclient5/src/main/java/org/apache/hc/client5/http/utils/URIUtils.java",
+            "date": "2020-09-30",
+            "message": "Incorrect handling of malformed authority component by URIUtils#extractHost",
+            "extraData": "key=894234a&committerName=ok2c&committerUrl=https://github.com/ok2c&committerAvatar=https://avatars0.githubusercontent.com/u/235972?v=4"
+          },
+          {
+            "vulnerability": "CVE-2020-13956",
+            "type": "CHANGE_FILES",
+            "origin": "GITHUB_COMMIT",
+            "url": "https://github.com/apache/httpcomponents-client/commit/894234a5aeb9958e7e466c383e4d0ded17a9a813",
+            "fixResolution": "httpclient5/src/test/java/org/apache/hc/client5/http/utils/TestURIUtils.java,httpclient5/src/main/java/org/apache/hc/client5/http/utils/URIUtils.java",
+            "date": "2020-09-30",
+            "message": "Incorrect handling of malformed authority component by URIUtils#extractHost",
+            "extraData": "key=894234a&committerName=ok2c&committerUrl=https://github.com/ok2c&committerAvatar=https://avatars0.githubusercontent.com/u/235972?v=4"
+          }
+        ],
+        "fixResolutionText": "Upgrade to version org.apache.httpcomponents:httpclient:4.5.13;org.apache.httpcomponents:httpclient-osgi:4.5.13;org.apache.httpcomponents.client5:httpclient5:5.0.3;org.apache.httpcomponents.client5:httpclient5-osgi:5.0.3",
+        "references": []
+      },
+      "type": "SECURITY_VULNERABILITY",
+      "level": "MAJOR",
+      "library": {
+        "keyUuid": "956adff8-3501-4ab6-845a-679c441a5ae2",
+        "keyId": 22691600,
+        "filename": "httpclient-4.5.3.jar",
+        "type": "Java",
+        "description": "Apache HttpComponents Client",
+        "references": {
+          "pomUrl": "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpclient/4.5.3/httpclient-4.5.3.pom"
+        },
+        "sha1": "d1577ae15f01ef5438c5afc62162457c00a34713",
+        "name": "Apache HttpClient",
+        "artifactId": "httpclient",
+        "version": "4.5.3",
+        "groupId": "org.apache.httpcomponents",
+        "licenses": [
+          {
+            "name": "Apache 2.0",
+            "spdxName": "Apache-2.0",
+            "url": "http://www.opensource.org/licenses/Apache-2.0",
+            "profileInfo": {
+              "copyrightRiskScore": "THREE",
+              "patentRiskScore": "ONE",
+              "copyleft": "NO",
+              "linking": "DYNAMIC",
+              "royaltyFree": "CONDITIONAL"
+            },
+            "references": [
+              {
+                "referenceType": "POM file",
+                "reference": "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpclient/4.5.3/httpclient-4.5.3.pom"
+              }
+            ]
+          }
+        ]
+      },
+      "project": "GH_sparkpost-event-collector",
+      "projectId": 1885347,
+      "projectToken": "95a82d2395bc4da98083bb9ab84cff349ed92e990ec745439ef37818b8ded1b3",
+      "directDependency": true,
+      "description": "Medium:1,",
+      "date": "2020-12-02",
+      "modifiedDate": "2020-12-02",
+      "status": "OPEN",
+      "time": 1606929300000,
+      "creation_date": "2020-10-28",
+      "alertUuid": "4986c746-3c05-466a-bfcd-c50379b985c1"
+    },
+    {
+      "vulnerability": {
+        "name": "CVE-2020-15250",
+        "type": "CVE",
+        "severity": "low",
+        "score": 1.9,
+        "cvss3_severity": "medium",
+        "cvss3_score": 5.5,
+        "scoreMetadataVector": "CVSS:3.1/AV:L/AC:L/PR:N/UI:R/S:U/C:H/I:N/A:N",
+        "publishDate": "2020-10-12",
+        "url": "https://vuln.whitesourcesoftware.com/vulnerability/CVE-2020-15250",
+        "description": "In JUnit4 from version 4.7 and before 4.13.1, the test rule TemporaryFolder contains a local information disclosure vulnerability. On Unix like systems, the system's temporary directory is shared between all users on that system. Because of this, when files and directories are written into this directory they are, by default, readable by other users on that same system. This vulnerability does not allow other users to overwrite the contents of these directories or files. This is purely an information disclosure vulnerability. This vulnerability impacts you if the JUnit tests write sensitive information, like API keys or passwords, into the temporary folder, and the JUnit tests execute in an environment where the OS has other untrusted users. Because certain JDK file system APIs were only added in JDK 1.7, this this fix is dependent upon the version of the JDK you are using. For Java 1.7 and higher users: this vulnerability is fixed in 4.13.1. For Java 1.6 and lower users: no patch is available, you must use the workaround below. If you are unable to patch, or are stuck running on Java 1.6, specifying the `java.io.tmpdir` system environment variable to a directory that is exclusively owned by the executing user will fix this vulnerability. For more information, including an example of vulnerable code, see the referenced GitHub Security Advisory.",
+        "topFix": {
+          "vulnerability": "CVE-2020-15250",
+          "type": "UPGRADE_VERSION",
+          "origin": "WHITESOURCE_EXPERT",
+          "url": "https://github.com/junit-team/junit4/security/advisories/GHSA-269g-pwp5-87pp",
+          "fixResolution": "junit:junit:4.13.1",
+          "date": "2020-07-21",
+          "message": "Upgrade to version"
+        },
+        "allFixes": [
+          {
+            "vulnerability": "CVE-2020-15250",
+            "type": "UPGRADE_VERSION",
+            "origin": "WHITESOURCE_EXPERT",
+            "url": "https://github.com/junit-team/junit4/security/advisories/GHSA-269g-pwp5-87pp",
+            "fixResolution": "junit:junit:4.13.1",
+            "date": "2020-07-21",
+            "message": "Upgrade to version"
+          },
+          {
+            "vulnerability": "CVE-2020-15250",
+            "type": "CHANGE_FILES",
+            "origin": "GITHUB_COMMIT",
+            "url": "https://github.com/junit-team/junit4/commit/610155b8c22138329f0723eec22521627dbc52ae",
+            "fixResolution": "src/main/java/org/junit/rules/TemporaryFolder.java,src/test/java/org/junit/rules/TempFolderRuleTest.java",
+            "date": "2020-10-11",
+            "message": "Merge pull request from GHSA-269g-pwp5-87pp\n\nWhen running on Java 7 or later, temporary directories are now created\nUsing Java’s NIO API which restricts permissions to owner-only by\ndefault.",
+            "extraData": "key=610155b&committerName=web-flow&committerUrl=https://github.com/web-flow&committerAvatar=https://avatars3.githubusercontent.com/u/19864447?v=4"
+          },
+          {
+            "vulnerability": "CVE-2020-15250",
+            "type": "CHANGE_FILES",
+            "origin": "GITHUB_COMMIT",
+            "url": "https://github.com/junit-team/junit4/commit/610155b8c22138329f0723eec22521627dbc52ae",
+            "fixResolution": "src/main/java/org/junit/rules/TemporaryFolder.java,src/test/java/org/junit/rules/TempFolderRuleTest.java",
+            "date": "2020-10-11",
+            "message": "Merge pull request from GHSA-269g-pwp5-87pp\n\nWhen running on Java 7 or later, temporary directories are now created\nUsing Java’s NIO API which restricts permissions to owner-only by\ndefault.",
+            "extraData": "key=610155b&committerName=web-flow&committerUrl=https://github.com/web-flow&committerAvatar=https://avatars3.githubusercontent.com/u/19864447?v=4"
+          }
+        ],
+        "fixResolutionText": "Upgrade to version junit:junit:4.13.1",
+        "references": []
+      },
+      "type": "SECURITY_VULNERABILITY",
+      "level": "MAJOR",
+      "library": {
+        "keyUuid": "9e99927d-256f-49f2-a92c-527194aa3354",
+        "keyId": 551011,
+        "filename": "junit-4.12.jar",
+        "type": "Java",
+        "description": "Unit testing framework.",
+        "references": {
+          "url": "http://junit.org/",
+          "pomUrl": "http://repository.threecrickets.com/maven/org/junit/junit/4.12/junit-4.12.pom"
+        },
+        "sha1": "2973d150c0dc1fefe998f834810d68f278ea58ec",
+        "name": "JUnit",
+        "artifactId": "junit",
+        "version": "4.12",
+        "groupId": "org.junit",
+        "licenses": [
+          {
+            "name": "Eclipse 1.0",
+            "spdxName": "EPL-1.0",
+            "url": "http://www.opensource.org/licenses/EPL-1.0",
+            "profileInfo": {
+              "copyrightRiskScore": "FIVE",
+              "patentRiskScore": "FOUR",
+              "copyleft": "PARTIAL",
+              "linking": "VIRAL",
+              "royaltyFree": "CONDITIONAL"
+            },
+            "references": [
+              {
+                "referenceType": "POM file",
+                "reference": "http://repository.threecrickets.com/maven/org/junit/junit/4.12/junit-4.12.pom"
+              }
+            ]
+          }
+        ]
+      },
+      "project": "GH_sparkpost-event-collector",
+      "projectId": 1885347,
+      "projectToken": "95a82d2395bc4da98083bb9ab84cff349ed92e990ec745439ef37818b8ded1b3",
+      "directDependency": true,
+      "description": "Medium:1,",
+      "date": "2020-10-28",
+      "modifiedDate": "2020-10-28",
+      "status": "OPEN",
+      "time": 1603888520000,
+      "creation_date": "2020-10-28",
+      "alertUuid": "63616ffb-1e4f-435d-ac9b-cbf51736e6f2"
+    },
+    {
+      "type": "MULTIPLE_LICENSES",
+      "level": "MINOR",
+      "library": {
+        "keyUuid": "fbda9fd5-cdef-4c4b-b87f-97276c1e9166",
+        "keyId": 23221283,
+        "filename": "logback-core-1.2.3.jar",
+        "type": "Java",
+        "description": "logback-core module",
+        "references": {
+          "url": "http://logback.qos.ch",
+          "pomUrl": "https://repo.maven.apache.org/maven2/ch/qos/logback/logback-core/1.2.3/logback-core-1.2.3.pom"
+        },
+        "sha1": "864344400c3d4d92dfeb0a305dc87d953677c03c",
+        "name": "Logback Core Module",
+        "artifactId": "logback-core",
+        "version": "1.2.3",
+        "groupId": "ch.qos.logback",
+        "licenses": [
+          {
+            "name": "Eclipse 1.0",
+            "spdxName": "EPL-1.0",
+            "url": "http://www.opensource.org/licenses/EPL-1.0",
+            "profileInfo": {
+              "copyrightRiskScore": "FIVE",
+              "patentRiskScore": "FOUR",
+              "copyleft": "PARTIAL",
+              "linking": "VIRAL",
+              "royaltyFree": "CONDITIONAL"
+            },
+            "references": [
+              {
+                "referenceType": "POM file",
+                "reference": "https://repo.maven.apache.org/maven2/ch/qos/logback/logback-core/1.2.3/logback-core-1.2.3.pom"
+              }
+            ]
+          },
+          {
+            "name": "LGPL 2.1",
+            "spdxName": "LGPL-2.1",
+            "url": "http://www.gnu.org/licenses/lgpl-2.1.html",
+            "profileInfo": {
+              "copyrightRiskScore": "FIVE",
+              "patentRiskScore": "ONE",
+              "copyleft": "PARTIAL",
+              "linking": "DYNAMIC",
+              "royaltyFree": "CONDITIONAL"
+            },
+            "references": [
+              {
+                "referenceType": "Project home page",
+                "reference": "https://github.com/qos-ch/logback/blob/v_1.2.3/LICENSE.txt"
+              }
+            ]
+          }
+        ]
+      },
+      "project": "GH_sparkpost-event-collector",
+      "projectId": 1885347,
+      "projectToken": "95a82d2395bc4da98083bb9ab84cff349ed92e990ec745439ef37818b8ded1b3",
+      "directDependency": false,
+      "description": "2 licenses identified",
+      "date": "2020-10-28",
+      "modifiedDate": "2020-10-28",
+      "time": 1603888520000,
+      "creation_date": "2020-10-28",
+      "alertUuid": "981817cb-43d2-48d3-9972-ce5c6750aaf6"
+    },
+    {
+      "type": "MULTIPLE_LICENSES",
+      "level": "MINOR",
+      "library": {
+        "keyUuid": "51f82960-0ff6-436a-b680-f7c49eedc4b3",
+        "keyId": 23221286,
+        "filename": "logback-classic-1.2.3.jar",
+        "type": "Java",
+        "description": "logback-classic module",
+        "references": {
+          "url": "http://logback.qos.ch",
+          "pomUrl": "https://repo.maven.apache.org/maven2/ch/qos/logback/logback-classic/1.2.3/logback-classic-1.2.3.pom"
+        },
+        "sha1": "7c4f3c474fb2c041d8028740440937705ebb473a",
+        "name": "Logback Classic Module",
+        "artifactId": "logback-classic",
+        "version": "1.2.3",
+        "groupId": "ch.qos.logback",
+        "licenses": [
+          {
+            "name": "LGPL 2.1",
+            "spdxName": "LGPL-2.1",
+            "url": "http://www.gnu.org/licenses/lgpl-2.1.html",
+            "profileInfo": {
+              "copyrightRiskScore": "FIVE",
+              "patentRiskScore": "ONE",
+              "copyleft": "PARTIAL",
+              "linking": "DYNAMIC",
+              "royaltyFree": "CONDITIONAL"
+            },
+            "references": [
+              {
+                "referenceType": "POM file",
+                "reference": "https://repo.maven.apache.org/maven2/ch/qos/logback/logback-classic/1.2.3/logback-classic-1.2.3.pom"
+              }
+            ]
+          },
+          {
+            "name": "Eclipse 1.0",
+            "spdxName": "EPL-1.0",
+            "url": "http://www.opensource.org/licenses/EPL-1.0",
+            "profileInfo": {
+              "copyrightRiskScore": "FIVE",
+              "patentRiskScore": "FOUR",
+              "copyleft": "PARTIAL",
+              "linking": "VIRAL",
+              "royaltyFree": "CONDITIONAL"
+            },
+            "references": [
+              {
+                "referenceType": "POM file",
+                "reference": "https://repo.maven.apache.org/maven2/ch/qos/logback/logback-classic/1.2.3/logback-classic-1.2.3.pom"
+              }
+            ]
+          }
+        ]
+      },
+      "project": "GH_sparkpost-event-collector",
+      "projectId": 1885347,
+      "projectToken": "95a82d2395bc4da98083bb9ab84cff349ed92e990ec745439ef37818b8ded1b3",
+      "directDependency": true,
+      "description": "2 licenses identified",
+      "date": "2020-10-28",
+      "modifiedDate": "2020-10-28",
+      "time": 1603888520000,
+      "creation_date": "2020-10-28",
+      "alertUuid": "8c211f1a-5858-4790-9551-8e9591b9425b"
+    },
+    {
+      "type": "MULTIPLE_LIBRARY_VERSIONS",
+      "level": "MINOR",
+      "library": {
+        "keyUuid": "091204e1-c831-4439-b5fb-faf4143663f4",
+        "keyId": 101315839,
+        "filename": "spring-boot-starter-web-2.2.3.RELEASE.jar",
+        "type": "Java",
+        "description": "Starter for building web, including RESTful, applications using Spring\n\t\tMVC. Uses Tomcat as the default embedded container",
+        "references": {
+          "url": "https://projects.spring.io/spring-boot/#/spring-boot-parent/spring-boot-starters/spring-boot-starter-web",
+          "pomUrl": "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-starter-web/2.2.3.RELEASE/spring-boot-starter-web-2.2.3.RELEASE.pom"
+        },
+        "sha1": "32087221ceb9861edbe293173d357688e7d2fc71",
+        "name": "Spring Boot Web Starter",
+        "artifactId": "spring-boot-starter-web",
+        "version": "2.2.3.RELEASE",
+        "groupId": "org.springframework.boot",
+        "licenses": [
+          {
+            "name": "Apache 2.0",
+            "spdxName": "Apache-2.0",
+            "url": "http://www.opensource.org/licenses/Apache-2.0",
+            "profileInfo": {
+              "copyrightRiskScore": "THREE",
+              "patentRiskScore": "ONE",
+              "copyleft": "NO",
+              "linking": "DYNAMIC",
+              "royaltyFree": "CONDITIONAL"
+            },
+            "references": [
+              {
+                "referenceType": "POM file",
+                "reference": "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-starter-web/2.2.3.RELEASE/spring-boot-starter-web-2.2.3.RELEASE.pom"
+              }
+            ]
+          }
+        ]
+      },
+      "project": "GH_sparkpost-event-collector",
+      "projectId": 1885347,
+      "projectToken": "95a82d2395bc4da98083bb9ab84cff349ed92e990ec745439ef37818b8ded1b3",
+      "directDependency": true,
+      "description": "Version 2.2.10.RELEASE is being used in project D",
+      "date": "2020-10-05",
+      "modifiedDate": "2020-10-05",
+      "time": 1601911045000,
+      "creation_date": "2020-10-05",
+      "alertUuid": "1e8c8089-e53a-4468-a306-899542c53ce4"
+    },
+    {
+      "type": "MULTIPLE_LIBRARY_VERSIONS",
+      "level": "MINOR",
+      "library": {
+        "keyUuid": "6bfb0535-eb75-4a40-9542-2d207482d1f5",
+        "keyId": 101315958,
+        "filename": "spring-boot-starter-2.2.3.RELEASE.jar",
+        "type": "Java",
+        "description": "Core starter, including auto-configuration support, logging and YAML",
+        "references": {
+          "url": "https://projects.spring.io/spring-boot/#/spring-boot-parent/spring-boot-starters/spring-boot-starter",
+          "pomUrl": "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-starter/2.2.3.RELEASE/spring-boot-starter-2.2.3.RELEASE.pom"
+        },
+        "sha1": "7614a0953e883db3ad0edb38d9813d4923adbbbe",
+        "name": "Spring Boot Starter",
+        "artifactId": "spring-boot-starter",
+        "version": "2.2.3.RELEASE",
+        "groupId": "org.springframework.boot",
+        "licenses": [
+          {
+            "name": "Apache 2.0",
+            "spdxName": "Apache-2.0",
+            "url": "http://www.opensource.org/licenses/Apache-2.0",
+            "profileInfo": {
+              "copyrightRiskScore": "THREE",
+              "patentRiskScore": "ONE",
+              "copyleft": "NO",
+              "linking": "DYNAMIC",
+              "royaltyFree": "CONDITIONAL"
+            },
+            "references": [
+              {
+                "referenceType": "POM file",
+                "reference": "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-starter/2.2.3.RELEASE/spring-boot-starter-2.2.3.RELEASE.pom"
+              }
+            ]
+          }
+        ]
+      },
+      "project": "GH_sparkpost-event-collector",
+      "projectId": 1885347,
+      "projectToken": "95a82d2395bc4da98083bb9ab84cff349ed92e990ec745439ef37818b8ded1b3",
+      "directDependency": true,
+      "description": "Version 2.2.10.RELEASE is being used in project A",
+      "date": "2020-10-05",
+      "modifiedDate": "2020-10-05",
+      "time": 1601911045000,
+      "creation_date": "2020-10-05",
+      "alertUuid": "0eeaf590-f33e-4412-8ac5-e33b2fa47f63"
+    },
+    {
+      "type": "MULTIPLE_LIBRARY_VERSIONS",
+      "level": "MINOR",
+      "library": {
+        "keyUuid": "956adff8-3501-4ab6-845a-679c441a5ae2",
+        "keyId": 22691600,
+        "filename": "httpclient-4.5.3.jar",
+        "type": "Java",
+        "description": "Apache HttpComponents Client",
+        "references": {
+          "pomUrl": "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpclient/4.5.3/httpclient-4.5.3.pom"
+        },
+        "sha1": "d1577ae15f01ef5438c5afc62162457c00a34713",
+        "name": "Apache HttpClient",
+        "artifactId": "httpclient",
+        "version": "4.5.3",
+        "groupId": "org.apache.httpcomponents",
+        "licenses": [
+          {
+            "name": "Apache 2.0",
+            "spdxName": "Apache-2.0",
+            "url": "http://www.opensource.org/licenses/Apache-2.0",
+            "profileInfo": {
+              "copyrightRiskScore": "THREE",
+              "patentRiskScore": "ONE",
+              "copyleft": "NO",
+              "linking": "DYNAMIC",
+              "royaltyFree": "CONDITIONAL"
+            },
+            "references": [
+              {
+                "referenceType": "POM file",
+                "reference": "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpclient/4.5.3/httpclient-4.5.3.pom"
+              }
+            ]
+          }
+        ]
+      },
+      "project": "GH_sparkpost-event-collector",
+      "projectId": 1885347,
+      "projectToken": "95a82d2395bc4da98083bb9ab84cff349ed92e990ec745439ef37818b8ded1b3",
+      "directDependency": true,
+      "description": "Version 4.5.11 is being used in project C",
+      "date": "2020-03-23",
+      "modifiedDate": "2020-03-23",
+      "time": 1584981217000,
+      "creation_date": "2020-03-23",
+      "alertUuid": "9e41ff82-844b-4d25-9fce-739db37576e5"
+    },
+    {
+      "type": "MULTIPLE_LIBRARY_VERSIONS",
+      "level": "MINOR",
+      "library": {
+        "keyUuid": "8abe8ac0-20dc-4208-885f-d3228f77a1dc",
+        "keyId": 22927511,
+        "filename": "mockito-core-2.6.3.jar",
+        "type": "Java",
+        "description": "Mockito mock objects library core API and implementation",
+        "references": {
+          "url": "http://mockito.org",
+          "pomUrl": "https://repo.maven.apache.org/maven2/org/mockito/mockito-core/2.6.3/mockito-core-2.6.3.pom"
+        },
+        "sha1": "92b7b00a8514a0b0aa5481069ea00a37212d3bb5",
+        "name": "mockito-core",
+        "artifactId": "mockito-core",
+        "version": "2.6.3",
+        "groupId": "org.mockito",
+        "licenses": [
+          {
+            "name": "MIT",
+            "spdxName": "MIT",
+            "url": "http://www.opensource.org/licenses/MIT",
+            "profileInfo": {
+              "copyrightRiskScore": "THREE",
+              "patentRiskScore": "ONE",
+              "copyleft": "NO",
+              "royaltyFree": "YES"
+            },
+            "references": [
+              {
+                "referenceType": "POM file",
+                "reference": "https://repo.maven.apache.org/maven2/org/mockito/mockito-core/2.6.3/mockito-core-2.6.3.pom"
+              }
+            ]
+          }
+        ]
+      },
+      "project": "GH_sparkpost-event-collector",
+      "projectId": 1885347,
+      "projectToken": "95a82d2395bc4da98083bb9ab84cff349ed92e990ec745439ef37818b8ded1b3",
+      "directDependency": true,
+      "description": "Version 3.2.4 is being used in project C",
+      "date": "2020-03-23",
+      "modifiedDate": "2020-03-23",
+      "time": 1584956894000,
+      "creation_date": "2020-03-23",
+      "alertUuid": "341d61af-3a0d-4cc6-a401-388f94f629ca"
+    },
+    {
+      "type": "MULTIPLE_LIBRARY_VERSIONS",
+      "level": "MINOR",
+      "library": {
+        "keyUuid": "c220f1dd-d225-4e72-8862-ae66b38425fe",
+        "keyId": 23458623,
+        "filename": "assertj-core-3.6.1.jar",
+        "type": "Java",
+        "description": "Rich and fluent assertions for testing for Java",
+        "references": {
+          "url": "http://assertj.org",
+          "pomUrl": "https://repo.maven.apache.org/maven2/org/assertj/assertj-core/3.6.1/assertj-core-3.6.1.pom"
+        },
+        "sha1": "2536dd8bc957490ef33873398869ba261d8c6fc3",
+        "name": "AssertJ fluent assertions",
+        "artifactId": "assertj-core",
+        "version": "3.6.1",
+        "groupId": "org.assertj",
+        "licenses": [
+          {
+            "name": "Apache 2.0",
+            "spdxName": "Apache-2.0",
+            "url": "http://www.opensource.org/licenses/Apache-2.0",
+            "profileInfo": {
+              "copyrightRiskScore": "THREE",
+              "patentRiskScore": "ONE",
+              "copyleft": "NO",
+              "linking": "DYNAMIC",
+              "royaltyFree": "CONDITIONAL"
+            },
+            "references": [
+              {
+                "referenceType": "POM file",
+                "reference": "https://repo.maven.apache.org/maven2/org/assertj/assertj-core/3.6.1/assertj-core-3.6.1.pom"
+              }
+            ]
+          }
+        ]
+      },
+      "project": "GH_sparkpost-event-collector",
+      "projectId": 1885347,
+      "projectToken": "95a82d2395bc4da98083bb9ab84cff349ed92e990ec745439ef37818b8ded1b3",
+      "directDependency": true,
+      "description": "Version 3.12.2 is being used in project B",
+      "date": "2020-03-23",
+      "modifiedDate": "2020-03-23",
+      "time": 1584956894000,
+      "creation_date": "2020-03-23",
+      "alertUuid": "8d9053b9-77f6-4cf5-b3cd-17f46c557cbc"
+    },
+    {
+      "type": "MULTIPLE_LIBRARY_VERSIONS",
+      "level": "MINOR",
+      "library": {
+        "keyUuid": "ed5e96d7-1902-475a-ad43-51b4a54af61c",
+        "keyId": 101401388,
+        "filename": "jackson-databind-2.10.2.jar",
+        "type": "Java",
+        "description": "General data-binding functionality for Jackson: works on core streaming API",
+        "references": {
+          "url": "http://github.com/FasterXML/jackson",
+          "pomUrl": "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/core/jackson-databind/2.10.2/jackson-databind-2.10.2.pom"
+        },
+        "sha1": "0528de95f198afafbcfb0c09d2e43b6e0ea663ec",
+        "name": "jackson-databind",
+        "artifactId": "jackson-databind",
+        "version": "2.10.2",
+        "groupId": "com.fasterxml.jackson.core",
+        "licenses": [
+          {
+            "name": "Apache 2.0",
+            "spdxName": "Apache-2.0",
+            "url": "http://www.opensource.org/licenses/Apache-2.0",
+            "profileInfo": {
+              "copyrightRiskScore": "THREE",
+              "patentRiskScore": "ONE",
+              "copyleft": "NO",
+              "linking": "DYNAMIC",
+              "royaltyFree": "CONDITIONAL"
+            },
+            "references": [
+              {
+                "referenceType": "POM file",
+                "reference": "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/core/jackson-databind/2.10.2/jackson-databind-2.10.2.pom"
+              }
+            ]
+          }
+        ]
+      },
+      "project": "Test3Project",
+      "projectId": 1885347,
+      "projectToken": "95a82d2395bc4da98083bb9ab84cff349ed92e990ec745439ef37818b8ded1b3",
+      "directDependency": true,
+      "description": "Version 2.10.3 is being used in project A",
+      "date": "2020-03-12",
+      "modifiedDate": "2020-03-12",
+      "time": 1584010140000,
+      "creation_date": "2020-03-12",
+      "alertUuid": "0cadef74-5918-4523-a3f7-b50dd2744c73"
+    }
+  ]
+}
