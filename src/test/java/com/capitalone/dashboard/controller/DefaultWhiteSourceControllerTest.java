@@ -1,6 +1,7 @@
 package com.capitalone.dashboard.controller;
 
 import com.capitalone.dashboard.collector.DefaultWhiteSourceClient;
+import com.capitalone.dashboard.controller.DefaultWhiteSourceController;
 import com.capitalone.dashboard.misc.HygieiaException;
 import com.capitalone.dashboard.model.WhiteSourceRequest;
 import org.junit.Test;
@@ -30,7 +31,6 @@ public class DefaultWhiteSourceControllerTest {
         data.setProjectVitals("dGVzdA==");
         return data;
     }
-
 
 
     @Test

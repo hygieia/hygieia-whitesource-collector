@@ -37,19 +37,14 @@ public class AsyncService {
     private final WhiteSourceComponentRepository whiteSourceComponentRepository;
     private final LibraryPolicyResultsRepository libraryPolicyResultsRepository;
     private final WhiteSourceClient whiteSourceClient;
-    private final WhiteSourceSettings whiteSourceSettings;
-    private final LibraryReferenceRepository libraryReferenceRepository;
 
     @Autowired
     public AsyncService(WhiteSourceComponentRepository whiteSourceComponentRepository,
                         LibraryPolicyResultsRepository libraryPolicyResultsRepository,
-                        WhiteSourceClient whiteSourceClient, WhiteSourceSettings whiteSourceSettings,
-                        LibraryReferenceRepository libraryReferenceRepository) {
+                        WhiteSourceClient whiteSourceClient) {
         this.whiteSourceComponentRepository = whiteSourceComponentRepository;
         this.libraryPolicyResultsRepository = libraryPolicyResultsRepository;
         this.whiteSourceClient = whiteSourceClient;
-        this.whiteSourceSettings = whiteSourceSettings;
-        this.libraryReferenceRepository = libraryReferenceRepository;
     }
 
     /**

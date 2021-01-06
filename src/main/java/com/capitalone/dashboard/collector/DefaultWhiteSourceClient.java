@@ -694,7 +694,7 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
             case getChangesReport:
                 requestJSON.put(Constants.START_DATE_TIME, startDateTime);
                 requestJSON.put(Constants.ORG_TOKEN, orgToken);
-                requestJSON.put(Constants.SCOPE, Constants.PROJECT);
+//                requestJSON.put(Constants.SCOPE, Constants.PROJECT); This does not do anything
                 return requestJSON;
             case getOrganizationAlertsByType:
                 requestJSON.put(Constants.ORG_TOKEN, orgToken);
