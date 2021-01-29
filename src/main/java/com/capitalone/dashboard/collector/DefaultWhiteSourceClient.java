@@ -401,6 +401,30 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
         return projectVitalMap;
     }
 
+    /**
+     * Refresh project on demand using org level project vitals
+     *
+     * @param orgName Whitesource Org
+     * @param productName Whitesource Product Name
+     * @param projectToken Whitesource Project Token
+     *
+     */
+    @Override
+    public void refresh (String orgName, String productName, String projectToken){
+        List<WhiteSourceComponent> components = getWhiteSourceComponents(orgName, productName, projectToken);
+        components.forEach(component -> {
+            LibraryPolicyResult libraryPolicyResult = getProjectAlerts(component, null, whiteSourceSettings.getWhiteSourceServerSettings().get(0));
+            if (Objects.nonNull(libraryPolicyResult)) {
+                libraryPolicyResult.setCollectorItemId(component.getId());
+                LibraryPolicyResult libraryPolicyResultExisting = getLibraryPolicyData(component, libraryPolicyResult);
+                if (Objects.nonNull(libraryPolicyResultExisting)) {
+                    libraryPolicyResult.setId(libraryPolicyResultExisting.getId());
+                }
+                libraryPolicyResultsRepository.save(libraryPolicyResult);
+            }
+        });
+    }
+
     ////////////////////////////////////////////       Helper and private methods below /////////////////////////////////////////
 
 
@@ -512,7 +536,7 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
             //There is just 1 of them!
             for (Object projectVital : projectVitals) {
                 JSONObject projectVitalObject = (JSONObject) projectVital;
-                libraryPolicyResult.setEvaluationTimestamp(DateTimeUtils.timeFromStringToMillis(getStringValue(projectVitalObject, Constants.LAST_UPDATED_DATE), yyyy_MM_dd_HH_mm_ss, serverSettings.getTimeZone()));
+                libraryPolicyResult.setEvaluationTimestamp(DateTimeUtils.timeFromStringToMillis(getStringValue(projectVitalObject, Constants.LAST_UPDATED_DATE), serverSettings.getTimeZone(), yyyy_MM_dd_HH_mm_ss_z));
                 Long projectId = getLongValue(projectVitalObject, Constants.ID);
                 libraryPolicyResult.setReportUrl(String.format(serverSettings.getDeeplink(), projectId));
             }
@@ -589,9 +613,9 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
         return " Successfully updated library policy result " + libraryPolicyResult.getId();
     }
 
-    public List<WhiteSourceComponent> getWhiteSourceComponents(String orgName, String productName, String projectName) {
+    public List<WhiteSourceComponent> getWhiteSourceComponents(String orgName, String productName, String projectToken) {
         Collector collector = collectorRepository.findByName(Constants.WHITE_SOURCE);
-        Map<String, Object> options = getOptions(orgName, productName, projectName);
+        Map<String, Object> options = getOptions(orgName, productName, projectToken);
         Iterable<CollectorItem> collectorItems = collectorItemRepository.findAllByOptionMapAndCollectorIdsIn(options, Stream.of(collector.getId()).collect(Collectors.toList()));
         List<WhiteSourceComponent> whiteSourceComponents = new ArrayList<>();
         for (CollectorItem collectorItem : collectorItems) {
@@ -614,11 +638,11 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
         return whiteSourceComponent;
     }
 
-    private static Map<String, Object> getOptions(String orgName, String productName, String projectName) {
+    private static Map<String, Object> getOptions(String orgName, String productName, String projectToken) {
         Map<String, Object> options = new HashMap<>();
         options.put(Constants.ORG_NAME, orgName);
         options.put(Constants.PRODUCT_NAME, productName);
-        options.put(Constants.PROJECT_NAME, projectName);
+        options.put(Constants.PROJECT_TOKEN, projectToken);
         return options;
     }
 
