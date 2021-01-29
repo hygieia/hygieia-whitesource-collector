@@ -27,6 +27,7 @@ public class CollectorTestConfig {
         whiteSourceSettings.setServers(Arrays.asList("https://myserver.com"));
         WhiteSourceServerSettings serverSettings = new WhiteSourceServerSettings();
         serverSettings.setInstanceUrl("https://myserver.com");
+        serverSettings.setDeeplink("https://myserver.com/Wss/WSS.html#!project;id=%d");
         serverSettings.setUserKey(TestConstants.USER_KEY);
         serverSettings.setOrgToken(TestConstants.ORG_KEY);
         whiteSourceSettings.setWhiteSourceServerSettings(Arrays.asList(serverSettings));

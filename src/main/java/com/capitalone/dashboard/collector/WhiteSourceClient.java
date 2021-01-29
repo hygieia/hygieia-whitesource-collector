@@ -23,4 +23,5 @@ public interface WhiteSourceClient {
     Map<String, WhiteSourceProjectVital> getOrgProjectVitals(WhitesourceOrg whitesourceOrg, WhiteSourceServerSettings whiteSourceServerSettings) throws HygieiaException;
     Set<String> getAffectedProjectsForOrganization(WhitesourceOrg whitesourceOrg, long historyTimestamp, WhiteSourceServerSettings serverSettings) throws ExecutionException, InterruptedException;
     List<WhiteSourceComponent> getAllProjectsForProduct(WhitesourceOrg whitesourceOrg, WhiteSourceProduct product, WhiteSourceServerSettings serverSettings);
+    void refresh (String orgName, String productName, String projectToken);
 }
