@@ -26,6 +26,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.modules.junit4.PowerMockRunnerDelegate;
@@ -42,6 +43,7 @@ import java.util.List;
 
 @RunWith(PowerMockRunner.class)
 @PowerMockRunnerDelegate(SpringJUnit4ClassRunner.class)
+@PowerMockIgnore("jdk.internal.reflect.*")
 @ContextConfiguration(classes = {TestRestConfig.class, TestMongoServerConfig.class, CollectorTestConfig.class})
 @ComponentScan("com.capitalone.dashboard.client")
 @PrepareForTest(fullyQualifiedNames = "com.capitalone.dashboard.*")
