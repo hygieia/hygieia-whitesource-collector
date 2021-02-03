@@ -223,13 +223,11 @@
       <groupId>de.bwaldvogel</groupId>
       <artifactId>mongo-java-server-core</artifactId>
       <version>1.36.0</version>
-      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>de.bwaldvogel</groupId>
       <artifactId>mongo-java-server-memory-backend</artifactId>
       <version>1.36.0</version>
-      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.powermock</groupId>
