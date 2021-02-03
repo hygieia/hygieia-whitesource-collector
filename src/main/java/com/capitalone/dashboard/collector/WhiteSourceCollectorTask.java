@@ -139,7 +139,6 @@ public class WhiteSourceCollectorTask extends CollectorTask<WhiteSourceCollector
         long end = System.currentTimeMillis();
         long elapsedTime = (end - start) / 1000;
 
-
         LOG.info(String.format("WhitesourceCollectorTask:collector stop, totalProcessSeconds=%d,  totalFetchedProjects=%d, totalNewProjects=%d, totalUpdatedProjects=%d, totalUpdatedInstanceData=%d ",
                 elapsedTime, collectorMetric.getFetched(), collectorMetric.getAdded(), collectorMetric.getUpdated(), collectorMetric.getInstanceCount()));
     }
@@ -529,6 +528,15 @@ public class WhiteSourceCollectorTask extends CollectorTask<WhiteSourceCollector
         return collector.getLastExecuted() > 0
                 ? collector.getLastExecuted() - whiteSourceSettings.getOffSet()
                 : System.currentTimeMillis() - whiteSourceSettings.getHistoryTimestamp();
+    }
+
+    boolean processRecord(String value) {
+
+        if(CollectionUtils.isEmpty(whiteSourceSettings.getSearchPatterns())) return true;
+        for(String pattern : whiteSourceSettings.getSearchPatterns()) {
+            if(value.matches(pattern)) return true;
+        }
+        return false;
     }
 
 }
