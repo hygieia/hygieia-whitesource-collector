@@ -1,9 +1,8 @@
-package com.capitalone.dashboard.settings;
+package com.capitalone.dashboard.model;
 
 public class WhiteSourceServerSettings {
 
   private String instanceUrl;
-  private String timeZone;
   private String orgToken;
   private String userKey;
   private String deeplink;
@@ -14,14 +13,6 @@ public class WhiteSourceServerSettings {
 
     public void setInstanceUrl(String instanceUrl) {
         this.instanceUrl = instanceUrl;
-    }
-
-    public String getTimeZone() {
-        return timeZone;
-    }
-
-    public void setTimeZone(String timeZone) {
-        this.timeZone = timeZone;
     }
 
     public String getOrgToken() {
