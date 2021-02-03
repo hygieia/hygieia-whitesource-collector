@@ -454,8 +454,12 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
             translateAlertJSON((JSONObject) alert, libraryPolicyResult);
             WhiteSourceProjectVital projectVital = projectVitalMap.get(projectToken);
             if (projectVital == null) {
-                JSONObject projectVitalsObject = makeRestCall(Constants.RequestType.getProjectVitals, null, null, projectToken, null, null, serverSettings);
-                setEvaluationTimeStampAndReportUrl(libraryPolicyResult, projectVitalsObject, serverSettings);
+                try {
+                    JSONObject projectVitalsObject = makeRestCall(Constants.RequestType.getProjectVitals, null, null, projectToken, null, null, serverSettings);
+                    setEvaluationTimeStampAndReportUrl(libraryPolicyResult, projectVitalsObject, serverSettings);
+                } catch (Exception e) {
+                    LOG.error("Exception occurred while fetching ProjectVitals for projectToken : "+ projectToken);
+                }
             } else {
                 setEvaluationTimeStampAndReportUrl(libraryPolicyResult, projectVital, serverSettings);
             }
