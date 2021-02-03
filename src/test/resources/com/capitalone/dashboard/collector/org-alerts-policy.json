@@ -1,0 +1,157 @@
+{
+  "alerts": [
+    {
+      "type": "REJECTED_BY_POLICY_RESOURCE",
+      "level": "MAJOR",
+      "library": {
+        "keyUuid": "94ae5946-c13b-4551-9e0d-c7e94fd22cb7",
+        "keyId": 132705737,
+        "filename": "chardet-4.0.0-py2.py3-none-any.whl",
+        "type": "Python",
+        "languages": "Python",
+        "description": "Universal encoding detector for Python 2 and 3",
+        "references": {
+          "url": "https://files.pythonhosted.org/packages/19/c7/fa589626997dd07bd87d9269342ccb74b1720384a4d739a1872bd84fbe68/chardet-4.0.0-py2.py3-none-any.whl",
+          "homePage": "https://github.com/chardet/chardet",
+          "genericPackageIndex": "https://pypi.python.org/pypi/chardet/4.0.0"
+        },
+        "sha1": "e9eb83c71c09b3c8249bd7d6d2619b65fff03874",
+        "name": "chardet",
+        "artifactId": "chardet-4.0.0-py2.py3-none-any.whl",
+        "version": "4.0.0",
+        "groupId": "chardet",
+        "licenses": [
+          {
+            "name": "LGPL 3.0",
+            "spdxName": "LGPL-3.0",
+            "url": "http://www.opensource.org/licenses/LGPL-3.0",
+            "profileInfo": {
+              "copyrightRiskScore": "FIVE",
+              "patentRiskScore": "ONE",
+              "copyleft": "PARTIAL",
+              "linking": "DYNAMIC",
+              "royaltyFree": "YES"
+            },
+            "references": [
+              {
+                "referenceType": "PyPI (details available in Python Package Index)",
+                "reference": "https://index.whitesourcesoftware.com/gri/app/reader/resource/content/asString/553249d7-6307-4dc2-9f15-b71c952c83bc"
+              }
+            ]
+          }
+        ]
+      },
+      "project": "GH_rdt_tada_cat3",
+      "projectId": 3322022,
+      "projectToken": "d24c8403d89d4df5be4c441bb4fb92459281350357e1403291b220b80ffc8946",
+      "directDependency": true,
+      "description": "Strong/Other Copyleft License: Remove the use of high severity license in a distributed application within 60 days to avoid release escalation for external facing applications. Non-distributed/Internal applications are allowed to use this license",
+      "date": "2021-01-02",
+      "modifiedDate": "2021-01-02",
+      "time": 1609604372000,
+      "creation_date": "2021-01-02",
+      "alertUuid": "c99a4007-e8e2-4d97-9557-973b52d2fb4b"
+    },
+    {
+      "type": "REJECTED_BY_POLICY_RESOURCE",
+      "level": "MAJOR",
+      "library": {
+        "keyUuid": "94ae5946-c13b-4551-9e0d-c7e94fd22cb7",
+        "keyId": 132705737,
+        "filename": "chardet-4.0.0-py2.py3-none-any.whl",
+        "type": "Python",
+        "languages": "Python",
+        "description": "Universal encoding detector for Python 2 and 3",
+        "references": {
+          "url": "https://files.pythonhosted.org/packages/19/c7/fa589626997dd07bd87d9269342ccb74b1720384a4d739a1872bd84fbe68/chardet-4.0.0-py2.py3-none-any.whl",
+          "homePage": "https://github.com/chardet/chardet",
+          "genericPackageIndex": "https://pypi.python.org/pypi/chardet/4.0.0"
+        },
+        "sha1": "e9eb83c71c09b3c8249bd7d6d2619b65fff03874",
+        "name": "chardet",
+        "artifactId": "chardet-4.0.0-py2.py3-none-any.whl",
+        "version": "4.0.0",
+        "groupId": "chardet",
+        "licenses": [
+          {
+            "name": "LGPL 3.0",
+            "spdxName": "LGPL-3.0",
+            "url": "http://www.opensource.org/licenses/LGPL-3.0",
+            "profileInfo": {
+              "copyrightRiskScore": "FIVE",
+              "patentRiskScore": "ONE",
+              "copyleft": "PARTIAL",
+              "linking": "DYNAMIC",
+              "royaltyFree": "YES"
+            },
+            "references": [
+              {
+                "referenceType": "PyPI (details available in Python Package Index)",
+                "reference": "https://index.whitesourcesoftware.com/gri/app/reader/resource/content/asString/553249d7-6307-4dc2-9f15-b71c952c83bc"
+              }
+            ]
+          }
+        ]
+      },
+      "project": "GH_api-dashboard",
+      "projectId": 3318634,
+      "projectToken": "1c9d26f058f54aaf8f0147ccf56fbf0978ab2b8fb87b405a8858f13e9a174a00",
+      "directDependency": false,
+      "description": "Strong/Other Copyleft License: Remove the use of high severity license in a distributed application within 60 days to avoid release escalation for external facing applications. Non-distributed/Internal applications are allowed to use this license",
+      "date": "2021-01-01",
+      "modifiedDate": "2021-01-01",
+      "time": 1609537924000,
+      "creation_date": "2021-01-01",
+      "alertUuid": "5f7643c0-359e-43d4-8e47-1986f0c2dc4d"
+    },
+    {
+      "type": "REJECTED_BY_POLICY_RESOURCE",
+      "level": "MAJOR",
+      "library": {
+        "keyUuid": "ed4841ac-f5a9-4588-8f06-194f28b3b27d",
+        "keyId": 520878,
+        "filename": "xz-1.5.jar",
+        "type": "Java",
+        "description": "XZ data compression",
+        "references": {
+          "url": "http://tukaani.org/xz/java.html",
+          "pomUrl": "https://repo.maven.apache.org/maven2/org/tukaani/xz/1.5/xz-1.5.pom"
+        },
+        "sha1": "9c64274b7dbb65288237216e3fae7877fd3f2bee",
+        "name": "XZ for Java",
+        "artifactId": "xz",
+        "version": "1.5",
+        "groupId": "org.tukaani",
+        "licenses": [
+          {
+            "name": "Public Domain",
+            "url": "http://creativecommons.org/licenses/publicdomain/",
+            "profileInfo": {
+              "copyrightRiskScore": "ONE",
+              "patentRiskScore": "THREE",
+              "copyleft": "NO",
+              "linking": "NON_VIRAL",
+              "royaltyFree": "NO"
+            },
+            "references": [
+              {
+                "referenceType": "POM file",
+                "reference": "https://repo.maven.apache.org/maven2/org/tukaani/xz/1.5/xz-1.5.pom"
+              }
+            ]
+          }
+        ]
+      },
+      "project": "GH_denali-data-source",
+      "projectId": 3363866,
+      "projectToken": "e5f76d395e274fb8ad8151545ad52f1bde0dd39089db4b3cbc273323eaf083c8",
+      "directDependency": false,
+      "description": "Public Domain License: Review with Legal high severity license in use within 60 days to avoid release escalation",
+      "date": "2021-01-01",
+      "modifiedDate": "2021-01-01",
+      "time": 1609517019000,
+      "creation_date": "2021-01-01",
+      "alertUuid": "d07b0c5a-303a-4bd0-ae19-c6284a9940f8"
+    }
+  ]
+}
