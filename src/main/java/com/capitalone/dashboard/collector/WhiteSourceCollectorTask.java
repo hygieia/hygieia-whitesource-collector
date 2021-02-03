@@ -530,13 +530,4 @@ public class WhiteSourceCollectorTask extends CollectorTask<WhiteSourceCollector
                 : System.currentTimeMillis() - whiteSourceSettings.getHistoryTimestamp();
     }
 
-    boolean processRecord(String value) {
-
-        if(CollectionUtils.isEmpty(whiteSourceSettings.getSearchPatterns())) return true;
-        for(String pattern : whiteSourceSettings.getSearchPatterns()) {
-            if(value.matches(pattern)) return true;
-        }
-        return false;
-    }
-
 }
