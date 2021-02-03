@@ -13,6 +13,7 @@ public final class TestConstants {
 
     public static final List<String> PRODUCT_TOKENS = new ArrayList<>();
     public static final List<String> PROJECT_TOKENS = new ArrayList<>();
+    public static final List<String> PROJECT_VITALS_TOKENS = new ArrayList<>();
 
     public static final String PRODUCT_TOKEN_Test1Product = "25987580b94e4bd5a0a70ffe4c68a890e7b218a0a000407bb249c2df2f25fea4";
     public static final String PRODUCT_TOKEN_Test2Product = "5aecc4760a2640afb7c98eb5aab6b22f614450a5404c4beaa683ce84309beab4";
@@ -40,6 +41,15 @@ public final class TestConstants {
         PROJECT_TOKENS.add(PROJECT_TOKEN_Test4Project);
         PROJECT_TOKENS.add(PROJECT_TOKEN_Test5Project);
         PROJECT_TOKENS.add(PROJECT_TOKEN_Test6Project);
+        
+        PROJECT_VITALS_TOKENS. add("c0a91ffcbc034a4e9ba1415dce60ec57fc45d25bf86540019171d5fd8a5a9608");
+        PROJECT_VITALS_TOKENS. add("ce5c56d315df4c12a768d8f1e728d7c8d3c1819ec5ec4f829c7ddc49ff718f83");
+        PROJECT_VITALS_TOKENS. add("1d41d1de33b24437b125ccd67be3155218b9f4dff4e24b149769023af2c4f7d3");
+        PROJECT_VITALS_TOKENS. add("b937cacb0d94421abad4c414a9068bb93836e118c3de49c8aefe6d60f80e049f");
+        PROJECT_VITALS_TOKENS. add("462daa35dc104f3c9912f9a274ea5f9299927cf91f5a4325b2cd4b771ff9c94b");
+        PROJECT_VITALS_TOKENS. add("51e07c54097047ef8ad1b5b0291a5cd16a668521d7d34d1dbe7cf4adbc6cfb37");
+        PROJECT_VITALS_TOKENS. add("a1bdbb688e594ccbaf1124a65142f97ff10c8b453f2e47968137f8d401a74765");
+        PROJECT_VITALS_TOKENS. add("ac6030a7d16247748620900b5743d2e39836de27d60e474695cee1b062838d35");
     }
 
 
