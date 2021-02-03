@@ -235,7 +235,7 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
             if ((response == null) || (response.toString().isEmpty())) return null;
             return (JSONObject) parser.parse(response.getBody());
         } catch (Exception e) {
-            LOG.error("Exception occurred while calling REST for orgName=" + orgName + " and requestType=" + requestType + ", Exception=" + e.getMessage());
+            LOG.error("Exception occurred while parsing json object", e);
         }
         return null;
     }
