@@ -1,0 +1,3222 @@
+{
+  "alerts": [
+    {
+      "vulnerability": {
+        "name": "CVE-2020-14343",
+        "type": "CVE",
+        "severity": "high",
+        "score": 9.8,
+        "cvss3_severity": "high",
+        "cvss3_score": 9.8,
+        "scoreMetadataVector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H",
+        "publishDate": "2020-07-21",
+        "url": "https://vuln.whitesourcesoftware.com/vulnerability/CVE-2020-14343",
+        "description": "A vulnerability was discovered in the PyYAML library in all versions, where it is susceptible to arbitrary code execution when it processes untrusted YAML files through the full_load method or with the FullLoader loader. .load() defaults to using FullLoader and FullLoader is still vulnerable to RCE when run on untrusted input.  Applications that use the library to process untrusted input may be vulnerable to this flaw. An attacker could use this flaw to execute arbitrary code on the system by abusing the python/object/new constructor.\nThe fix for CVE-2020-1747 was not enough to fix this issue.\n",
+        "allFixes": [],
+        "references": []
+      },
+      "type": "SECURITY_VULNERABILITY",
+      "level": "MAJOR",
+      "library": {
+        "keyUuid": "5fc46b61-8884-43b3-a22d-7ababcb8a49c",
+        "keyId": 104751217,
+        "filename": "PyYAML-5.3.1.tar.gz",
+        "type": "Python",
+        "languages": "Python",
+        "description": "YAML parser and emitter for Python",
+        "references": {
+          "url": "https://files.pythonhosted.org/packages/64/c2/b80047c7ac2478f9501676c988a5411ed5572f35d1beff9cae07d321512c/PyYAML-5.3.1.tar.gz",
+          "homePage": "https://github.com/yaml/pyyaml",
+          "genericPackageIndex": "https://pypi.python.org/pypi/PyYAML/5.3.1"
+        },
+        "sha1": "3b20272e119990b2bbeb03815a1dd3f3e48af07e",
+        "name": "PyYAML",
+        "artifactId": "PyYAML-5.3.1.tar.gz",
+        "version": "5.3.1",
+        "groupId": "PyYAML",
+        "licenses": [
+          {
+            "name": "MIT",
+            "spdxName": "MIT",
+            "url": "http://www.opensource.org/licenses/MIT",
+            "profileInfo": {
+              "copyrightRiskScore": "THREE",
+              "patentRiskScore": "ONE",
+              "copyleft": "NO",
+              "royaltyFree": "YES"
+            },
+            "references": [
+              {
+                "referenceType": "PyPI (details available in Python Package Index)",
+                "reference": "https://index.whitesourcesoftware.com/gri/app/reader/resource/content/asString/fc34ae68-6247-48f3-9688-a196d45251ef"
+              },
+              {
+                "referenceType": "PyPI (details available in Python Package Index)",
+                "reference": "https://index.whitesourcesoftware.com/gri/app/reader/resource/content/asString/e8a5cc00-72a4-473d-8461-e2a3e3ff833d"
+              },
+              {
+                "referenceType": "PyPI (details available in Python Package Index)",
+                "reference": "https://index.whitesourcesoftware.com/gri/app/reader/resource/content/asString/53122ec1-5c37-4c62-9d70-034cea522be7"
+              }
+            ]
+          }
+        ]
+      },
+      "project": "GH_serverless-scheduler",
+      "projectId": 1734921,
+      "projectToken": "13e603e405b34514bebdfe8d082d8c14fd9c6aa4910042b8a74102eb3f5a1e9d",
+      "directDependency": true,
+      "description": "High:1,",
+      "date": "2020-11-12",
+      "modifiedDate": "2020-11-12",
+      "status": "OPEN",
+      "time": 1605185791000,
+      "creation_date": "2020-11-10",
+      "alertUuid": "0be447da-4930-4d03-893d-c99fc864c0f6"
+    },
+    {
+      "vulnerability": {
+        "name": "CVE-2020-14343",
+        "type": "CVE",
+        "severity": "high",
+        "score": 9.8,
+        "cvss3_severity": "high",
+        "cvss3_score": 9.8,
+        "scoreMetadataVector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H",
+        "publishDate": "2020-07-21",
+        "url": "https://vuln.whitesourcesoftware.com/vulnerability/CVE-2020-14343",
+        "description": "A vulnerability was discovered in the PyYAML library in all versions, where it is susceptible to arbitrary code execution when it processes untrusted YAML files through the full_load method or with the FullLoader loader. .load() defaults to using FullLoader and FullLoader is still vulnerable to RCE when run on untrusted input.  Applications that use the library to process untrusted input may be vulnerable to this flaw. An attacker could use this flaw to execute arbitrary code on the system by abusing the python/object/new constructor.\nThe fix for CVE-2020-1747 was not enough to fix this issue.\n",
+        "allFixes": [],
+        "references": []
+      },
+      "type": "SECURITY_VULNERABILITY",
+      "level": "MAJOR",
+      "library": {
+        "keyUuid": "5fc46b61-8884-43b3-a22d-7ababcb8a49c",
+        "keyId": 104751217,
+        "filename": "PyYAML-5.3.1.tar.gz",
+        "type": "Python",
+        "languages": "Python",
+        "description": "YAML parser and emitter for Python",
+        "references": {
+          "url": "https://files.pythonhosted.org/packages/64/c2/b80047c7ac2478f9501676c988a5411ed5572f35d1beff9cae07d321512c/PyYAML-5.3.1.tar.gz",
+          "homePage": "https://github.com/yaml/pyyaml",
+          "genericPackageIndex": "https://pypi.python.org/pypi/PyYAML/5.3.1"
+        },
+        "sha1": "3b20272e119990b2bbeb03815a1dd3f3e48af07e",
+        "name": "PyYAML",
+        "artifactId": "PyYAML-5.3.1.tar.gz",
+        "version": "5.3.1",
+        "groupId": "PyYAML",
+        "licenses": [
+          {
+            "name": "MIT",
+            "spdxName": "MIT",
+            "url": "http://www.opensource.org/licenses/MIT",
+            "profileInfo": {
+              "copyrightRiskScore": "THREE",
+              "patentRiskScore": "ONE",
+              "copyleft": "NO",
+              "royaltyFree": "YES"
+            },
+            "references": [
+              {
+                "referenceType": "PyPI (details available in Python Package Index)",
+                "reference": "https://index.whitesourcesoftware.com/gri/app/reader/resource/content/asString/fc34ae68-6247-48f3-9688-a196d45251ef"
+              },
+              {
+                "referenceType": "PyPI (details available in Python Package Index)",
+                "reference": "https://index.whitesourcesoftware.com/gri/app/reader/resource/content/asString/e8a5cc00-72a4-473d-8461-e2a3e3ff833d"
+              },
+              {
+                "referenceType": "PyPI (details available in Python Package Index)",
+                "reference": "https://index.whitesourcesoftware.com/gri/app/reader/resource/content/asString/53122ec1-5c37-4c62-9d70-034cea522be7"
+              }
+            ]
+          }
+        ]
+      },
+      "project": "GH_quantum-workflow-generator",
+      "projectId": 1734929,
+      "projectToken": "94fdebb7b6464878bf3ad9ed7d272a4e9b619dc26fd04094b0fec808a0818296",
+      "directDependency": true,
+      "description": "High:1,",
+      "date": "2020-11-10",
+      "modifiedDate": "2020-11-10",
+      "status": "OPEN",
+      "time": 1605037244000,
+      "creation_date": "2020-11-10",
+      "alertUuid": "45f56bef-6970-44fc-b2b8-ced8928729c8"
+    },
+    {
+      "vulnerability": {
+        "name": "CVE-2020-14343",
+        "type": "CVE",
+        "severity": "high",
+        "score": 9.8,
+        "cvss3_severity": "high",
+        "cvss3_score": 9.8,
+        "scoreMetadataVector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H",
+        "publishDate": "2020-07-21",
+        "url": "https://vuln.whitesourcesoftware.com/vulnerability/CVE-2020-14343",
+        "description": "A vulnerability was discovered in the PyYAML library in all versions, where it is susceptible to arbitrary code execution when it processes untrusted YAML files through the full_load method or with the FullLoader loader. .load() defaults to using FullLoader and FullLoader is still vulnerable to RCE when run on untrusted input.  Applications that use the library to process untrusted input may be vulnerable to this flaw. An attacker could use this flaw to execute arbitrary code on the system by abusing the python/object/new constructor.\nThe fix for CVE-2020-1747 was not enough to fix this issue.\n",
+        "allFixes": [],
+        "references": []
+      },
+      "type": "SECURITY_VULNERABILITY",
+      "level": "MAJOR",
+      "library": {
+        "keyUuid": "5fc46b61-8884-43b3-a22d-7ababcb8a49c",
+        "keyId": 104751217,
+        "filename": "PyYAML-5.3.1.tar.gz",
+        "type": "Python",
+        "languages": "Python",
+        "description": "YAML parser and emitter for Python",
+        "references": {
+          "url": "https://files.pythonhosted.org/packages/64/c2/b80047c7ac2478f9501676c988a5411ed5572f35d1beff9cae07d321512c/PyYAML-5.3.1.tar.gz",
+          "homePage": "https://github.com/yaml/pyyaml",
+          "genericPackageIndex": "https://pypi.python.org/pypi/PyYAML/5.3.1"
+        },
+        "sha1": "3b20272e119990b2bbeb03815a1dd3f3e48af07e",
+        "name": "PyYAML",
+        "artifactId": "PyYAML-5.3.1.tar.gz",
+        "version": "5.3.1",
+        "groupId": "PyYAML",
+        "licenses": [
+          {
+            "name": "MIT",
+            "spdxName": "MIT",
+            "url": "http://www.opensource.org/licenses/MIT",
+            "profileInfo": {
+              "copyrightRiskScore": "THREE",
+              "patentRiskScore": "ONE",
+              "copyleft": "NO",
+              "royaltyFree": "YES"
+            },
+            "references": [
+              {
+                "referenceType": "PyPI (details available in Python Package Index)",
+                "reference": "https://index.whitesourcesoftware.com/gri/app/reader/resource/content/asString/fc34ae68-6247-48f3-9688-a196d45251ef"
+              },
+              {
+                "referenceType": "PyPI (details available in Python Package Index)",
+                "reference": "https://index.whitesourcesoftware.com/gri/app/reader/resource/content/asString/e8a5cc00-72a4-473d-8461-e2a3e3ff833d"
+              },
+              {
+                "referenceType": "PyPI (details available in Python Package Index)",
+                "reference": "https://index.whitesourcesoftware.com/gri/app/reader/resource/content/asString/53122ec1-5c37-4c62-9d70-034cea522be7"
+              }
+            ]
+          }
+        ]
+      },
+      "project": "GH_quantum-workflow-executor",
+      "projectId": 1734926,
+      "projectToken": "259afde815fd40da8b7eb7877350b54a10014b145ee849f49906a77210ec491e",
+      "directDependency": true,
+      "description": "High:1,",
+      "date": "2020-11-12",
+      "modifiedDate": "2020-11-12",
+      "status": "OPEN",
+      "time": 1605220290000,
+      "creation_date": "2020-11-10",
+      "alertUuid": "7d94cadb-5ad0-4ef2-9972-7905c4d2aa63"
+    },
+    {
+      "vulnerability": {
+        "name": "CVE-2020-14343",
+        "type": "CVE",
+        "severity": "high",
+        "score": 9.8,
+        "cvss3_severity": "high",
+        "cvss3_score": 9.8,
+        "scoreMetadataVector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H",
+        "publishDate": "2020-07-21",
+        "url": "https://vuln.whitesourcesoftware.com/vulnerability/CVE-2020-14343",
+        "description": "A vulnerability was discovered in the PyYAML library in all versions, where it is susceptible to arbitrary code execution when it processes untrusted YAML files through the full_load method or with the FullLoader loader. .load() defaults to using FullLoader and FullLoader is still vulnerable to RCE when run on untrusted input.  Applications that use the library to process untrusted input may be vulnerable to this flaw. An attacker could use this flaw to execute arbitrary code on the system by abusing the python/object/new constructor.\nThe fix for CVE-2020-1747 was not enough to fix this issue.\n",
+        "allFixes": [],
+        "references": []
+      },
+      "type": "SECURITY_VULNERABILITY",
+      "level": "MAJOR",
+      "library": {
+        "keyUuid": "5fc46b61-8884-43b3-a22d-7ababcb8a49c",
+        "keyId": 104751217,
+        "filename": "PyYAML-5.3.1.tar.gz",
+        "type": "Python",
+        "languages": "Python",
+        "description": "YAML parser and emitter for Python",
+        "references": {
+          "url": "https://files.pythonhosted.org/packages/64/c2/b80047c7ac2478f9501676c988a5411ed5572f35d1beff9cae07d321512c/PyYAML-5.3.1.tar.gz",
+          "homePage": "https://github.com/yaml/pyyaml",
+          "genericPackageIndex": "https://pypi.python.org/pypi/PyYAML/5.3.1"
+        },
+        "sha1": "3b20272e119990b2bbeb03815a1dd3f3e48af07e",
+        "name": "PyYAML",
+        "artifactId": "PyYAML-5.3.1.tar.gz",
+        "version": "5.3.1",
+        "groupId": "PyYAML",
+        "licenses": [
+          {
+            "name": "MIT",
+            "spdxName": "MIT",
+            "url": "http://www.opensource.org/licenses/MIT",
+            "profileInfo": {
+              "copyrightRiskScore": "THREE",
+              "patentRiskScore": "ONE",
+              "copyleft": "NO",
+              "royaltyFree": "YES"
+            },
+            "references": [
+              {
+                "referenceType": "PyPI (details available in Python Package Index)",
+                "reference": "https://index.whitesourcesoftware.com/gri/app/reader/resource/content/asString/fc34ae68-6247-48f3-9688-a196d45251ef"
+              },
+              {
+                "referenceType": "PyPI (details available in Python Package Index)",
+                "reference": "https://index.whitesourcesoftware.com/gri/app/reader/resource/content/asString/e8a5cc00-72a4-473d-8461-e2a3e3ff833d"
+              },
+              {
+                "referenceType": "PyPI (details available in Python Package Index)",
+                "reference": "https://index.whitesourcesoftware.com/gri/app/reader/resource/content/asString/53122ec1-5c37-4c62-9d70-034cea522be7"
+              }
+            ]
+          }
+        ]
+      },
+      "project": "GH_Configurations",
+      "projectId": 2427089,
+      "projectToken": "2cba5e49b7d147e99ef240b96872b6a1b56287a0727d40dbaf4040284098dc82",
+      "directDependency": true,
+      "description": "High:1,",
+      "date": "2020-11-13",
+      "modifiedDate": "2020-11-13",
+      "status": "OPEN",
+      "time": 1605292116000,
+      "creation_date": "2020-11-10",
+      "alertUuid": "9c39f8be-e93a-4444-ac33-298e450ac011"
+    },
+    {
+      "vulnerability": {
+        "name": "CVE-2020-14343",
+        "type": "CVE",
+        "severity": "high",
+        "score": 9.8,
+        "cvss3_severity": "high",
+        "cvss3_score": 9.8,
+        "scoreMetadataVector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H",
+        "publishDate": "2020-07-21",
+        "url": "https://vuln.whitesourcesoftware.com/vulnerability/CVE-2020-14343",
+        "description": "A vulnerability was discovered in the PyYAML library in all versions, where it is susceptible to arbitrary code execution when it processes untrusted YAML files through the full_load method or with the FullLoader loader. .load() defaults to using FullLoader and FullLoader is still vulnerable to RCE when run on untrusted input.  Applications that use the library to process untrusted input may be vulnerable to this flaw. An attacker could use this flaw to execute arbitrary code on the system by abusing the python/object/new constructor.\nThe fix for CVE-2020-1747 was not enough to fix this issue.\n",
+        "allFixes": [],
+        "references": []
+      },
+      "type": "SECURITY_VULNERABILITY",
+      "level": "MAJOR",
+      "library": {
+        "keyUuid": "5fc46b61-8884-43b3-a22d-7ababcb8a49c",
+        "keyId": 104751217,
+        "filename": "PyYAML-5.3.1.tar.gz",
+        "type": "Python",
+        "languages": "Python",
+        "description": "YAML parser and emitter for Python",
+        "references": {
+          "url": "https://files.pythonhosted.org/packages/64/c2/b80047c7ac2478f9501676c988a5411ed5572f35d1beff9cae07d321512c/PyYAML-5.3.1.tar.gz",
+          "homePage": "https://github.com/yaml/pyyaml",
+          "genericPackageIndex": "https://pypi.python.org/pypi/PyYAML/5.3.1"
+        },
+        "sha1": "3b20272e119990b2bbeb03815a1dd3f3e48af07e",
+        "name": "PyYAML",
+        "artifactId": "PyYAML-5.3.1.tar.gz",
+        "version": "5.3.1",
+        "groupId": "PyYAML",
+        "licenses": [
+          {
+            "name": "MIT",
+            "spdxName": "MIT",
+            "url": "http://www.opensource.org/licenses/MIT",
+            "profileInfo": {
+              "copyrightRiskScore": "THREE",
+              "patentRiskScore": "ONE",
+              "copyleft": "NO",
+              "royaltyFree": "YES"
+            },
+            "references": [
+              {
+                "referenceType": "PyPI (details available in Python Package Index)",
+                "reference": "https://index.whitesourcesoftware.com/gri/app/reader/resource/content/asString/fc34ae68-6247-48f3-9688-a196d45251ef"
+              },
+              {
+                "referenceType": "PyPI (details available in Python Package Index)",
+                "reference": "https://index.whitesourcesoftware.com/gri/app/reader/resource/content/asString/e8a5cc00-72a4-473d-8461-e2a3e3ff833d"
+              },
+              {
+                "referenceType": "PyPI (details available in Python Package Index)",
+                "reference": "https://index.whitesourcesoftware.com/gri/app/reader/resource/content/asString/53122ec1-5c37-4c62-9d70-034cea522be7"
+              }
+            ]
+          }
+        ]
+      },
+      "project": "GH_self-healing-engine",
+      "projectId": 2352181,
+      "projectToken": "043fd8d321cb4da793256f44e424d56f4bf617161b8a49c9bd29e37965210e7a",
+      "directDependency": true,
+      "description": "High:1,",
+      "date": "2020-11-12",
+      "modifiedDate": "2020-11-12",
+      "status": "OPEN",
+      "time": 1605185902000,
+      "creation_date": "2020-11-10",
+      "alertUuid": "af9aece8-8674-47a5-afe7-b22599b2de88"
+    },
+    {
+      "vulnerability": {
+        "name": "CVE-2020-25659",
+        "type": "CVE",
+        "severity": "high",
+        "score": 7.5,
+        "cvss3_severity": "high",
+        "cvss3_score": 7.5,
+        "scoreMetadataVector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N",
+        "publishDate": "2020-09-17",
+        "url": "https://vuln.whitesourcesoftware.com/vulnerability/CVE-2020-25659",
+        "description": "After conducting further research, WhiteSource has determined that all versions of cryptography up to version 3.2 are vulnerable to CVE-2020-25659.",
+        "topFix": {
+          "vulnerability": "CVE-2020-25659",
+          "type": "UPGRADE_VERSION",
+          "origin": "WHITESOURCE_EXPERT",
+          "url": "https://github.com/pyca/cryptography/security/advisories/GHSA-hggm-jpg3-v476",
+          "fixResolution": "3.2",
+          "date": "2020-09-17",
+          "message": "Upgrade to version"
+        },
+        "allFixes": [],
+        "fixResolutionText": "Upgrade to version 3.2",
+        "references": []
+      },
+      "type": "SECURITY_VULNERABILITY",
+      "level": "MAJOR",
+      "library": {
+        "keyUuid": "bd702c97-fd2d-47e5-9959-8a50ffa64b46",
+        "keyId": 122392863,
+        "filename": "cryptography-3.1-cp35-abi3-manylinux2010_x86_64.whl",
+        "type": "Python",
+        "languages": "Python",
+        "description": "cryptography is a package which provides cryptographic recipes and primitives to Python developers.",
+        "references": {
+          "url": "https://files.pythonhosted.org/packages/c0/9c/647e559a6e8be493dc2a7a5d15d26cb501ca60ec299b356f23839a673a83/cryptography-3.1-cp35-abi3-manylinux2010_x86_64.whl",
+          "homePage": "https://github.com/pyca/cryptography",
+          "genericPackageIndex": "https://pypi.python.org/pypi/cryptography/3.1"
+        },
+        "sha1": "bef0ff2d4e5ef9561ddc44a05192e7a39869fb16",
+        "name": "cryptography",
+        "artifactId": "cryptography-3.1-cp35-abi3-manylinux2010_x86_64.whl",
+        "version": "3.1",
+        "groupId": "cryptography",
+        "licenses": [
+          {
+            "name": "Apache 2.0",
+            "spdxName": "Apache-2.0",
+            "url": "http://www.opensource.org/licenses/Apache-2.0",
+            "profileInfo": {
+              "copyrightRiskScore": "THREE",
+              "patentRiskScore": "ONE",
+              "copyleft": "NO",
+              "linking": "DYNAMIC",
+              "royaltyFree": "CONDITIONAL"
+            },
+            "references": [
+              {
+                "referenceType": "PyPI (details available in Python Package Index)",
+                "reference": "https://index.whitesourcesoftware.com/gri/app/reader/resource/content/asString/562c757f-c4c8-419d-a3c6-19860eb5c1b6"
+              },
+              {
+                "referenceType": "PyPI (details available in Python Package Index)",
+                "reference": "https://index.whitesourcesoftware.com/gri/app/reader/resource/content/asString/2f53f375-7cbd-41ff-b553-0f217f8611c7"
+              }
+            ]
+          },
+          {
+            "name": "BSD 3",
+            "spdxName": "BSD-3-Clause",
+            "url": "http://www.opensource.org/licenses/BSD-3-Clause",
+            "profileInfo": {
+              "copyrightRiskScore": "THREE",
+              "patentRiskScore": "THREE",
+              "copyleft": "NO",
+              "linking": "NON_VIRAL",
+              "royaltyFree": "NO"
+            },
+            "references": [
+              {
+                "referenceType": "PyPI (details available in Python Package Index)",
+                "reference": "https://index.whitesourcesoftware.com/gri/app/reader/resource/content/asString/5e4eced4-59bf-4ac3-b3c8-e766c7405cd0"
+              }
+            ]
+          }
+        ]
+      },
+      "project": "GH_quantum-workflow-generator",
+      "projectId": 1734929,
+      "projectToken": "94fdebb7b6464878bf3ad9ed7d272a4e9b619dc26fd04094b0fec808a0818296",
+      "directDependency": false,
+      "description": "High:1,",
+      "date": "2020-11-09",
+      "modifiedDate": "2020-11-09",
+      "status": "OPEN",
+      "time": 1604923460000,
+      "creation_date": "2020-11-09",
+      "alertUuid": "fcbe38ab-5321-4190-ba05-f0a1a65180df"
+    },
+    {
+      "vulnerability": {
+        "name": "CVE-2020-25659",
+        "type": "CVE",
+        "severity": "high",
+        "score": 7.5,
+        "cvss3_severity": "high",
+        "cvss3_score": 7.5,
+        "scoreMetadataVector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N",
+        "publishDate": "2020-09-17",
+        "url": "https://vuln.whitesourcesoftware.com/vulnerability/CVE-2020-25659",
+        "description": "After conducting further research, WhiteSource has determined that all versions of cryptography up to version 3.2 are vulnerable to CVE-2020-25659.",
+        "topFix": {
+          "vulnerability": "CVE-2020-25659",
+          "type": "UPGRADE_VERSION",
+          "origin": "WHITESOURCE_EXPERT",
+          "url": "https://github.com/pyca/cryptography/security/advisories/GHSA-hggm-jpg3-v476",
+          "fixResolution": "3.2",
+          "date": "2020-09-17",
+          "message": "Upgrade to version"
+        },
+        "allFixes": [],
+        "fixResolutionText": "Upgrade to version 3.2",
+        "references": []
+      },
+      "type": "SECURITY_VULNERABILITY",
+      "level": "MAJOR",
+      "library": {
+        "keyUuid": "30b0fd37-8d1a-475d-b0ac-54c28026b0fc",
+        "keyId": 125621899,
+        "filename": "cryptography-3.1.1-cp35-abi3-manylinux2010_x86_64.whl",
+        "type": "Python",
+        "languages": "Python",
+        "description": "cryptography is a package which provides cryptographic recipes and primitives to Python developers.",
+        "references": {
+          "url": "https://files.pythonhosted.org/packages/33/62/30f6936941d87a5ed72efb24249437824f6b2c953901245b58c91fde2f27/cryptography-3.1.1-cp35-abi3-manylinux2010_x86_64.whl",
+          "homePage": "https://github.com/pyca/cryptography",
+          "genericPackageIndex": "https://pypi.python.org/pypi/cryptography/3.1.1"
+        },
+        "sha1": "ebc20b542de3d707e0521f461d8812fb5de33225",
+        "name": "cryptography",
+        "artifactId": "cryptography-3.1.1-cp35-abi3-manylinux2010_x86_64.whl",
+        "version": "3.1.1",
+        "groupId": "cryptography",
+        "licenses": [
+          {
+            "name": "Apache 2.0",
+            "spdxName": "Apache-2.0",
+            "url": "http://www.opensource.org/licenses/Apache-2.0",
+            "profileInfo": {
+              "copyrightRiskScore": "THREE",
+              "patentRiskScore": "ONE",
+              "copyleft": "NO",
+              "linking": "DYNAMIC",
+              "royaltyFree": "CONDITIONAL"
+            },
+            "references": [
+              {
+                "referenceType": "PyPI (details available in Python Package Index)",
+                "reference": "https://index.whitesourcesoftware.com/gri/app/reader/resource/content/asString/24c84106-119f-4109-bd6a-5266e843fd02"
+              },
+              {
+                "referenceType": "PyPI (details available in Python Package Index)",
+                "reference": "https://index.whitesourcesoftware.com/gri/app/reader/resource/content/asString/171d52d3-36e7-4b28-9659-04225d1e8e3d"
+              }
+            ]
+          },
+          {
+            "name": "BSD 3",
+            "spdxName": "BSD-3-Clause",
+            "url": "http://www.opensource.org/licenses/BSD-3-Clause",
+            "profileInfo": {
+              "copyrightRiskScore": "THREE",
+              "patentRiskScore": "THREE",
+              "copyleft": "NO",
+              "linking": "NON_VIRAL",
+              "royaltyFree": "NO"
+            },
+            "references": [
+              {
+                "referenceType": "PyPI (details available in Python Package Index)",
+                "reference": "https://index.whitesourcesoftware.com/gri/app/reader/resource/content/asString/383cf8e4-f466-4016-a887-8d7cd89787f5"
+              }
+            ]
+          }
+        ]
+      },
+      "project": "GH_Configurations",
+      "projectId": 2427089,
+      "projectToken": "2cba5e49b7d147e99ef240b96872b6a1b56287a0727d40dbaf4040284098dc82",
+      "directDependency": false,
+      "description": "High:1,",
+      "date": "2020-11-09",
+      "modifiedDate": "2020-11-09",
+      "status": "OPEN",
+      "time": 1604923460000,
+      "creation_date": "2020-11-09",
+      "alertUuid": "56a6cbb3-aeee-4477-ad6b-599426c26a98"
+    },
+    {
+      "vulnerability": {
+        "name": "CVE-2020-14330",
+        "type": "CVE",
+        "severity": "low",
+        "score": 2.1,
+        "cvss3_severity": "medium",
+        "cvss3_score": 5.5,
+        "scoreMetadataVector": "CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:N/A:N",
+        "publishDate": "2020-09-11",
+        "url": "https://vuln.whitesourcesoftware.com/vulnerability/CVE-2020-14330",
+        "description": "An Improper Output Neutralization for Logs flaw was found in Ansible when using the uri module, where sensitive data is exposed to content and json output. This flaw allows an attacker to access the logs or outputs of performed tasks to read keys used in playbooks from other users within the uri module. The highest threat from this vulnerability is to data confidentiality.",
+        "topFix": {
+          "vulnerability": "CVE-2020-14330",
+          "type": "UPGRADE_VERSION",
+          "origin": "WHITESOURCE_EXPERT",
+          "url": "https://bugzilla.redhat.com/show_bug.cgi?id=CVE-2020-14330",
+          "fixResolution": "2.10.0",
+          "date": "2020-07-21",
+          "message": "Upgrade to version"
+        },
+        "allFixes": [],
+        "fixResolutionText": "Upgrade to version 2.10.0",
+        "references": []
+      },
+      "type": "SECURITY_VULNERABILITY",
+      "level": "MAJOR",
+      "library": {
+        "keyUuid": "486f03f9-6686-408b-a6a7-fee128c7792c",
+        "keyId": 122856654,
+        "filename": "ansible-2.9.13.tar.gz",
+        "type": "Python",
+        "languages": "Python",
+        "description": "Radically simple IT automation",
+        "references": {
+          "url": "https://files.pythonhosted.org/packages/32/62/eec759cd8ac89a866df1aba91abf785486fed7774188a41f42f5c7326dcb/ansible-2.9.13.tar.gz",
+          "homePage": "https://ansible.com/",
+          "genericPackageIndex": "https://pypi.python.org/pypi/ansible/2.9.13"
+        },
+        "sha1": "228951291239caf2c99c054a620dcb03699f7b0c",
+        "name": "ansible",
+        "artifactId": "ansible-2.9.13.tar.gz",
+        "version": "2.9.13",
+        "groupId": "ansible",
+        "licenses": [
+          {
+            "name": "GPL 3.0",
+            "spdxName": "GPL-3.0",
+            "url": "http://www.opensource.org/licenses/GPL-3.0",
+            "profileInfo": {
+              "copyrightRiskScore": "SIX",
+              "patentRiskScore": "ONE",
+              "copyleft": "FULL",
+              "linking": "VIRAL",
+              "royaltyFree": "YES"
+            },
+            "references": [
+              {
+                "referenceType": "PyPI (details available in Python Package Index)"
+              }
+            ]
+          }
+        ]
+      },
+      "project": "GH_quantum-workflow-generator",
+      "projectId": 1734929,
+      "projectToken": "94fdebb7b6464878bf3ad9ed7d272a4e9b619dc26fd04094b0fec808a0818296",
+      "directDependency": true,
+      "description": "Medium:1,",
+      "date": "2020-09-13",
+      "modifiedDate": "2020-09-13",
+      "status": "OPEN",
+      "time": 1600020126000,
+      "creation_date": "2020-09-13",
+      "alertUuid": "18ba2182-9087-42ba-8c05-335ebd736eb4"
+    },
+    {
+      "type": "MULTIPLE_LIBRARY_VERSIONS",
+      "level": "MINOR",
+      "library": {
+        "keyUuid": "209906c2-d831-42ca-a24b-5d184a719dfc",
+        "keyId": 125656892,
+        "filename": "ansible-2.10.0.tar.gz",
+        "type": "Python",
+        "languages": "Python",
+        "description": "Radically simple IT automation",
+        "references": {
+          "url": "https://files.pythonhosted.org/packages/4a/0b/44b586965bd51135d3915a02d1327fb392843630435cd41d6c89898c5f24/ansible-2.10.0.tar.gz",
+          "homePage": "https://ansible.com/",
+          "genericPackageIndex": "https://pypi.python.org/pypi/ansible/2.10.0"
+        },
+        "sha1": "0ab05b0071a6734bcd58b5488493bc23a3bdfaa4",
+        "name": "ansible",
+        "artifactId": "ansible-2.10.0.tar.gz",
+        "version": "2.10.0",
+        "groupId": "ansible",
+        "licenses": [
+          {
+            "name": "GPL 3.0",
+            "spdxName": "GPL-3.0",
+            "url": "http://www.opensource.org/licenses/GPL-3.0",
+            "profileInfo": {
+              "copyrightRiskScore": "SIX",
+              "patentRiskScore": "ONE",
+              "copyleft": "FULL",
+              "linking": "VIRAL",
+              "royaltyFree": "YES"
+            },
+            "references": [
+              {
+                "referenceType": "PyPI (details available in Python Package Index)",
+                "reference": "https://index.whitesourcesoftware.com/gri/app/reader/resource/content/asString/3378b7f8-2631-4c31-bef2-b313066bd844"
+              },
+              {
+                "referenceType": "PyPI (details available in Python Package Index)",
+                "reference": "https://index.whitesourcesoftware.com/gri/app/reader/resource/content/asString/45e1b35e-8e92-4fa0-b9a1-8021169efb7a"
+              },
+              {
+                "referenceType": "PyPI (details available in Python Package Index)",
+                "reference": "https://index.whitesourcesoftware.com/gri/app/reader/resource/content/asString/a7e535b8-0bfe-49ef-b9ca-df29fab0259a"
+              }
+            ]
+          }
+        ]
+      },
+      "project": "GH_quantum-workflow-executor",
+      "projectId": 1734926,
+      "projectToken": "259afde815fd40da8b7eb7877350b54a10014b145ee849f49906a77210ec491e",
+      "directDependency": true,
+      "description": "Version 2.10.4 is being used in project G-engine",
+      "date": "2020-12-15",
+      "modifiedDate": "2020-12-15",
+      "time": 1608066866000,
+      "creation_date": "2020-12-15",
+      "alertUuid": "4518e167-714f-4188-8fca-3fe95eff5634"
+    },
+    {
+      "type": "MULTIPLE_LICENSES",
+      "level": "MINOR",
+      "library": {
+        "keyUuid": "c724faf9-8832-4fa0-aaca-ba9d6795b016",
+        "keyId": 129429857,
+        "filename": "cryptography-3.2-cp35-abi3-manylinux2010_x86_64.whl",
+        "type": "Python",
+        "languages": "Python",
+        "description": "cryptography is a package which provides cryptographic recipes and primitives to Python developers.",
+        "references": {
+          "url": "https://files.pythonhosted.org/packages/4a/a8/904c6f56c6018fc0b860510a55ea6123d561d02157f9e0855301afa27749/cryptography-3.2-cp35-abi3-manylinux2010_x86_64.whl",
+          "homePage": "https://github.com/pyca/cryptography",
+          "genericPackageIndex": "https://pypi.python.org/pypi/cryptography/3.2"
+        },
+        "sha1": "a0da756afb8958b6b4dd5e150c9cf336284063c4",
+        "name": "cryptography",
+        "artifactId": "cryptography-3.2-cp35-abi3-manylinux2010_x86_64.whl",
+        "version": "3.2",
+        "groupId": "cryptography",
+        "licenses": [
+          {
+            "name": "Apache 2.0",
+            "spdxName": "Apache-2.0",
+            "url": "http://www.opensource.org/licenses/Apache-2.0",
+            "profileInfo": {
+              "copyrightRiskScore": "THREE",
+              "patentRiskScore": "ONE",
+              "copyleft": "NO",
+              "linking": "DYNAMIC",
+              "royaltyFree": "CONDITIONAL"
+            },
+            "references": [
+              {
+                "referenceType": "PyPI (details available in Python Package Index)",
+                "reference": "https://index.whitesourcesoftware.com/gri/app/reader/resource/content/asString/8b280e5b-8174-4ea1-b9c0-85c364c34b0c"
+              },
+              {
+                "referenceType": "PyPI (details available in Python Package Index)",
+                "reference": "https://index.whitesourcesoftware.com/gri/app/reader/resource/content/asString/171385d7-2aa0-4e8d-8def-dd46c14823ec"
+              }
+            ]
+          },
+          {
+            "name": "BSD 3",
+            "spdxName": "BSD-3-Clause",
+            "url": "http://www.opensource.org/licenses/BSD-3-Clause",
+            "profileInfo": {
+              "copyrightRiskScore": "THREE",
+              "patentRiskScore": "THREE",
+              "copyleft": "NO",
+              "linking": "NON_VIRAL",
+              "royaltyFree": "NO"
+            },
+            "references": [
+              {
+                "referenceType": "PyPI (details available in Python Package Index)",
+                "reference": "https://index.whitesourcesoftware.com/gri/app/reader/resource/content/asString/e0915e57-0f19-492d-9766-23993350abf1"
+              }
+            ]
+          }
+        ]
+      },
+      "project": "GH_quantum-workflow-executor",
+      "projectId": 1734926,
+      "projectToken": "259afde815fd40da8b7eb7877350b54a10014b145ee849f49906a77210ec491e",
+      "directDependency": false,
+      "description": "2 licenses identified",
+      "date": "2020-12-15",
+      "modifiedDate": "2020-12-15",
+      "time": 1608066865000,
+      "creation_date": "2020-12-15",
+      "alertUuid": "f0bef7d2-345b-43c5-82a7-8eb07b502d29"
+    },
+    {
+      "type": "MULTIPLE_LICENSES",
+      "level": "MINOR",
+      "library": {
+        "keyUuid": "db8567cb-af96-4b21-9871-72e18464ae00",
+        "keyId": 132717079,
+        "filename": "packaging-20.8-py2.py3-none-any.whl",
+        "type": "Python",
+        "languages": "Python",
+        "description": "Core utilities for Python packages",
+        "references": {
+          "url": "https://files.pythonhosted.org/packages/b1/a7/588bfa063e7763247ab6f7e1d994e331b85e0e7d09f853c59a6eb9696974/packaging-20.8-py2.py3-none-any.whl",
+          "homePage": "https://github.com/pypa/packaging",
+          "genericPackageIndex": "https://pypi.python.org/pypi/packaging/20.8"
+        },
+        "sha1": "f6591974891e2aff16eedff79c2d05baf1e2f572",
+        "name": "packaging",
+        "artifactId": "packaging-20.8-py2.py3-none-any.whl",
+        "version": "20.8",
+        "groupId": "packaging",
+        "licenses": [
+          {
+            "name": "BSD 2",
+            "spdxName": "BSD-2-Clause",
+            "url": "http://www.opensource.org/licenses/BSD-2-Clause",
+            "profileInfo": {
+              "copyrightRiskScore": "THREE",
+              "patentRiskScore": "THREE",
+              "copyleft": "NO",
+              "linking": "NON_VIRAL",
+              "royaltyFree": "NO"
+            },
+            "references": [
+              {
+                "referenceType": "PyPI (details available in Python Package Index)",
+                "reference": "https://index.whitesourcesoftware.com/gri/app/reader/resource/content/asString/2bcd8f9d-bda3-4563-825b-ee6486c90ec3"
+              },
+              {
+                "referenceType": "PyPI (details available in Python Package Index)",
+                "reference": "https://index.whitesourcesoftware.com/gri/app/reader/resource/content/asString/7e02562b-3f61-4114-981b-5a75b351acd1"
+              }
+            ]
+          },
+          {
+            "name": "Apache 2.0",
+            "spdxName": "Apache-2.0",
+            "url": "http://www.opensource.org/licenses/Apache-2.0",
+            "profileInfo": {
+              "copyrightRiskScore": "THREE",
+              "patentRiskScore": "ONE",
+              "copyleft": "NO",
+              "linking": "DYNAMIC",
+              "royaltyFree": "CONDITIONAL"
+            },
+            "references": [
+              {
+                "referenceType": "PyPI (details available in Python Package Index)",
+                "reference": "https://index.whitesourcesoftware.com/gri/app/reader/resource/content/asString/e09d7d27-f997-4105-873a-ce046a4df766"
+              },
+              {
+                "referenceType": "PyPI (details available in Python Package Index)",
+                "reference": "https://index.whitesourcesoftware.com/gri/app/reader/resource/content/asString/7e02562b-3f61-4114-981b-5a75b351acd1"
+              }
+            ]
+          }
+        ]
+      },
+      "project": "GH_quantum-workflow-executor",
+      "projectId": 1734926,
+      "projectToken": "259afde815fd40da8b7eb7877350b54a10014b145ee849f49906a77210ec491e",
+      "directDependency": false,
+      "description": "2 licenses identified",
+      "date": "2020-12-15",
+      "modifiedDate": "2020-12-15",
+      "time": 1608066865000,
+      "creation_date": "2020-12-15",
+      "alertUuid": "bca5e6cf-b1db-409b-a72d-258da7d2833a"
+    },
+    {
+      "type": "MULTIPLE_LIBRARY_VERSIONS",
+      "level": "MINOR",
+      "library": {
+        "keyUuid": "97aa22e2-8ffe-4bd7-8f68-0430b45bb8d1",
+        "keyId": 128512633,
+        "filename": "setuptools-50.3.2-py3-none-any.whl",
+        "type": "Python",
+        "languages": "Python",
+        "description": "Easily download, build, install, upgrade, and uninstall Python packages",
+        "references": {
+          "url": "https://files.pythonhosted.org/packages/6d/38/c21ef5034684ffc0412deefbb07d66678332290c14bb5269c85145fbd55e/setuptools-50.3.2-py3-none-any.whl",
+          "homePage": "https://github.com/pypa/setuptools",
+          "genericPackageIndex": "https://pypi.python.org/pypi/setuptools/50.3.2"
+        },
+        "sha1": "fb7c7015f3c3c273de71dc21a13377cbc577f2f0",
+        "name": "setuptools",
+        "artifactId": "setuptools-50.3.2-py3-none-any.whl",
+        "version": "50.3.2",
+        "groupId": "setuptools",
+        "licenses": [
+          {
+            "name": "MIT",
+            "spdxName": "MIT",
+            "url": "http://www.opensource.org/licenses/MIT",
+            "profileInfo": {
+              "copyrightRiskScore": "THREE",
+              "patentRiskScore": "ONE",
+              "copyleft": "NO",
+              "royaltyFree": "YES"
+            },
+            "references": [
+              {
+                "referenceType": "PyPI (details available in Python Package Index)",
+                "reference": "https://index.whitesourcesoftware.com/gri/app/reader/resource/content/asString/f26d42ff-916b-4fed-9a9a-d06d3b7d5dca"
+              },
+              {
+                "referenceType": "PyPI (details available in Python Package Index)",
+                "reference": "https://index.whitesourcesoftware.com/gri/app/reader/resource/content/asString/41b6b5af-d7df-473f-91b5-70e0a4585379"
+              }
+            ]
+          }
+        ]
+      },
+      "project": "GH_self-healing-engine",
+      "projectId": 2352181,
+      "projectToken": "043fd8d321cb4da793256f44e424d56f4bf617161b8a49c9bd29e37965210e7a",
+      "directDependency": true,
+      "description": "Version 51.0.0 is being used in project G-scheduler",
+      "date": "2020-12-15",
+      "modifiedDate": "2020-12-15",
+      "time": 1608066805000,
+      "creation_date": "2020-12-15",
+      "alertUuid": "e3f991ec-cf67-4257-9a3c-872a709b3581"
+    },
+    {
+      "type": "MULTIPLE_LIBRARY_VERSIONS",
+      "level": "MINOR",
+      "library": {
+        "keyUuid": "9e2f498b-41b0-47ce-94b9-cf334a3e07a2",
+        "keyId": 131036527,
+        "filename": "certifi-2020.11.8-py2.py3-none-any.whl",
+        "type": "Python",
+        "languages": "Python",
+        "description": "Python package for providing Mozilla's CA Bundle.",
+        "references": {
+          "url": "https://files.pythonhosted.org/packages/c1/6f/3d85f0850962279a7e4c622695d7b3171e95ac65308a57d3b29738b27149/certifi-2020.11.8-py2.py3-none-any.whl",
+          "homePage": "https://certifiio.readthedocs.io/en/latest/",
+          "genericPackageIndex": "https://pypi.python.org/pypi/certifi/2020.11.8"
+        },
+        "sha1": "40bc8ec02f344f99fa1f8cbdc77dec867c1762db",
+        "name": "certifi",
+        "artifactId": "certifi-2020.11.8-py2.py3-none-any.whl",
+        "version": "2020.11.8",
+        "groupId": "certifi",
+        "licenses": [
+          {
+            "name": "Mozilla 2.0",
+            "spdxName": "MPL-2.0",
+            "url": "http://www.mozilla.org/MPL/2.0/index.txt",
+            "profileInfo": {
+              "copyrightRiskScore": "FIVE",
+              "patentRiskScore": "TWO",
+              "copyleft": "PARTIAL",
+              "linking": "NON_VIRAL",
+              "royaltyFree": "YES"
+            },
+            "references": [
+              {
+                "referenceType": "PyPI (details available in Python Package Index)",
+                "reference": "https://index.whitesourcesoftware.com/gri/app/reader/resource/content/asString/a18c2391-cab6-42ba-846d-4e39e61eff60"
+              },
+              {
+                "referenceType": "PyPI (details available in Python Package Index)",
+                "reference": "https://index.whitesourcesoftware.com/gri/app/reader/resource/content/asString/c4bc7ae5-e34a-4693-a79c-e6d9f1564131"
+              }
+            ]
+          }
+        ]
+      },
+      "project": "GH_self-healing-engine",
+      "projectId": 2352181,
+      "projectToken": "043fd8d321cb4da793256f44e424d56f4bf617161b8a49c9bd29e37965210e7a",
+      "directDependency": true,
+      "description": "Version 2020.12.5 is being used in project G-scheduler",
+      "date": "2020-12-15",
+      "modifiedDate": "2020-12-15",
+      "time": 1608066805000,
+      "creation_date": "2020-12-15",
+      "alertUuid": "81436e31-a8df-4349-b3fd-696f40751ca1"
+    },
+    {
+      "type": "MULTIPLE_LIBRARY_VERSIONS",
+      "level": "MINOR",
+      "library": {
+        "keyUuid": "a1e9097a-828d-4f3a-8652-785aa754c027",
+        "keyId": 132617002,
+        "filename": "importlib_metadata-3.1.1-py3-none-any.whl",
+        "type": "Python",
+        "languages": "Python",
+        "description": "Read metadata from Python packages",
+        "references": {
+          "url": "https://files.pythonhosted.org/packages/99/c7/4ccf2baa455613aa9e61372365aba8594ff2806c82189c31a6c65e7c679e/importlib_metadata-3.1.1-py3-none-any.whl",
+          "homePage": "https://github.com/python/importlib_metadata",
+          "genericPackageIndex": "https://pypi.python.org/pypi/importlib-metadata/3.1.1"
+        },
+        "sha1": "d4abd7af8ae2e1041ba38f8dd1b75c55f9b1c678",
+        "name": "importlib-metadata",
+        "artifactId": "importlib_metadata-3.1.1-py3-none-any.whl",
+        "version": "3.1.1",
+        "groupId": "importlib-metadata",
+        "licenses": [
+          {
+            "name": "Apache 2.0",
+            "spdxName": "Apache-2.0",
+            "url": "http://www.opensource.org/licenses/Apache-2.0",
+            "profileInfo": {
+              "copyrightRiskScore": "THREE",
+              "patentRiskScore": "ONE",
+              "copyleft": "NO",
+              "linking": "DYNAMIC",
+              "royaltyFree": "CONDITIONAL"
+            },
+            "references": [
+              {
+                "referenceType": "PyPI (details available in Python Package Index)",
+                "reference": "https://index.whitesourcesoftware.com/gri/app/reader/resource/content/asString/e8f4eef7-3601-4af9-8048-590552dd4a47"
+              }
+            ]
+          }
+        ]
+      },
+      "project": "GH_self-healing-engine",
+      "projectId": 2352181,
+      "projectToken": "043fd8d321cb4da793256f44e424d56f4bf617161b8a49c9bd29e37965210e7a",
+      "directDependency": true,
+      "description": "Version 3.3.0 is being used in project G-scheduler",
+      "date": "2020-12-15",
+      "modifiedDate": "2020-12-15",
+      "time": 1608066805000,
+      "creation_date": "2020-12-15",
+      "alertUuid": "e1061022-1eeb-495f-898a-a9cabf1ee4bf"
+    },
+    {
+      "type": "MULTIPLE_LIBRARY_VERSIONS",
+      "level": "MINOR",
+      "library": {
+        "keyUuid": "c724faf9-8832-4fa0-aaca-ba9d6795b016",
+        "keyId": 129429857,
+        "filename": "cryptography-3.2-cp35-abi3-manylinux2010_x86_64.whl",
+        "type": "Python",
+        "languages": "Python",
+        "description": "cryptography is a package which provides cryptographic recipes and primitives to Python developers.",
+        "references": {
+          "url": "https://files.pythonhosted.org/packages/4a/a8/904c6f56c6018fc0b860510a55ea6123d561d02157f9e0855301afa27749/cryptography-3.2-cp35-abi3-manylinux2010_x86_64.whl",
+          "homePage": "https://github.com/pyca/cryptography",
+          "genericPackageIndex": "https://pypi.python.org/pypi/cryptography/3.2"
+        },
+        "sha1": "a0da756afb8958b6b4dd5e150c9cf336284063c4",
+        "name": "cryptography",
+        "artifactId": "cryptography-3.2-cp35-abi3-manylinux2010_x86_64.whl",
+        "version": "3.2",
+        "groupId": "cryptography",
+        "licenses": [
+          {
+            "name": "BSD 3",
+            "spdxName": "BSD-3-Clause",
+            "url": "http://www.opensource.org/licenses/BSD-3-Clause",
+            "profileInfo": {
+              "copyrightRiskScore": "THREE",
+              "patentRiskScore": "THREE",
+              "copyleft": "NO",
+              "linking": "NON_VIRAL",
+              "royaltyFree": "NO"
+            },
+            "references": [
+              {
+                "referenceType": "PyPI (details available in Python Package Index)",
+                "reference": "https://index.whitesourcesoftware.com/gri/app/reader/resource/content/asString/e0915e57-0f19-492d-9766-23993350abf1"
+              }
+            ]
+          },
+          {
+            "name": "Apache 2.0",
+            "spdxName": "Apache-2.0",
+            "url": "http://www.opensource.org/licenses/Apache-2.0",
+            "profileInfo": {
+              "copyrightRiskScore": "THREE",
+              "patentRiskScore": "ONE",
+              "copyleft": "NO",
+              "linking": "DYNAMIC",
+              "royaltyFree": "CONDITIONAL"
+            },
+            "references": [
+              {
+                "referenceType": "PyPI (details available in Python Package Index)",
+                "reference": "https://index.whitesourcesoftware.com/gri/app/reader/resource/content/asString/8b280e5b-8174-4ea1-b9c0-85c364c34b0c"
+              },
+              {
+                "referenceType": "PyPI (details available in Python Package Index)",
+                "reference": "https://index.whitesourcesoftware.com/gri/app/reader/resource/content/asString/171385d7-2aa0-4e8d-8def-dd46c14823ec"
+              }
+            ]
+          }
+        ]
+      },
+      "project": "GH_serverless-scheduler",
+      "projectId": 1734921,
+      "projectToken": "13e603e405b34514bebdfe8d082d8c14fd9c6aa4910042b8a74102eb3f5a1e9d",
+      "directDependency": true,
+      "description": "Version 3.2.1 is being used in project G-engine",
+      "date": "2020-12-15",
+      "modifiedDate": "2020-12-15",
+      "time": 1608066805000,
+      "creation_date": "2020-12-15",
+      "alertUuid": "7b5a9a23-7903-40a1-aac2-cbaea055b181"
+    },
+    {
+      "type": "MULTIPLE_LIBRARY_VERSIONS",
+      "level": "MINOR",
+      "library": {
+        "keyUuid": "e1c1f101-c760-4148-8f45-41e3e551e8bf",
+        "keyId": 132602357,
+        "filename": "packaging-20.7-py2.py3-none-any.whl",
+        "type": "Python",
+        "languages": "Python",
+        "description": "Core utilities for Python packages",
+        "references": {
+          "url": "https://files.pythonhosted.org/packages/28/87/8edcf555adaf60d053ead881bc056079e29319b643ca710339ce84413136/packaging-20.7-py2.py3-none-any.whl",
+          "homePage": "https://github.com/pypa/packaging",
+          "genericPackageIndex": "https://pypi.python.org/pypi/packaging/20.7"
+        },
+        "sha1": "431ea20634d91c7d22f63b9b7c202087ceb414d8",
+        "name": "packaging",
+        "artifactId": "packaging-20.7-py2.py3-none-any.whl",
+        "version": "20.7",
+        "groupId": "packaging",
+        "licenses": [
+          {
+            "name": "Apache 2.0",
+            "spdxName": "Apache-2.0",
+            "url": "http://www.opensource.org/licenses/Apache-2.0",
+            "profileInfo": {
+              "copyrightRiskScore": "THREE",
+              "patentRiskScore": "ONE",
+              "copyleft": "NO",
+              "linking": "DYNAMIC",
+              "royaltyFree": "CONDITIONAL"
+            },
+            "references": [
+              {
+                "referenceType": "PyPI (details available in Python Package Index)",
+                "reference": "https://index.whitesourcesoftware.com/gri/app/reader/resource/content/asString/3636d609-07e8-4e4c-a394-691911cfcdb9"
+              }
+            ]
+          },
+          {
+            "name": "BSD 2",
+            "spdxName": "BSD-2-Clause",
+            "url": "http://www.opensource.org/licenses/BSD-2-Clause",
+            "profileInfo": {
+              "copyrightRiskScore": "THREE",
+              "patentRiskScore": "THREE",
+              "copyleft": "NO",
+              "linking": "NON_VIRAL",
+              "royaltyFree": "NO"
+            },
+            "references": [
+              {
+                "referenceType": "PyPI (details available in Python Package Index)",
+                "reference": "https://index.whitesourcesoftware.com/gri/app/reader/resource/content/asString/dd7bb16c-f5cb-43af-b9cb-dc6d66570007"
+              }
+            ]
+          }
+        ]
+      },
+      "project": "GH_self-healing-engine",
+      "projectId": 2352181,
+      "projectToken": "043fd8d321cb4da793256f44e424d56f4bf617161b8a49c9bd29e37965210e7a",
+      "directDependency": true,
+      "description": "Version 20.8 is being used in project G-scheduler",
+      "date": "2020-12-15",
+      "modifiedDate": "2020-12-15",
+      "time": 1608066805000,
+      "creation_date": "2020-12-15",
+      "alertUuid": "696305e6-0489-4af7-b2a8-7fd8a5ef570d"
+    },
+    {
+      "type": "MULTIPLE_LIBRARY_VERSIONS",
+      "level": "MINOR",
+      "library": {
+        "keyUuid": "ef067d5e-f36e-49fe-8ac6-d3b767ec4ebc",
+        "keyId": 104040487,
+        "filename": "mock-4.0.2-py3-none-any.whl",
+        "type": "Python",
+        "languages": "Python",
+        "description": "Rolling backport of unittest.mock for all Pythons",
+        "references": {
+          "url": "https://files.pythonhosted.org/packages/cd/74/d72daf8dff5b6566db857cfd088907bb0355f5dd2914c4b3ef065c790735/mock-4.0.2-py3-none-any.whl",
+          "homePage": "http://mock.readthedocs.org/en/latest/",
+          "genericPackageIndex": "https://pypi.python.org/pypi/mock/4.0.2"
+        },
+        "sha1": "52cde351714bf7458356d9156c280c4ea41e35cd",
+        "name": "mock",
+        "artifactId": "mock-4.0.2-py3-none-any.whl",
+        "version": "4.0.2",
+        "groupId": "mock",
+        "licenses": [
+          {
+            "name": "BSD 2",
+            "spdxName": "BSD-2-Clause",
+            "url": "http://www.opensource.org/licenses/BSD-2-Clause",
+            "profileInfo": {
+              "copyrightRiskScore": "THREE",
+              "patentRiskScore": "THREE",
+              "copyleft": "NO",
+              "linking": "NON_VIRAL",
+              "royaltyFree": "NO"
+            },
+            "references": [
+              {
+                "referenceType": "PyPI (details available in Python Package Index)",
+                "reference": "https://index.whitesourcesoftware.com/gri/app/reader/resource/content/asString/cc16ef1b-9093-435c-8a76-276611bf20b3"
+              }
+            ]
+          }
+        ]
+      },
+      "project": "GH_self-healing-engine",
+      "projectId": 2352181,
+      "projectToken": "043fd8d321cb4da793256f44e424d56f4bf617161b8a49c9bd29e37965210e7a",
+      "directDependency": true,
+      "description": "Version 4.0.3 is being used in project G-scheduler",
+      "date": "2020-12-15",
+      "modifiedDate": "2020-12-15",
+      "time": 1608066805000,
+      "creation_date": "2020-12-15",
+      "alertUuid": "3ca50295-d380-4077-b0a9-a8defc4ca82b"
+    },
+    {
+      "type": "MULTIPLE_LIBRARY_VERSIONS",
+      "level": "MINOR",
+      "library": {
+        "keyUuid": "ef4c90c0-82bb-4300-970e-dcdee2b191b7",
+        "keyId": 115901009,
+        "filename": "py-1.9.0-py2.py3-none-any.whl",
+        "type": "Python",
+        "languages": "Python",
+        "description": "library with cross-python path, ini-parsing, io, code, log facilities",
+        "references": {
+          "url": "https://files.pythonhosted.org/packages/68/0f/41a43535b52a81e4f29e420a151032d26f08b62206840c48d14b70e53376/py-1.9.0-py2.py3-none-any.whl",
+          "homePage": "https://py.readthedocs.io/",
+          "genericPackageIndex": "https://pypi.python.org/pypi/py/1.9.0"
+        },
+        "sha1": "7e5839cc09f1470c93726c7f565e38a88c870f1c",
+        "name": "py",
+        "artifactId": "py-1.9.0-py2.py3-none-any.whl",
+        "version": "1.9.0",
+        "groupId": "py",
+        "licenses": [
+          {
+            "name": "MIT",
+            "spdxName": "MIT",
+            "url": "http://www.opensource.org/licenses/MIT",
+            "profileInfo": {
+              "copyrightRiskScore": "THREE",
+              "patentRiskScore": "ONE",
+              "copyleft": "NO",
+              "royaltyFree": "YES"
+            },
+            "references": [
+              {
+                "referenceType": "PyPI (details available in Python Package Index)",
+                "reference": "https://index.whitesourcesoftware.com/gri/app/reader/resource/content/asString/d4be464e-52b0-48e9-bd9b-b0bca13e546f"
+              },
+              {
+                "referenceType": "PyPI (details available in Python Package Index)",
+                "reference": "https://index.whitesourcesoftware.com/gri/app/reader/resource/content/asString/b7874c5e-1306-4339-94c9-60c08cfc768a"
+              }
+            ]
+          }
+        ]
+      },
+      "project": "GH_self-healing-engine",
+      "projectId": 2352181,
+      "projectToken": "043fd8d321cb4da793256f44e424d56f4bf617161b8a49c9bd29e37965210e7a",
+      "directDependency": true,
+      "description": "Version 1.10.0 is being used in project G-scheduler",
+      "date": "2020-12-15",
+      "modifiedDate": "2020-12-15",
+      "time": 1608066805000,
+      "creation_date": "2020-12-15",
+      "alertUuid": "aa1c6004-6027-4906-8b6e-b0cb2d822bfd"
+    },
+    {
+      "type": "MULTIPLE_LIBRARY_VERSIONS",
+      "level": "MINOR",
+      "library": {
+        "keyUuid": "209906c2-d831-42ca-a24b-5d184a719dfc",
+        "keyId": 125656892,
+        "filename": "ansible-2.10.0.tar.gz",
+        "type": "Python",
+        "languages": "Python",
+        "description": "Radically simple IT automation",
+        "references": {
+          "url": "https://files.pythonhosted.org/packages/4a/0b/44b586965bd51135d3915a02d1327fb392843630435cd41d6c89898c5f24/ansible-2.10.0.tar.gz",
+          "homePage": "https://ansible.com/",
+          "genericPackageIndex": "https://pypi.python.org/pypi/ansible/2.10.0"
+        },
+        "sha1": "0ab05b0071a6734bcd58b5488493bc23a3bdfaa4",
+        "name": "ansible",
+        "artifactId": "ansible-2.10.0.tar.gz",
+        "version": "2.10.0",
+        "groupId": "ansible",
+        "licenses": [
+          {
+            "name": "GPL 3.0",
+            "spdxName": "GPL-3.0",
+            "url": "http://www.opensource.org/licenses/GPL-3.0",
+            "profileInfo": {
+              "copyrightRiskScore": "SIX",
+              "patentRiskScore": "ONE",
+              "copyleft": "FULL",
+              "linking": "VIRAL",
+              "royaltyFree": "YES"
+            },
+            "references": [
+              {
+                "referenceType": "PyPI (details available in Python Package Index)",
+                "reference": "https://index.whitesourcesoftware.com/gri/app/reader/resource/content/asString/3378b7f8-2631-4c31-bef2-b313066bd844"
+              },
+              {
+                "referenceType": "PyPI (details available in Python Package Index)",
+                "reference": "https://index.whitesourcesoftware.com/gri/app/reader/resource/content/asString/45e1b35e-8e92-4fa0-b9a1-8021169efb7a"
+              },
+              {
+                "referenceType": "PyPI (details available in Python Package Index)",
+                "reference": "https://index.whitesourcesoftware.com/gri/app/reader/resource/content/asString/a7e535b8-0bfe-49ef-b9ca-df29fab0259a"
+              }
+            ]
+          }
+        ]
+      },
+      "project": "GH_serverless-scheduler",
+      "projectId": 1734921,
+      "projectToken": "13e603e405b34514bebdfe8d082d8c14fd9c6aa4910042b8a74102eb3f5a1e9d",
+      "directDependency": true,
+      "description": "Version 2.10.4 is being used in project G-engine",
+      "date": "2020-12-15",
+      "modifiedDate": "2020-12-15",
+      "time": 1608066805000,
+      "creation_date": "2020-12-15",
+      "alertUuid": "b6b58418-eb39-4544-81f5-8d0a8d9da307"
+    },
+    {
+      "type": "MULTIPLE_LICENSES",
+      "level": "MINOR",
+      "library": {
+        "keyUuid": "c724faf9-8832-4fa0-aaca-ba9d6795b016",
+        "keyId": 129429857,
+        "filename": "cryptography-3.2-cp35-abi3-manylinux2010_x86_64.whl",
+        "type": "Python",
+        "languages": "Python",
+        "description": "cryptography is a package which provides cryptographic recipes and primitives to Python developers.",
+        "references": {
+          "url": "https://files.pythonhosted.org/packages/4a/a8/904c6f56c6018fc0b860510a55ea6123d561d02157f9e0855301afa27749/cryptography-3.2-cp35-abi3-manylinux2010_x86_64.whl",
+          "homePage": "https://github.com/pyca/cryptography",
+          "genericPackageIndex": "https://pypi.python.org/pypi/cryptography/3.2"
+        },
+        "sha1": "a0da756afb8958b6b4dd5e150c9cf336284063c4",
+        "name": "cryptography",
+        "artifactId": "cryptography-3.2-cp35-abi3-manylinux2010_x86_64.whl",
+        "version": "3.2",
+        "groupId": "cryptography",
+        "licenses": [
+          {
+            "name": "BSD 3",
+            "spdxName": "BSD-3-Clause",
+            "url": "http://www.opensource.org/licenses/BSD-3-Clause",
+            "profileInfo": {
+              "copyrightRiskScore": "THREE",
+              "patentRiskScore": "THREE",
+              "copyleft": "NO",
+              "linking": "NON_VIRAL",
+              "royaltyFree": "NO"
+            },
+            "references": [
+              {
+                "referenceType": "PyPI (details available in Python Package Index)",
+                "reference": "https://index.whitesourcesoftware.com/gri/app/reader/resource/content/asString/e0915e57-0f19-492d-9766-23993350abf1"
+              }
+            ]
+          },
+          {
+            "name": "Apache 2.0",
+            "spdxName": "Apache-2.0",
+            "url": "http://www.opensource.org/licenses/Apache-2.0",
+            "profileInfo": {
+              "copyrightRiskScore": "THREE",
+              "patentRiskScore": "ONE",
+              "copyleft": "NO",
+              "linking": "DYNAMIC",
+              "royaltyFree": "CONDITIONAL"
+            },
+            "references": [
+              {
+                "referenceType": "PyPI (details available in Python Package Index)",
+                "reference": "https://index.whitesourcesoftware.com/gri/app/reader/resource/content/asString/8b280e5b-8174-4ea1-b9c0-85c364c34b0c"
+              },
+              {
+                "referenceType": "PyPI (details available in Python Package Index)",
+                "reference": "https://index.whitesourcesoftware.com/gri/app/reader/resource/content/asString/171385d7-2aa0-4e8d-8def-dd46c14823ec"
+              }
+            ]
+          }
+        ]
+      },
+      "project": "GH_serverless-scheduler",
+      "projectId": 1734921,
+      "projectToken": "13e603e405b34514bebdfe8d082d8c14fd9c6aa4910042b8a74102eb3f5a1e9d",
+      "directDependency": true,
+      "description": "2 licenses identified",
+      "date": "2020-12-15",
+      "modifiedDate": "2020-12-15",
+      "time": 1608066804000,
+      "creation_date": "2020-12-15",
+      "alertUuid": "c872c268-de14-4392-825c-3b88f292b272"
+    },
+    {
+      "type": "MULTIPLE_LICENSES",
+      "level": "MINOR",
+      "library": {
+        "keyUuid": "db8567cb-af96-4b21-9871-72e18464ae00",
+        "keyId": 132717079,
+        "filename": "packaging-20.8-py2.py3-none-any.whl",
+        "type": "Python",
+        "languages": "Python",
+        "description": "Core utilities for Python packages",
+        "references": {
+          "url": "https://files.pythonhosted.org/packages/b1/a7/588bfa063e7763247ab6f7e1d994e331b85e0e7d09f853c59a6eb9696974/packaging-20.8-py2.py3-none-any.whl",
+          "homePage": "https://github.com/pypa/packaging",
+          "genericPackageIndex": "https://pypi.python.org/pypi/packaging/20.8"
+        },
+        "sha1": "f6591974891e2aff16eedff79c2d05baf1e2f572",
+        "name": "packaging",
+        "artifactId": "packaging-20.8-py2.py3-none-any.whl",
+        "version": "20.8",
+        "groupId": "packaging",
+        "licenses": [
+          {
+            "name": "BSD 2",
+            "spdxName": "BSD-2-Clause",
+            "url": "http://www.opensource.org/licenses/BSD-2-Clause",
+            "profileInfo": {
+              "copyrightRiskScore": "THREE",
+              "patentRiskScore": "THREE",
+              "copyleft": "NO",
+              "linking": "NON_VIRAL",
+              "royaltyFree": "NO"
+            },
+            "references": [
+              {
+                "referenceType": "PyPI (details available in Python Package Index)",
+                "reference": "https://index.whitesourcesoftware.com/gri/app/reader/resource/content/asString/2bcd8f9d-bda3-4563-825b-ee6486c90ec3"
+              },
+              {
+                "referenceType": "PyPI (details available in Python Package Index)",
+                "reference": "https://index.whitesourcesoftware.com/gri/app/reader/resource/content/asString/7e02562b-3f61-4114-981b-5a75b351acd1"
+              }
+            ]
+          },
+          {
+            "name": "Apache 2.0",
+            "spdxName": "Apache-2.0",
+            "url": "http://www.opensource.org/licenses/Apache-2.0",
+            "profileInfo": {
+              "copyrightRiskScore": "THREE",
+              "patentRiskScore": "ONE",
+              "copyleft": "NO",
+              "linking": "DYNAMIC",
+              "royaltyFree": "CONDITIONAL"
+            },
+            "references": [
+              {
+                "referenceType": "PyPI (details available in Python Package Index)",
+                "reference": "https://index.whitesourcesoftware.com/gri/app/reader/resource/content/asString/e09d7d27-f997-4105-873a-ce046a4df766"
+              },
+              {
+                "referenceType": "PyPI (details available in Python Package Index)",
+                "reference": "https://index.whitesourcesoftware.com/gri/app/reader/resource/content/asString/7e02562b-3f61-4114-981b-5a75b351acd1"
+              }
+            ]
+          }
+        ]
+      },
+      "project": "GH_serverless-scheduler",
+      "projectId": 1734921,
+      "projectToken": "13e603e405b34514bebdfe8d082d8c14fd9c6aa4910042b8a74102eb3f5a1e9d",
+      "directDependency": true,
+      "description": "2 licenses identified",
+      "date": "2020-12-15",
+      "modifiedDate": "2020-12-15",
+      "time": 1608066804000,
+      "creation_date": "2020-12-15",
+      "alertUuid": "de94c831-663d-4829-9f2c-58e61cb64c0a"
+    },
+    {
+      "type": "MULTIPLE_LICENSES",
+      "level": "MINOR",
+      "library": {
+        "keyUuid": "e1c1f101-c760-4148-8f45-41e3e551e8bf",
+        "keyId": 132602357,
+        "filename": "packaging-20.7-py2.py3-none-any.whl",
+        "type": "Python",
+        "languages": "Python",
+        "description": "Core utilities for Python packages",
+        "references": {
+          "url": "https://files.pythonhosted.org/packages/28/87/8edcf555adaf60d053ead881bc056079e29319b643ca710339ce84413136/packaging-20.7-py2.py3-none-any.whl",
+          "homePage": "https://github.com/pypa/packaging",
+          "genericPackageIndex": "https://pypi.python.org/pypi/packaging/20.7"
+        },
+        "sha1": "431ea20634d91c7d22f63b9b7c202087ceb414d8",
+        "name": "packaging",
+        "artifactId": "packaging-20.7-py2.py3-none-any.whl",
+        "version": "20.7",
+        "groupId": "packaging",
+        "licenses": [
+          {
+            "name": "Apache 2.0",
+            "spdxName": "Apache-2.0",
+            "url": "http://www.opensource.org/licenses/Apache-2.0",
+            "profileInfo": {
+              "copyrightRiskScore": "THREE",
+              "patentRiskScore": "ONE",
+              "copyleft": "NO",
+              "linking": "DYNAMIC",
+              "royaltyFree": "CONDITIONAL"
+            },
+            "references": [
+              {
+                "referenceType": "PyPI (details available in Python Package Index)",
+                "reference": "https://index.whitesourcesoftware.com/gri/app/reader/resource/content/asString/3636d609-07e8-4e4c-a394-691911cfcdb9"
+              }
+            ]
+          },
+          {
+            "name": "BSD 2",
+            "spdxName": "BSD-2-Clause",
+            "url": "http://www.opensource.org/licenses/BSD-2-Clause",
+            "profileInfo": {
+              "copyrightRiskScore": "THREE",
+              "patentRiskScore": "THREE",
+              "copyleft": "NO",
+              "linking": "NON_VIRAL",
+              "royaltyFree": "NO"
+            },
+            "references": [
+              {
+                "referenceType": "PyPI (details available in Python Package Index)",
+                "reference": "https://index.whitesourcesoftware.com/gri/app/reader/resource/content/asString/dd7bb16c-f5cb-43af-b9cb-dc6d66570007"
+              }
+            ]
+          }
+        ]
+      },
+      "project": "GH_self-healing-engine",
+      "projectId": 2352181,
+      "projectToken": "043fd8d321cb4da793256f44e424d56f4bf617161b8a49c9bd29e37965210e7a",
+      "directDependency": true,
+      "description": "2 licenses identified",
+      "date": "2020-12-03",
+      "modifiedDate": "2020-12-03",
+      "time": 1606973336000,
+      "creation_date": "2020-12-03",
+      "alertUuid": "639e0ab7-ac14-4715-bf22-810bb042bdd8"
+    },
+    {
+      "type": "MULTIPLE_LICENSES",
+      "level": "MINOR",
+      "library": {
+        "keyUuid": "3f146912-67b6-4863-b939-b1634975a6ac",
+        "keyId": 129738540,
+        "filename": "cryptography-3.2.1-cp35-abi3-manylinux2010_x86_64.whl",
+        "type": "Python",
+        "languages": "Python",
+        "description": "cryptography is a package which provides cryptographic recipes and primitives to Python developers.",
+        "references": {
+          "url": "https://files.pythonhosted.org/packages/4c/a2/6565c5271a79e3c96d7a079053b4d8408a740d4bf365f0f5f244a807bd09/cryptography-3.2.1-cp35-abi3-manylinux2010_x86_64.whl",
+          "homePage": "https://github.com/pyca/cryptography",
+          "genericPackageIndex": "https://pypi.python.org/pypi/cryptography/3.2.1"
+        },
+        "sha1": "d5614ac870cac11060e39b5ec5e60c676342e8e5",
+        "name": "cryptography",
+        "artifactId": "cryptography-3.2.1-cp35-abi3-manylinux2010_x86_64.whl",
+        "version": "3.2.1",
+        "groupId": "cryptography",
+        "licenses": [
+          {
+            "name": "BSD 3",
+            "spdxName": "BSD-3-Clause",
+            "url": "http://www.opensource.org/licenses/BSD-3-Clause",
+            "profileInfo": {
+              "copyrightRiskScore": "THREE",
+              "patentRiskScore": "THREE",
+              "copyleft": "NO",
+              "linking": "NON_VIRAL",
+              "royaltyFree": "NO"
+            },
+            "references": [
+              {
+                "referenceType": "PyPI (details available in Python Package Index)",
+                "reference": "https://index.whitesourcesoftware.com/gri/app/reader/resource/content/asString/c83592af-c979-4c52-b581-ab320e488880"
+              }
+            ]
+          },
+          {
+            "name": "Apache 2.0",
+            "spdxName": "Apache-2.0",
+            "url": "http://www.opensource.org/licenses/Apache-2.0",
+            "profileInfo": {
+              "copyrightRiskScore": "THREE",
+              "patentRiskScore": "ONE",
+              "copyleft": "NO",
+              "linking": "DYNAMIC",
+              "royaltyFree": "CONDITIONAL"
+            },
+            "references": [
+              {
+                "referenceType": "PyPI (details available in Python Package Index)",
+                "reference": "https://index.whitesourcesoftware.com/gri/app/reader/resource/content/asString/95513aa3-257c-41b7-b6f6-4856bc252668"
+              },
+              {
+                "referenceType": "PyPI (details available in Python Package Index)",
+                "reference": "https://index.whitesourcesoftware.com/gri/app/reader/resource/content/asString/5109a585-4337-47ea-af06-d76b0809a87c"
+              }
+            ]
+          }
+        ]
+      },
+      "project": "GH_self-healing-engine",
+      "projectId": 2352181,
+      "projectToken": "043fd8d321cb4da793256f44e424d56f4bf617161b8a49c9bd29e37965210e7a",
+      "directDependency": true,
+      "description": "2 licenses identified",
+      "date": "2020-12-03",
+      "modifiedDate": "2020-12-03",
+      "time": 1606973336000,
+      "creation_date": "2020-12-03",
+      "alertUuid": "ac9023fd-d231-4682-9f6d-8e5fe6ce84c7"
+    },
+    {
+      "type": "MULTIPLE_LIBRARY_VERSIONS",
+      "level": "MINOR",
+      "library": {
+        "keyUuid": "3453e130-ce94-4905-aef0-eff6b5e93c81",
+        "keyId": 121805090,
+        "filename": "docker-4.3.1-py2.py3-none-any.whl",
+        "type": "Python",
+        "languages": "Python",
+        "description": "A Python library for the Docker Engine API.",
+        "references": {
+          "url": "https://files.pythonhosted.org/packages/9e/8c/8d42dbd83679483db207535f4fb02dc84325fa78b290f057694b057fcd21/docker-4.3.1-py2.py3-none-any.whl",
+          "homePage": "https://github.com/docker/docker-py",
+          "genericPackageIndex": "https://pypi.python.org/pypi/docker/4.3.1"
+        },
+        "sha1": "c8526fec205e626b5720fddd193426b9503685b5",
+        "name": "docker",
+        "artifactId": "docker-4.3.1-py2.py3-none-any.whl",
+        "version": "4.3.1",
+        "groupId": "docker",
+        "licenses": [
+          {
+            "name": "Apache 2.0",
+            "spdxName": "Apache-2.0",
+            "url": "http://www.opensource.org/licenses/Apache-2.0",
+            "profileInfo": {
+              "copyrightRiskScore": "THREE",
+              "patentRiskScore": "ONE",
+              "copyleft": "NO",
+              "linking": "DYNAMIC",
+              "royaltyFree": "CONDITIONAL"
+            },
+            "references": [
+              {
+                "referenceType": "PyPI (details available in Python Package Index)",
+                "reference": "https://index.whitesourcesoftware.com/gri/app/reader/resource/content/asString/bf37aa46-cb1f-4c31-84c3-1aef43c40e7c"
+              },
+              {
+                "referenceType": "PyPI (details available in Python Package Index)",
+                "reference": "https://index.whitesourcesoftware.com/gri/app/reader/resource/content/asString/309aeec1-da93-4965-8530-5c06eb388a01"
+              }
+            ]
+          }
+        ]
+      },
+      "project": "GH_quantum-workflow-generator",
+      "projectId": 1734929,
+      "projectToken": "94fdebb7b6464878bf3ad9ed7d272a4e9b619dc26fd04094b0fec808a0818296",
+      "directDependency": true,
+      "description": "Version 4.4.0 is being used in project G-scheduler",
+      "date": "2020-11-26",
+      "modifiedDate": "2020-11-26",
+      "time": 1606427274000,
+      "creation_date": "2020-11-26",
+      "alertUuid": "57c88975-09dd-41c0-80f6-f8087521e834"
+    },
+    {
+      "type": "MULTIPLE_LIBRARY_VERSIONS",
+      "level": "MINOR",
+      "library": {
+        "keyUuid": "fcb73593-d67e-4b1f-bb02-9df8cb3baaae",
+        "keyId": 101342626,
+        "filename": "pyspark-2.4.5.tar.gz",
+        "type": "Python",
+        "languages": "Python",
+        "description": "Apache Spark Python API",
+        "references": {
+          "url": "https://files.pythonhosted.org/packages/9a/5a/271c416c1c2185b6cb0151b29a91fff6fcaed80173c8584ff6d20e46b465/pyspark-2.4.5.tar.gz",
+          "homePage": "https://github.com/apache/spark/tree/master/python",
+          "genericPackageIndex": "https://pypi.python.org/pypi/pyspark/2.4.5"
+        },
+        "sha1": "932af2611f68a50a6ee865431beb8099211613a2",
+        "name": "pyspark",
+        "artifactId": "pyspark-2.4.5.tar.gz",
+        "version": "2.4.5",
+        "groupId": "pyspark",
+        "licenses": [
+          {
+            "name": "Apache 2.0",
+            "spdxName": "Apache-2.0",
+            "url": "http://www.opensource.org/licenses/Apache-2.0",
+            "profileInfo": {
+              "copyrightRiskScore": "THREE",
+              "patentRiskScore": "ONE",
+              "copyleft": "NO",
+              "linking": "DYNAMIC",
+              "royaltyFree": "CONDITIONAL"
+            },
+            "references": [
+              {
+                "referenceType": "PyPI (details available in Python Package Index)"
+              }
+            ]
+          }
+        ]
+      },
+      "project": "GH_Configurations",
+      "projectId": 2427089,
+      "projectToken": "2cba5e49b7d147e99ef240b96872b6a1b56287a0727d40dbaf4040284098dc82",
+      "directDependency": true,
+      "description": "Version 3.0.1 is being used in project G-executor",
+      "date": "2020-09-29",
+      "modifiedDate": "2020-09-29",
+      "time": 1601402608000,
+      "creation_date": "2020-09-29",
+      "alertUuid": "e7573510-4585-4157-95bf-376d7fb655d1"
+    },
+    {
+      "type": "MULTIPLE_LICENSES",
+      "level": "MINOR",
+      "library": {
+        "keyUuid": "30b0fd37-8d1a-475d-b0ac-54c28026b0fc",
+        "keyId": 125621899,
+        "filename": "cryptography-3.1.1-cp35-abi3-manylinux2010_x86_64.whl",
+        "type": "Python",
+        "languages": "Python",
+        "description": "cryptography is a package which provides cryptographic recipes and primitives to Python developers.",
+        "references": {
+          "url": "https://files.pythonhosted.org/packages/33/62/30f6936941d87a5ed72efb24249437824f6b2c953901245b58c91fde2f27/cryptography-3.1.1-cp35-abi3-manylinux2010_x86_64.whl",
+          "homePage": "https://github.com/pyca/cryptography",
+          "genericPackageIndex": "https://pypi.python.org/pypi/cryptography/3.1.1"
+        },
+        "sha1": "ebc20b542de3d707e0521f461d8812fb5de33225",
+        "name": "cryptography",
+        "artifactId": "cryptography-3.1.1-cp35-abi3-manylinux2010_x86_64.whl",
+        "version": "3.1.1",
+        "groupId": "cryptography",
+        "licenses": [
+          {
+            "name": "Apache 2.0",
+            "spdxName": "Apache-2.0",
+            "url": "http://www.opensource.org/licenses/Apache-2.0",
+            "profileInfo": {
+              "copyrightRiskScore": "THREE",
+              "patentRiskScore": "ONE",
+              "copyleft": "NO",
+              "linking": "DYNAMIC",
+              "royaltyFree": "CONDITIONAL"
+            },
+            "references": [
+              {
+                "referenceType": "PyPI (details available in Python Package Index)",
+                "reference": "https://index.whitesourcesoftware.com/gri/app/reader/resource/content/asString/24c84106-119f-4109-bd6a-5266e843fd02"
+              },
+              {
+                "referenceType": "PyPI (details available in Python Package Index)",
+                "reference": "https://index.whitesourcesoftware.com/gri/app/reader/resource/content/asString/171d52d3-36e7-4b28-9659-04225d1e8e3d"
+              }
+            ]
+          },
+          {
+            "name": "BSD 3",
+            "spdxName": "BSD-3-Clause",
+            "url": "http://www.opensource.org/licenses/BSD-3-Clause",
+            "profileInfo": {
+              "copyrightRiskScore": "THREE",
+              "patentRiskScore": "THREE",
+              "copyleft": "NO",
+              "linking": "NON_VIRAL",
+              "royaltyFree": "NO"
+            },
+            "references": [
+              {
+                "referenceType": "PyPI (details available in Python Package Index)",
+                "reference": "https://index.whitesourcesoftware.com/gri/app/reader/resource/content/asString/383cf8e4-f466-4016-a887-8d7cd89787f5"
+              }
+            ]
+          }
+        ]
+      },
+      "project": "GH_Configurations",
+      "projectId": 2427089,
+      "projectToken": "2cba5e49b7d147e99ef240b96872b6a1b56287a0727d40dbaf4040284098dc82",
+      "directDependency": false,
+      "description": "2 licenses identified",
+      "date": "2020-09-29",
+      "modifiedDate": "2020-09-29",
+      "time": 1601402607000,
+      "creation_date": "2020-09-29",
+      "alertUuid": "9478d401-0c25-4d72-a73d-a142a623e782"
+    },
+    {
+      "type": "MULTIPLE_LICENSES",
+      "level": "MINOR",
+      "library": {
+        "keyUuid": "edf84640-49b3-4d6e-861a-1b93bf6a014c",
+        "keyId": 121062369,
+        "filename": "pytest_cov-2.10.1-py2.py3-none-any.whl",
+        "type": "Python",
+        "languages": "Python",
+        "description": "Pytest plugin for measuring coverage.",
+        "references": {
+          "url": "https://files.pythonhosted.org/packages/e5/18/401594af67eda194a8b9167208621761927c937db7d60292608342bbac0a/pytest_cov-2.10.1-py2.py3-none-any.whl",
+          "homePage": "https://github.com/pytest-dev/pytest-cov",
+          "genericPackageIndex": "https://pypi.python.org/pypi/pytest-cov/2.10.1"
+        },
+        "sha1": "5f4e7ea46611a7aa9b8e85070ffabd3fbb7c817a",
+        "name": "pytest-cov",
+        "artifactId": "pytest_cov-2.10.1-py2.py3-none-any.whl",
+        "version": "2.10.1",
+        "groupId": "pytest-cov",
+        "licenses": [
+          {
+            "name": "MIT",
+            "spdxName": "MIT",
+            "url": "http://www.opensource.org/licenses/MIT",
+            "profileInfo": {
+              "copyrightRiskScore": "THREE",
+              "patentRiskScore": "ONE",
+              "copyleft": "NO",
+              "royaltyFree": "YES"
+            },
+            "references": [
+              {
+                "referenceType": "PyPI (details available in Python Package Index)",
+                "reference": "https://index.whitesourcesoftware.com/gri/app/reader/resource/content/asString/3bee5a36-8ebd-43c2-9da4-4251133ad31d"
+              },
+              {
+                "referenceType": "PyPI (details available in Python Package Index)",
+                "reference": "https://index.whitesourcesoftware.com/gri/app/reader/resource/content/asString/c6df3ab9-1744-43df-9a24-7c35e7235e3b"
+              }
+            ]
+          },
+          {
+            "name": "BSD",
+            "url": "http://www.linfo.org/bsdlicense.html",
+            "references": [
+              {
+                "referenceType": "PyPI (details available in Python Package Index)"
+              }
+            ]
+          }
+        ]
+      },
+      "project": "GH_self-healing-engine",
+      "projectId": 2352181,
+      "projectToken": "043fd8d321cb4da793256f44e424d56f4bf617161b8a49c9bd29e37965210e7a",
+      "directDependency": true,
+      "description": "2 licenses identified",
+      "date": "2020-09-29",
+      "modifiedDate": "2020-09-29",
+      "time": 1601392860000,
+      "creation_date": "2020-09-29",
+      "alertUuid": "52fc2c7d-6926-4a6e-8869-ba52b311210b"
+    },
+    {
+      "type": "MULTIPLE_LICENSES",
+      "level": "MINOR",
+      "library": {
+        "keyUuid": "fc01066f-16af-4a79-b5dd-7662df82d29c",
+        "keyId": 122431353,
+        "filename": "datadog-0.39.0-py2.py3-none-any.whl",
+        "type": "Python",
+        "languages": "Python",
+        "description": "The Datadog Python library",
+        "references": {
+          "url": "https://files.pythonhosted.org/packages/52/a7/99342ad4d9ee452a61a14f0501d2319cd274fcb45980c4b60b8ad3484c83/datadog-0.39.0-py2.py3-none-any.whl",
+          "homePage": "https://www.datadoghq.com",
+          "genericPackageIndex": "https://pypi.python.org/pypi/datadog/0.39.0"
+        },
+        "sha1": "95c2b6293f050c57db2ec450d7ec564cb2b11ffe",
+        "name": "datadog",
+        "artifactId": "datadog-0.39.0-py2.py3-none-any.whl",
+        "version": "0.39.0",
+        "groupId": "datadog",
+        "licenses": [
+          {
+            "name": "BSD 2",
+            "spdxName": "BSD-2-Clause",
+            "url": "http://www.opensource.org/licenses/BSD-2-Clause",
+            "profileInfo": {
+              "copyrightRiskScore": "THREE",
+              "patentRiskScore": "THREE",
+              "copyleft": "NO",
+              "linking": "NON_VIRAL",
+              "royaltyFree": "NO"
+            },
+            "references": [
+              {
+                "referenceType": "PyPI (details available in Python Package Index)",
+                "reference": "https://index.whitesourcesoftware.com/gri/app/reader/resource/content/asString/cf9eab98-6078-4aac-bf01-62bf598ae389"
+              }
+            ]
+          },
+          {
+            "name": "BSD 3",
+            "spdxName": "BSD-3-Clause",
+            "url": "http://www.opensource.org/licenses/BSD-3-Clause",
+            "profileInfo": {
+              "copyrightRiskScore": "THREE",
+              "patentRiskScore": "THREE",
+              "copyleft": "NO",
+              "linking": "NON_VIRAL",
+              "royaltyFree": "NO"
+            },
+            "references": [
+              {
+                "referenceType": "PyPI (details available in Python Package Index)",
+                "reference": "https://index.whitesourcesoftware.com/gri/app/reader/resource/content/asString/d538536d-8691-4e9d-8bc0-114e4222dba5"
+              }
+            ]
+          }
+        ]
+      },
+      "project": "GH_self-healing-engine",
+      "projectId": 2352181,
+      "projectToken": "043fd8d321cb4da793256f44e424d56f4bf617161b8a49c9bd29e37965210e7a",
+      "directDependency": true,
+      "description": "2 licenses identified",
+      "date": "2020-09-29",
+      "modifiedDate": "2020-09-29",
+      "time": 1601392860000,
+      "creation_date": "2020-09-29",
+      "alertUuid": "23e00693-ef21-4339-8e71-fa1f06e25335"
+    },
+    {
+      "type": "MULTIPLE_LIBRARY_VERSIONS",
+      "level": "MINOR",
+      "library": {
+        "keyUuid": "486f03f9-6686-408b-a6a7-fee128c7792c",
+        "keyId": 122856654,
+        "filename": "ansible-2.9.13.tar.gz",
+        "type": "Python",
+        "languages": "Python",
+        "description": "Radically simple IT automation",
+        "references": {
+          "url": "https://files.pythonhosted.org/packages/32/62/eec759cd8ac89a866df1aba91abf785486fed7774188a41f42f5c7326dcb/ansible-2.9.13.tar.gz",
+          "homePage": "https://ansible.com/",
+          "genericPackageIndex": "https://pypi.python.org/pypi/ansible/2.9.13"
+        },
+        "sha1": "228951291239caf2c99c054a620dcb03699f7b0c",
+        "name": "ansible",
+        "artifactId": "ansible-2.9.13.tar.gz",
+        "version": "2.9.13",
+        "groupId": "ansible",
+        "licenses": [
+          {
+            "name": "GPL 3.0",
+            "spdxName": "GPL-3.0",
+            "url": "http://www.opensource.org/licenses/GPL-3.0",
+            "profileInfo": {
+              "copyrightRiskScore": "SIX",
+              "patentRiskScore": "ONE",
+              "copyleft": "FULL",
+              "linking": "VIRAL",
+              "royaltyFree": "YES"
+            },
+            "references": [
+              {
+                "referenceType": "PyPI (details available in Python Package Index)"
+              }
+            ]
+          }
+        ]
+      },
+      "project": "GH_quantum-workflow-generator",
+      "projectId": 1734929,
+      "projectToken": "94fdebb7b6464878bf3ad9ed7d272a4e9b619dc26fd04094b0fec808a0818296",
+      "directDependency": true,
+      "description": "Version 2.10.4 is being used in project G-engine",
+      "date": "2020-09-29",
+      "modifiedDate": "2020-09-29",
+      "time": 1601392860000,
+      "creation_date": "2020-09-29",
+      "alertUuid": "0a7bd53f-626c-4a91-8a3c-d9dde14715fe"
+    },
+    {
+      "type": "MULTIPLE_LICENSES",
+      "level": "MINOR",
+      "library": {
+        "keyUuid": "627bdebe-2849-4edf-81a7-80d9dda2f679",
+        "keyId": 96214691,
+        "filename": "python_dateutil-2.8.1-py2.py3-none-any.whl",
+        "type": "Python",
+        "languages": "Python",
+        "description": "Extensions to the standard Python datetime module",
+        "references": {
+          "url": "https://files.pythonhosted.org/packages/d4/70/d60450c3dd48ef87586924207ae8907090de0b306af2bce5d134d78615cb/python_dateutil-2.8.1-py2.py3-none-any.whl",
+          "homePage": "https://dateutil.readthedocs.io",
+          "genericPackageIndex": "https://pypi.python.org/pypi/python-dateutil/2.8.1"
+        },
+        "sha1": "3005ff67df93ee276fb8631e17c677df852254ad",
+        "name": "python-dateutil",
+        "artifactId": "python_dateutil-2.8.1-py2.py3-none-any.whl",
+        "version": "2.8.1",
+        "groupId": "python-dateutil",
+        "licenses": [
+          {
+            "name": "Apache 2.0",
+            "spdxName": "Apache-2.0",
+            "url": "http://www.opensource.org/licenses/Apache-2.0",
+            "profileInfo": {
+              "copyrightRiskScore": "THREE",
+              "patentRiskScore": "ONE",
+              "copyleft": "NO",
+              "linking": "DYNAMIC",
+              "royaltyFree": "CONDITIONAL"
+            },
+            "references": [
+              {
+                "referenceType": "PyPI (details available in Python Package Index)",
+                "reference": "https://index.whitesourcesoftware.com/gri/app/reader/resource/content/asString/ff73c874-2981-4ac7-a6d7-257caf002af0"
+              }
+            ]
+          },
+          {
+            "name": "BSD 3",
+            "spdxName": "BSD-3-Clause",
+            "url": "http://www.opensource.org/licenses/BSD-3-Clause",
+            "profileInfo": {
+              "copyrightRiskScore": "THREE",
+              "patentRiskScore": "THREE",
+              "copyleft": "NO",
+              "linking": "NON_VIRAL",
+              "royaltyFree": "NO"
+            },
+            "references": [
+              {
+                "referenceType": "PyPI (details available in Python Package Index)",
+                "reference": "https://index.whitesourcesoftware.com/gri/app/reader/resource/content/asString/ff73c874-2981-4ac7-a6d7-257caf002af0"
+              },
+              {
+                "referenceType": "PyPI (details available in Python Package Index)",
+                "reference": "https://index.whitesourcesoftware.com/gri/app/reader/resource/content/asString/29dc72fe-716d-4683-b810-a5d863834c6e"
+              }
+            ]
+          }
+        ]
+      },
+      "project": "GH_self-healing-engine",
+      "projectId": 2352181,
+      "projectToken": "043fd8d321cb4da793256f44e424d56f4bf617161b8a49c9bd29e37965210e7a",
+      "directDependency": true,
+      "description": "2 licenses identified",
+      "date": "2020-09-29",
+      "modifiedDate": "2020-09-29",
+      "time": 1601392860000,
+      "creation_date": "2020-09-29",
+      "alertUuid": "96f6d4c4-ace2-4c83-a547-1cf3b32f74eb"
+    },
+    {
+      "type": "MULTIPLE_LIBRARY_VERSIONS",
+      "level": "MINOR",
+      "library": {
+        "keyUuid": "c517afc6-fc4b-4f9f-90f3-a0c88f3969f4",
+        "keyId": 123937103,
+        "filename": "moto-1.3.15-py2.py3-none-any.whl",
+        "type": "Python",
+        "languages": "Python",
+        "description": "A library that allows your python tests to easily mock out the boto library",
+        "references": {
+          "url": "https://files.pythonhosted.org/packages/01/77/4e6f7571d92e8a92b93e9cd4fa691c7bda1a7848b9aaa76a89bdc5b84928/moto-1.3.15-py2.py3-none-any.whl",
+          "homePage": "https://github.com/spulec/moto",
+          "genericPackageIndex": "https://pypi.python.org/pypi/moto/1.3.15"
+        },
+        "sha1": "bce33986e2650e9aa8e0af8e40a7c6682d7d24a8",
+        "name": "moto",
+        "artifactId": "moto-1.3.15-py2.py3-none-any.whl",
+        "version": "1.3.15",
+        "groupId": "moto",
+        "licenses": [
+          {
+            "name": "Apache 2.0",
+            "spdxName": "Apache-2.0",
+            "url": "http://www.opensource.org/licenses/Apache-2.0",
+            "profileInfo": {
+              "copyrightRiskScore": "THREE",
+              "patentRiskScore": "ONE",
+              "copyleft": "NO",
+              "linking": "DYNAMIC",
+              "royaltyFree": "CONDITIONAL"
+            },
+            "references": [
+              {
+                "referenceType": "PyPI (details available in Python Package Index)",
+                "reference": "https://index.whitesourcesoftware.com/gri/app/reader/resource/content/asString/03833057-8235-4090-8177-f4857fab2d93"
+              }
+            ]
+          }
+        ]
+      },
+      "project": "GH_quantum-workflow-generator",
+      "projectId": 1734929,
+      "projectToken": "94fdebb7b6464878bf3ad9ed7d272a4e9b619dc26fd04094b0fec808a0818296",
+      "directDependency": true,
+      "description": "Version 1.3.16 is being used in project G-scheduler",
+      "date": "2020-09-16",
+      "modifiedDate": "2020-09-16",
+      "time": 1600292532000,
+      "creation_date": "2020-09-16",
+      "alertUuid": "8550850a-6422-4eb6-916c-556c7ae99538"
+    },
+    {
+      "type": "MULTIPLE_LICENSES",
+      "level": "MINOR",
+      "library": {
+        "keyUuid": "edf84640-49b3-4d6e-861a-1b93bf6a014c",
+        "keyId": 121062369,
+        "filename": "pytest_cov-2.10.1-py2.py3-none-any.whl",
+        "type": "Python",
+        "languages": "Python",
+        "description": "Pytest plugin for measuring coverage.",
+        "references": {
+          "url": "https://files.pythonhosted.org/packages/e5/18/401594af67eda194a8b9167208621761927c937db7d60292608342bbac0a/pytest_cov-2.10.1-py2.py3-none-any.whl",
+          "homePage": "https://github.com/pytest-dev/pytest-cov",
+          "genericPackageIndex": "https://pypi.python.org/pypi/pytest-cov/2.10.1"
+        },
+        "sha1": "5f4e7ea46611a7aa9b8e85070ffabd3fbb7c817a",
+        "name": "pytest-cov",
+        "artifactId": "pytest_cov-2.10.1-py2.py3-none-any.whl",
+        "version": "2.10.1",
+        "groupId": "pytest-cov",
+        "licenses": [
+          {
+            "name": "BSD",
+            "url": "http://www.linfo.org/bsdlicense.html",
+            "references": [
+              {
+                "referenceType": "PyPI (details available in Python Package Index)"
+              }
+            ]
+          },
+          {
+            "name": "MIT",
+            "spdxName": "MIT",
+            "url": "http://www.opensource.org/licenses/MIT",
+            "profileInfo": {
+              "copyrightRiskScore": "THREE",
+              "patentRiskScore": "ONE",
+              "copyleft": "NO",
+              "royaltyFree": "YES"
+            },
+            "references": [
+              {
+                "referenceType": "PyPI (details available in Python Package Index)",
+                "reference": "https://index.whitesourcesoftware.com/gri/app/reader/resource/content/asString/3bee5a36-8ebd-43c2-9da4-4251133ad31d"
+              },
+              {
+                "referenceType": "PyPI (details available in Python Package Index)",
+                "reference": "https://index.whitesourcesoftware.com/gri/app/reader/resource/content/asString/c6df3ab9-1744-43df-9a24-7c35e7235e3b"
+              }
+            ]
+          }
+        ]
+      },
+      "project": "GH_serverless-scheduler",
+      "projectId": 1734921,
+      "projectToken": "13e603e405b34514bebdfe8d082d8c14fd9c6aa4910042b8a74102eb3f5a1e9d",
+      "directDependency": true,
+      "description": "2 licenses identified",
+      "date": "2020-09-16",
+      "modifiedDate": "2020-09-16",
+      "time": 1600292531000,
+      "creation_date": "2020-09-16",
+      "alertUuid": "f29bd5ef-e006-43d0-8b1a-0aa6efe80c25"
+    },
+    {
+      "type": "MULTIPLE_LICENSES",
+      "level": "MINOR",
+      "library": {
+        "keyUuid": "fc01066f-16af-4a79-b5dd-7662df82d29c",
+        "keyId": 122431353,
+        "filename": "datadog-0.39.0-py2.py3-none-any.whl",
+        "type": "Python",
+        "languages": "Python",
+        "description": "The Datadog Python library",
+        "references": {
+          "url": "https://files.pythonhosted.org/packages/52/a7/99342ad4d9ee452a61a14f0501d2319cd274fcb45980c4b60b8ad3484c83/datadog-0.39.0-py2.py3-none-any.whl",
+          "homePage": "https://www.datadoghq.com",
+          "genericPackageIndex": "https://pypi.python.org/pypi/datadog/0.39.0"
+        },
+        "sha1": "95c2b6293f050c57db2ec450d7ec564cb2b11ffe",
+        "name": "datadog",
+        "artifactId": "datadog-0.39.0-py2.py3-none-any.whl",
+        "version": "0.39.0",
+        "groupId": "datadog",
+        "licenses": [
+          {
+            "name": "BSD 2",
+            "spdxName": "BSD-2-Clause",
+            "url": "http://www.opensource.org/licenses/BSD-2-Clause",
+            "profileInfo": {
+              "copyrightRiskScore": "THREE",
+              "patentRiskScore": "THREE",
+              "copyleft": "NO",
+              "linking": "NON_VIRAL",
+              "royaltyFree": "NO"
+            },
+            "references": [
+              {
+                "referenceType": "PyPI (details available in Python Package Index)",
+                "reference": "https://index.whitesourcesoftware.com/gri/app/reader/resource/content/asString/cf9eab98-6078-4aac-bf01-62bf598ae389"
+              }
+            ]
+          },
+          {
+            "name": "BSD 3",
+            "spdxName": "BSD-3-Clause",
+            "url": "http://www.opensource.org/licenses/BSD-3-Clause",
+            "profileInfo": {
+              "copyrightRiskScore": "THREE",
+              "patentRiskScore": "THREE",
+              "copyleft": "NO",
+              "linking": "NON_VIRAL",
+              "royaltyFree": "NO"
+            },
+            "references": [
+              {
+                "referenceType": "PyPI (details available in Python Package Index)",
+                "reference": "https://index.whitesourcesoftware.com/gri/app/reader/resource/content/asString/d538536d-8691-4e9d-8bc0-114e4222dba5"
+              }
+            ]
+          }
+        ]
+      },
+      "project": "GH_serverless-scheduler",
+      "projectId": 1734921,
+      "projectToken": "13e603e405b34514bebdfe8d082d8c14fd9c6aa4910042b8a74102eb3f5a1e9d",
+      "directDependency": true,
+      "description": "2 licenses identified",
+      "date": "2020-09-16",
+      "modifiedDate": "2020-09-16",
+      "time": 1600292531000,
+      "creation_date": "2020-09-16",
+      "alertUuid": "23323977-6db0-4240-a825-6dc70ce98316"
+    },
+    {
+      "type": "MULTIPLE_LICENSES",
+      "level": "MINOR",
+      "library": {
+        "keyUuid": "edf84640-49b3-4d6e-861a-1b93bf6a014c",
+        "keyId": 121062369,
+        "filename": "pytest_cov-2.10.1-py2.py3-none-any.whl",
+        "type": "Python",
+        "languages": "Python",
+        "description": "Pytest plugin for measuring coverage.",
+        "references": {
+          "url": "https://files.pythonhosted.org/packages/e5/18/401594af67eda194a8b9167208621761927c937db7d60292608342bbac0a/pytest_cov-2.10.1-py2.py3-none-any.whl",
+          "homePage": "https://github.com/pytest-dev/pytest-cov",
+          "genericPackageIndex": "https://pypi.python.org/pypi/pytest-cov/2.10.1"
+        },
+        "sha1": "5f4e7ea46611a7aa9b8e85070ffabd3fbb7c817a",
+        "name": "pytest-cov",
+        "artifactId": "pytest_cov-2.10.1-py2.py3-none-any.whl",
+        "version": "2.10.1",
+        "groupId": "pytest-cov",
+        "licenses": [
+          {
+            "name": "BSD",
+            "url": "http://www.linfo.org/bsdlicense.html",
+            "references": [
+              {
+                "referenceType": "PyPI (details available in Python Package Index)"
+              }
+            ]
+          },
+          {
+            "name": "MIT",
+            "spdxName": "MIT",
+            "url": "http://www.opensource.org/licenses/MIT",
+            "profileInfo": {
+              "copyrightRiskScore": "THREE",
+              "patentRiskScore": "ONE",
+              "copyleft": "NO",
+              "royaltyFree": "YES"
+            },
+            "references": [
+              {
+                "referenceType": "PyPI (details available in Python Package Index)",
+                "reference": "https://index.whitesourcesoftware.com/gri/app/reader/resource/content/asString/3bee5a36-8ebd-43c2-9da4-4251133ad31d"
+              },
+              {
+                "referenceType": "PyPI (details available in Python Package Index)",
+                "reference": "https://index.whitesourcesoftware.com/gri/app/reader/resource/content/asString/c6df3ab9-1744-43df-9a24-7c35e7235e3b"
+              }
+            ]
+          }
+        ]
+      },
+      "project": "GH_Configurations",
+      "projectId": 2427089,
+      "projectToken": "2cba5e49b7d147e99ef240b96872b6a1b56287a0727d40dbaf4040284098dc82",
+      "directDependency": true,
+      "description": "2 licenses identified",
+      "date": "2020-09-15",
+      "modifiedDate": "2020-09-15",
+      "time": 1600192538000,
+      "creation_date": "2020-09-15",
+      "alertUuid": "5f01ea5c-53bb-4f55-b14b-7ff4095ff906"
+    },
+    {
+      "type": "MULTIPLE_LICENSES",
+      "level": "MINOR",
+      "library": {
+        "keyUuid": "fc7035cc-3418-4209-b0b1-222f2dea3ef1",
+        "keyId": 112182446,
+        "filename": "packaging-20.4-py2.py3-none-any.whl",
+        "type": "Python",
+        "languages": "Python",
+        "description": "Core utilities for Python packages",
+        "references": {
+          "url": "https://files.pythonhosted.org/packages/46/19/c5ab91b1b05cfe63cccd5cfc971db9214c6dd6ced54e33c30d5af1d2bc43/packaging-20.4-py2.py3-none-any.whl",
+          "homePage": "https://github.com/pypa/packaging",
+          "genericPackageIndex": "https://pypi.python.org/pypi/packaging/20.4"
+        },
+        "sha1": "4047d7afbf467986709e0856a7526a9211d6e030",
+        "name": "packaging",
+        "artifactId": "packaging-20.4-py2.py3-none-any.whl",
+        "version": "20.4",
+        "groupId": "packaging",
+        "licenses": [
+          {
+            "name": "BSD 2",
+            "spdxName": "BSD-2-Clause",
+            "url": "http://www.opensource.org/licenses/BSD-2-Clause",
+            "profileInfo": {
+              "copyrightRiskScore": "THREE",
+              "patentRiskScore": "THREE",
+              "copyleft": "NO",
+              "linking": "NON_VIRAL",
+              "royaltyFree": "NO"
+            },
+            "references": [
+              {
+                "referenceType": "PyPI (details available in Python Package Index)",
+                "reference": "https://index.whitesourcesoftware.com/gri/app/reader/resource/content/asString/57d51397-c418-4f7f-8cf3-9c4743d5f788"
+              },
+              {
+                "referenceType": "PyPI (details available in Python Package Index)",
+                "reference": "https://index.whitesourcesoftware.com/gri/app/reader/resource/content/asString/5dc6966c-e2a4-4238-8447-f01088d62c8d"
+              }
+            ]
+          },
+          {
+            "name": "Apache 2.0",
+            "spdxName": "Apache-2.0",
+            "url": "http://www.opensource.org/licenses/Apache-2.0",
+            "profileInfo": {
+              "copyrightRiskScore": "THREE",
+              "patentRiskScore": "ONE",
+              "copyleft": "NO",
+              "linking": "DYNAMIC",
+              "royaltyFree": "CONDITIONAL"
+            },
+            "references": [
+              {
+                "referenceType": "PyPI (details available in Python Package Index)",
+                "reference": "https://index.whitesourcesoftware.com/gri/app/reader/resource/content/asString/3c775c9a-01e0-4572-93f0-ebc8f6ad3ff5"
+              },
+              {
+                "referenceType": "PyPI (details available in Python Package Index)",
+                "reference": "https://index.whitesourcesoftware.com/gri/app/reader/resource/content/asString/57d51397-c418-4f7f-8cf3-9c4743d5f788"
+              }
+            ]
+          }
+        ]
+      },
+      "project": "GH_Configurations",
+      "projectId": 2427089,
+      "projectToken": "2cba5e49b7d147e99ef240b96872b6a1b56287a0727d40dbaf4040284098dc82",
+      "directDependency": false,
+      "description": "2 licenses identified",
+      "date": "2020-09-15",
+      "modifiedDate": "2020-09-15",
+      "time": 1600192538000,
+      "creation_date": "2020-09-15",
+      "alertUuid": "46d9ceb3-9636-465f-b52e-11f083c8ca41"
+    },
+    {
+      "type": "MULTIPLE_LICENSES",
+      "level": "MINOR",
+      "library": {
+        "keyUuid": "627bdebe-2849-4edf-81a7-80d9dda2f679",
+        "keyId": 96214691,
+        "filename": "python_dateutil-2.8.1-py2.py3-none-any.whl",
+        "type": "Python",
+        "languages": "Python",
+        "description": "Extensions to the standard Python datetime module",
+        "references": {
+          "url": "https://files.pythonhosted.org/packages/d4/70/d60450c3dd48ef87586924207ae8907090de0b306af2bce5d134d78615cb/python_dateutil-2.8.1-py2.py3-none-any.whl",
+          "homePage": "https://dateutil.readthedocs.io",
+          "genericPackageIndex": "https://pypi.python.org/pypi/python-dateutil/2.8.1"
+        },
+        "sha1": "3005ff67df93ee276fb8631e17c677df852254ad",
+        "name": "python-dateutil",
+        "artifactId": "python_dateutil-2.8.1-py2.py3-none-any.whl",
+        "version": "2.8.1",
+        "groupId": "python-dateutil",
+        "licenses": [
+          {
+            "name": "BSD 3",
+            "spdxName": "BSD-3-Clause",
+            "url": "http://www.opensource.org/licenses/BSD-3-Clause",
+            "profileInfo": {
+              "copyrightRiskScore": "THREE",
+              "patentRiskScore": "THREE",
+              "copyleft": "NO",
+              "linking": "NON_VIRAL",
+              "royaltyFree": "NO"
+            },
+            "references": [
+              {
+                "referenceType": "PyPI (details available in Python Package Index)",
+                "reference": "https://index.whitesourcesoftware.com/gri/app/reader/resource/content/asString/ff73c874-2981-4ac7-a6d7-257caf002af0"
+              },
+              {
+                "referenceType": "PyPI (details available in Python Package Index)",
+                "reference": "https://index.whitesourcesoftware.com/gri/app/reader/resource/content/asString/29dc72fe-716d-4683-b810-a5d863834c6e"
+              }
+            ]
+          },
+          {
+            "name": "Apache 2.0",
+            "spdxName": "Apache-2.0",
+            "url": "http://www.opensource.org/licenses/Apache-2.0",
+            "profileInfo": {
+              "copyrightRiskScore": "THREE",
+              "patentRiskScore": "ONE",
+              "copyleft": "NO",
+              "linking": "DYNAMIC",
+              "royaltyFree": "CONDITIONAL"
+            },
+            "references": [
+              {
+                "referenceType": "PyPI (details available in Python Package Index)",
+                "reference": "https://index.whitesourcesoftware.com/gri/app/reader/resource/content/asString/ff73c874-2981-4ac7-a6d7-257caf002af0"
+              }
+            ]
+          }
+        ]
+      },
+      "project": "GH_Configurations",
+      "projectId": 2427089,
+      "projectToken": "2cba5e49b7d147e99ef240b96872b6a1b56287a0727d40dbaf4040284098dc82",
+      "directDependency": false,
+      "description": "2 licenses identified",
+      "date": "2020-09-15",
+      "modifiedDate": "2020-09-15",
+      "time": 1600192538000,
+      "creation_date": "2020-09-15",
+      "alertUuid": "1bda678d-0ec8-4e02-93d4-fa43518e37c2"
+    },
+    {
+      "type": "MULTIPLE_LICENSES",
+      "level": "MINOR",
+      "library": {
+        "keyUuid": "bd702c97-fd2d-47e5-9959-8a50ffa64b46",
+        "keyId": 122392863,
+        "filename": "cryptography-3.1-cp35-abi3-manylinux2010_x86_64.whl",
+        "type": "Python",
+        "languages": "Python",
+        "description": "cryptography is a package which provides cryptographic recipes and primitives to Python developers.",
+        "references": {
+          "url": "https://files.pythonhosted.org/packages/c0/9c/647e559a6e8be493dc2a7a5d15d26cb501ca60ec299b356f23839a673a83/cryptography-3.1-cp35-abi3-manylinux2010_x86_64.whl",
+          "homePage": "https://github.com/pyca/cryptography",
+          "genericPackageIndex": "https://pypi.python.org/pypi/cryptography/3.1"
+        },
+        "sha1": "bef0ff2d4e5ef9561ddc44a05192e7a39869fb16",
+        "name": "cryptography",
+        "artifactId": "cryptography-3.1-cp35-abi3-manylinux2010_x86_64.whl",
+        "version": "3.1",
+        "groupId": "cryptography",
+        "licenses": [
+          {
+            "name": "BSD 3",
+            "spdxName": "BSD-3-Clause",
+            "url": "http://www.opensource.org/licenses/BSD-3-Clause",
+            "profileInfo": {
+              "copyrightRiskScore": "THREE",
+              "patentRiskScore": "THREE",
+              "copyleft": "NO",
+              "linking": "NON_VIRAL",
+              "royaltyFree": "NO"
+            },
+            "references": [
+              {
+                "referenceType": "PyPI (details available in Python Package Index)",
+                "reference": "https://index.whitesourcesoftware.com/gri/app/reader/resource/content/asString/5e4eced4-59bf-4ac3-b3c8-e766c7405cd0"
+              }
+            ]
+          },
+          {
+            "name": "Apache 2.0",
+            "spdxName": "Apache-2.0",
+            "url": "http://www.opensource.org/licenses/Apache-2.0",
+            "profileInfo": {
+              "copyrightRiskScore": "THREE",
+              "patentRiskScore": "ONE",
+              "copyleft": "NO",
+              "linking": "DYNAMIC",
+              "royaltyFree": "CONDITIONAL"
+            },
+            "references": [
+              {
+                "referenceType": "PyPI (details available in Python Package Index)",
+                "reference": "https://index.whitesourcesoftware.com/gri/app/reader/resource/content/asString/562c757f-c4c8-419d-a3c6-19860eb5c1b6"
+              },
+              {
+                "referenceType": "PyPI (details available in Python Package Index)",
+                "reference": "https://index.whitesourcesoftware.com/gri/app/reader/resource/content/asString/2f53f375-7cbd-41ff-b553-0f217f8611c7"
+              }
+            ]
+          }
+        ]
+      },
+      "project": "GH_quantum-workflow-generator",
+      "projectId": 1734929,
+      "projectToken": "94fdebb7b6464878bf3ad9ed7d272a4e9b619dc26fd04094b0fec808a0818296",
+      "directDependency": false,
+      "description": "2 licenses identified",
+      "date": "2020-09-04",
+      "modifiedDate": "2020-09-04",
+      "time": 1599242544000,
+      "creation_date": "2020-09-04",
+      "alertUuid": "fb8ae4c9-dec5-4c96-9ed4-26a260b5b432"
+    },
+    {
+      "type": "MULTIPLE_LICENSES",
+      "level": "MINOR",
+      "library": {
+        "keyUuid": "edf84640-49b3-4d6e-861a-1b93bf6a014c",
+        "keyId": 121062369,
+        "filename": "pytest_cov-2.10.1-py2.py3-none-any.whl",
+        "type": "Python",
+        "languages": "Python",
+        "description": "Pytest plugin for measuring coverage.",
+        "references": {
+          "url": "https://files.pythonhosted.org/packages/e5/18/401594af67eda194a8b9167208621761927c937db7d60292608342bbac0a/pytest_cov-2.10.1-py2.py3-none-any.whl",
+          "homePage": "https://github.com/pytest-dev/pytest-cov",
+          "genericPackageIndex": "https://pypi.python.org/pypi/pytest-cov/2.10.1"
+        },
+        "sha1": "5f4e7ea46611a7aa9b8e85070ffabd3fbb7c817a",
+        "name": "pytest-cov",
+        "artifactId": "pytest_cov-2.10.1-py2.py3-none-any.whl",
+        "version": "2.10.1",
+        "groupId": "pytest-cov",
+        "licenses": [
+          {
+            "name": "MIT",
+            "spdxName": "MIT",
+            "url": "http://www.opensource.org/licenses/MIT",
+            "profileInfo": {
+              "copyrightRiskScore": "THREE",
+              "patentRiskScore": "ONE",
+              "copyleft": "NO",
+              "royaltyFree": "YES"
+            },
+            "references": [
+              {
+                "referenceType": "PyPI (details available in Python Package Index)",
+                "reference": "https://index.whitesourcesoftware.com/gri/app/reader/resource/content/asString/3bee5a36-8ebd-43c2-9da4-4251133ad31d"
+              },
+              {
+                "referenceType": "PyPI (details available in Python Package Index)",
+                "reference": "https://index.whitesourcesoftware.com/gri/app/reader/resource/content/asString/c6df3ab9-1744-43df-9a24-7c35e7235e3b"
+              }
+            ]
+          },
+          {
+            "name": "BSD",
+            "url": "http://www.linfo.org/bsdlicense.html",
+            "references": [
+              {
+                "referenceType": "PyPI (details available in Python Package Index)"
+              }
+            ]
+          }
+        ]
+      },
+      "project": "GH_quantum-workflow-generator",
+      "projectId": 1734929,
+      "projectToken": "94fdebb7b6464878bf3ad9ed7d272a4e9b619dc26fd04094b0fec808a0818296",
+      "directDependency": true,
+      "description": "2 licenses identified",
+      "date": "2020-09-04",
+      "modifiedDate": "2020-09-04",
+      "time": 1599242544000,
+      "creation_date": "2020-09-04",
+      "alertUuid": "7870119a-827f-4d75-8bc2-b447b20c6395"
+    },
+    {
+      "type": "MULTIPLE_LICENSES",
+      "level": "MINOR",
+      "library": {
+        "keyUuid": "fc01066f-16af-4a79-b5dd-7662df82d29c",
+        "keyId": 122431353,
+        "filename": "datadog-0.39.0-py2.py3-none-any.whl",
+        "type": "Python",
+        "languages": "Python",
+        "description": "The Datadog Python library",
+        "references": {
+          "url": "https://files.pythonhosted.org/packages/52/a7/99342ad4d9ee452a61a14f0501d2319cd274fcb45980c4b60b8ad3484c83/datadog-0.39.0-py2.py3-none-any.whl",
+          "homePage": "https://www.datadoghq.com",
+          "genericPackageIndex": "https://pypi.python.org/pypi/datadog/0.39.0"
+        },
+        "sha1": "95c2b6293f050c57db2ec450d7ec564cb2b11ffe",
+        "name": "datadog",
+        "artifactId": "datadog-0.39.0-py2.py3-none-any.whl",
+        "version": "0.39.0",
+        "groupId": "datadog",
+        "licenses": [
+          {
+            "name": "BSD 2",
+            "spdxName": "BSD-2-Clause",
+            "url": "http://www.opensource.org/licenses/BSD-2-Clause",
+            "profileInfo": {
+              "copyrightRiskScore": "THREE",
+              "patentRiskScore": "THREE",
+              "copyleft": "NO",
+              "linking": "NON_VIRAL",
+              "royaltyFree": "NO"
+            },
+            "references": [
+              {
+                "referenceType": "PyPI (details available in Python Package Index)",
+                "reference": "https://index.whitesourcesoftware.com/gri/app/reader/resource/content/asString/cf9eab98-6078-4aac-bf01-62bf598ae389"
+              }
+            ]
+          },
+          {
+            "name": "BSD 3",
+            "spdxName": "BSD-3-Clause",
+            "url": "http://www.opensource.org/licenses/BSD-3-Clause",
+            "profileInfo": {
+              "copyrightRiskScore": "THREE",
+              "patentRiskScore": "THREE",
+              "copyleft": "NO",
+              "linking": "NON_VIRAL",
+              "royaltyFree": "NO"
+            },
+            "references": [
+              {
+                "referenceType": "PyPI (details available in Python Package Index)",
+                "reference": "https://index.whitesourcesoftware.com/gri/app/reader/resource/content/asString/d538536d-8691-4e9d-8bc0-114e4222dba5"
+              }
+            ]
+          }
+        ]
+      },
+      "project": "GH_quantum-workflow-generator",
+      "projectId": 1734929,
+      "projectToken": "94fdebb7b6464878bf3ad9ed7d272a4e9b619dc26fd04094b0fec808a0818296",
+      "directDependency": true,
+      "description": "2 licenses identified",
+      "date": "2020-09-04",
+      "modifiedDate": "2020-09-04",
+      "time": 1599242544000,
+      "creation_date": "2020-09-04",
+      "alertUuid": "532a5a45-5743-4d8e-8350-06fbaf6b3bfc"
+    },
+    {
+      "type": "MULTIPLE_LICENSES",
+      "level": "MINOR",
+      "library": {
+        "keyUuid": "edf84640-49b3-4d6e-861a-1b93bf6a014c",
+        "keyId": 121062369,
+        "filename": "pytest_cov-2.10.1-py2.py3-none-any.whl",
+        "type": "Python",
+        "languages": "Python",
+        "description": "Pytest plugin for measuring coverage.",
+        "references": {
+          "url": "https://files.pythonhosted.org/packages/e5/18/401594af67eda194a8b9167208621761927c937db7d60292608342bbac0a/pytest_cov-2.10.1-py2.py3-none-any.whl",
+          "homePage": "https://github.com/pytest-dev/pytest-cov",
+          "genericPackageIndex": "https://pypi.python.org/pypi/pytest-cov/2.10.1"
+        },
+        "sha1": "5f4e7ea46611a7aa9b8e85070ffabd3fbb7c817a",
+        "name": "pytest-cov",
+        "artifactId": "pytest_cov-2.10.1-py2.py3-none-any.whl",
+        "version": "2.10.1",
+        "groupId": "pytest-cov",
+        "licenses": [
+          {
+            "name": "BSD",
+            "url": "http://www.linfo.org/bsdlicense.html",
+            "references": [
+              {
+                "referenceType": "PyPI (details available in Python Package Index)"
+              }
+            ]
+          },
+          {
+            "name": "MIT",
+            "spdxName": "MIT",
+            "url": "http://www.opensource.org/licenses/MIT",
+            "profileInfo": {
+              "copyrightRiskScore": "THREE",
+              "patentRiskScore": "ONE",
+              "copyleft": "NO",
+              "royaltyFree": "YES"
+            },
+            "references": [
+              {
+                "referenceType": "PyPI (details available in Python Package Index)",
+                "reference": "https://index.whitesourcesoftware.com/gri/app/reader/resource/content/asString/3bee5a36-8ebd-43c2-9da4-4251133ad31d"
+              },
+              {
+                "referenceType": "PyPI (details available in Python Package Index)",
+                "reference": "https://index.whitesourcesoftware.com/gri/app/reader/resource/content/asString/c6df3ab9-1744-43df-9a24-7c35e7235e3b"
+              }
+            ]
+          }
+        ]
+      },
+      "project": "GH_quantum-workflow-executor",
+      "projectId": 1734926,
+      "projectToken": "259afde815fd40da8b7eb7877350b54a10014b145ee849f49906a77210ec491e",
+      "directDependency": true,
+      "description": "2 licenses identified",
+      "date": "2020-09-02",
+      "modifiedDate": "2020-09-02",
+      "time": 1599065507000,
+      "creation_date": "2020-09-02",
+      "alertUuid": "47165639-e19f-41af-a81e-43f0f0348ecd"
+    },
+    {
+      "type": "MULTIPLE_LICENSES",
+      "level": "MINOR",
+      "library": {
+        "keyUuid": "fc01066f-16af-4a79-b5dd-7662df82d29c",
+        "keyId": 122431353,
+        "filename": "datadog-0.39.0-py2.py3-none-any.whl",
+        "type": "Python",
+        "languages": "Python",
+        "description": "The Datadog Python library",
+        "references": {
+          "url": "https://files.pythonhosted.org/packages/52/a7/99342ad4d9ee452a61a14f0501d2319cd274fcb45980c4b60b8ad3484c83/datadog-0.39.0-py2.py3-none-any.whl",
+          "homePage": "https://www.datadoghq.com",
+          "genericPackageIndex": "https://pypi.python.org/pypi/datadog/0.39.0"
+        },
+        "sha1": "95c2b6293f050c57db2ec450d7ec564cb2b11ffe",
+        "name": "datadog",
+        "artifactId": "datadog-0.39.0-py2.py3-none-any.whl",
+        "version": "0.39.0",
+        "groupId": "datadog",
+        "licenses": [
+          {
+            "name": "BSD 2",
+            "spdxName": "BSD-2-Clause",
+            "url": "http://www.opensource.org/licenses/BSD-2-Clause",
+            "profileInfo": {
+              "copyrightRiskScore": "THREE",
+              "patentRiskScore": "THREE",
+              "copyleft": "NO",
+              "linking": "NON_VIRAL",
+              "royaltyFree": "NO"
+            },
+            "references": [
+              {
+                "referenceType": "PyPI (details available in Python Package Index)",
+                "reference": "https://index.whitesourcesoftware.com/gri/app/reader/resource/content/asString/cf9eab98-6078-4aac-bf01-62bf598ae389"
+              }
+            ]
+          },
+          {
+            "name": "BSD 3",
+            "spdxName": "BSD-3-Clause",
+            "url": "http://www.opensource.org/licenses/BSD-3-Clause",
+            "profileInfo": {
+              "copyrightRiskScore": "THREE",
+              "patentRiskScore": "THREE",
+              "copyleft": "NO",
+              "linking": "NON_VIRAL",
+              "royaltyFree": "NO"
+            },
+            "references": [
+              {
+                "referenceType": "PyPI (details available in Python Package Index)",
+                "reference": "https://index.whitesourcesoftware.com/gri/app/reader/resource/content/asString/d538536d-8691-4e9d-8bc0-114e4222dba5"
+              }
+            ]
+          }
+        ]
+      },
+      "project": "GH_quantum-workflow-executor",
+      "projectId": 1734926,
+      "projectToken": "259afde815fd40da8b7eb7877350b54a10014b145ee849f49906a77210ec491e",
+      "directDependency": true,
+      "description": "2 licenses identified",
+      "date": "2020-09-02",
+      "modifiedDate": "2020-09-02",
+      "time": 1599065507000,
+      "creation_date": "2020-09-02",
+      "alertUuid": "955862e8-8f9f-4f16-8e5a-c39728cafcae"
+    },
+    {
+      "type": "MULTIPLE_LICENSES",
+      "level": "MINOR",
+      "library": {
+        "keyUuid": "fc7035cc-3418-4209-b0b1-222f2dea3ef1",
+        "keyId": 112182446,
+        "filename": "packaging-20.4-py2.py3-none-any.whl",
+        "type": "Python",
+        "languages": "Python",
+        "description": "Core utilities for Python packages",
+        "references": {
+          "url": "https://files.pythonhosted.org/packages/46/19/c5ab91b1b05cfe63cccd5cfc971db9214c6dd6ced54e33c30d5af1d2bc43/packaging-20.4-py2.py3-none-any.whl",
+          "homePage": "https://github.com/pypa/packaging",
+          "genericPackageIndex": "https://pypi.python.org/pypi/packaging/20.4"
+        },
+        "sha1": "4047d7afbf467986709e0856a7526a9211d6e030",
+        "name": "packaging",
+        "artifactId": "packaging-20.4-py2.py3-none-any.whl",
+        "version": "20.4",
+        "groupId": "packaging",
+        "licenses": [
+          {
+            "name": "BSD 2",
+            "spdxName": "BSD-2-Clause",
+            "url": "http://www.opensource.org/licenses/BSD-2-Clause",
+            "profileInfo": {
+              "copyrightRiskScore": "THREE",
+              "patentRiskScore": "THREE",
+              "copyleft": "NO",
+              "linking": "NON_VIRAL",
+              "royaltyFree": "NO"
+            },
+            "references": [
+              {
+                "referenceType": "PyPI (details available in Python Package Index)",
+                "reference": "https://index.whitesourcesoftware.com/gri/app/reader/resource/content/asString/57d51397-c418-4f7f-8cf3-9c4743d5f788"
+              },
+              {
+                "referenceType": "PyPI (details available in Python Package Index)",
+                "reference": "https://index.whitesourcesoftware.com/gri/app/reader/resource/content/asString/5dc6966c-e2a4-4238-8447-f01088d62c8d"
+              }
+            ]
+          },
+          {
+            "name": "Apache 2.0",
+            "spdxName": "Apache-2.0",
+            "url": "http://www.opensource.org/licenses/Apache-2.0",
+            "profileInfo": {
+              "copyrightRiskScore": "THREE",
+              "patentRiskScore": "ONE",
+              "copyleft": "NO",
+              "linking": "DYNAMIC",
+              "royaltyFree": "CONDITIONAL"
+            },
+            "references": [
+              {
+                "referenceType": "PyPI (details available in Python Package Index)",
+                "reference": "https://index.whitesourcesoftware.com/gri/app/reader/resource/content/asString/3c775c9a-01e0-4572-93f0-ebc8f6ad3ff5"
+              },
+              {
+                "referenceType": "PyPI (details available in Python Package Index)",
+                "reference": "https://index.whitesourcesoftware.com/gri/app/reader/resource/content/asString/57d51397-c418-4f7f-8cf3-9c4743d5f788"
+              }
+            ]
+          }
+        ]
+      },
+      "project": "GH_quantum-workflow-generator",
+      "projectId": 1734929,
+      "projectToken": "94fdebb7b6464878bf3ad9ed7d272a4e9b619dc26fd04094b0fec808a0818296",
+      "directDependency": false,
+      "description": "2 licenses identified",
+      "date": "2020-07-31",
+      "modifiedDate": "2020-07-31",
+      "time": 1596213733000,
+      "creation_date": "2020-07-31",
+      "alertUuid": "2012330e-079f-4bb9-a8f6-8392d625f6d4"
+    },
+    {
+      "type": "MULTIPLE_LICENSES",
+      "level": "MINOR",
+      "library": {
+        "keyUuid": "5951d9c6-4efa-4656-8f9d-51dcc59d9a61",
+        "keyId": 87482182,
+        "filename": "docutils-0.15.2-py3-none-any.whl",
+        "type": "Python",
+        "languages": "Python",
+        "description": "Docutils -- Python Documentation Utilities",
+        "references": {
+          "url": "https://files.pythonhosted.org/packages/22/cd/a6aa959dca619918ccb55023b4cb151949c64d4d5d55b3f4ffd7eee0c6e8/docutils-0.15.2-py3-none-any.whl",
+          "homePage": "http://docutils.sourceforge.net/",
+          "genericPackageIndex": "https://pypi.python.org/pypi/docutils/0.15.2"
+        },
+        "sha1": "aafeddc912b74557754b2aaece3f1364be8e9f6a",
+        "name": "docutils",
+        "artifactId": "docutils-0.15.2-py3-none-any.whl",
+        "version": "0.15.2",
+        "groupId": "docutils",
+        "licenses": [
+          {
+            "name": "Python 2.0",
+            "spdxName": "Python-2.0",
+            "url": "http://www.opensource.org/licenses/Python-2.0",
+            "profileInfo": {
+              "copyrightRiskScore": "THREE",
+              "patentRiskScore": "THREE",
+              "copyleft": "NO",
+              "linking": "VIRAL",
+              "royaltyFree": "NO"
+            },
+            "references": [
+              {
+                "referenceType": "PyPI (details available in Python Package Index)",
+                "reference": "https://index.whitesourcesoftware.com/gri/app/reader/resource/content/asString/52e29f87-2f45-4e0d-877e-449ad11489bf"
+              }
+            ]
+          },
+          {
+            "name": "BSD 2",
+            "spdxName": "BSD-2-Clause",
+            "url": "http://www.opensource.org/licenses/BSD-2-Clause",
+            "profileInfo": {
+              "copyrightRiskScore": "THREE",
+              "patentRiskScore": "THREE",
+              "copyleft": "NO",
+              "linking": "NON_VIRAL",
+              "royaltyFree": "NO"
+            },
+            "references": [
+              {
+                "referenceType": "PyPI (details available in Python Package Index)",
+                "reference": "https://index.whitesourcesoftware.com/gri/app/reader/resource/content/asString/52e29f87-2f45-4e0d-877e-449ad11489bf"
+              }
+            ]
+          },
+          {
+            "name": "Public Domain",
+            "url": "http://creativecommons.org/licenses/publicdomain/",
+            "profileInfo": {
+              "copyrightRiskScore": "ONE",
+              "patentRiskScore": "THREE",
+              "copyleft": "NO",
+              "linking": "NON_VIRAL",
+              "royaltyFree": "NO"
+            },
+            "references": [
+              {
+                "referenceType": "PyPI (details available in Python Package Index)"
+              }
+            ]
+          },
+          {
+            "name": "GPL 3.0",
+            "spdxName": "GPL-3.0",
+            "url": "http://www.opensource.org/licenses/GPL-3.0",
+            "profileInfo": {
+              "copyrightRiskScore": "SIX",
+              "patentRiskScore": "ONE",
+              "copyleft": "FULL",
+              "linking": "VIRAL",
+              "royaltyFree": "YES"
+            },
+            "references": [
+              {
+                "referenceType": "PyPI (details available in Python Package Index)",
+                "reference": "https://index.whitesourcesoftware.com/gri/app/reader/resource/content/asString/4e11a1f3-d2a6-4ec1-ac2f-167ec5e647a1"
+              },
+              {
+                "referenceType": "PyPI (details available in Python Package Index)",
+                "reference": "https://index.whitesourcesoftware.com/gri/app/reader/resource/content/asString/52e29f87-2f45-4e0d-877e-449ad11489bf"
+              }
+            ]
+          }
+        ]
+      },
+      "project": "GH_quantum-workflow-generator",
+      "projectId": 1734929,
+      "projectToken": "94fdebb7b6464878bf3ad9ed7d272a4e9b619dc26fd04094b0fec808a0818296",
+      "directDependency": false,
+      "description": "4 licenses identified",
+      "date": "2020-07-31",
+      "modifiedDate": "2020-07-31",
+      "time": 1596213733000,
+      "creation_date": "2020-07-31",
+      "alertUuid": "96a105f7-21a6-4e18-a399-fc6a37828e36"
+    },
+    {
+      "type": "MULTIPLE_LICENSES",
+      "level": "MINOR",
+      "library": {
+        "keyUuid": "627bdebe-2849-4edf-81a7-80d9dda2f679",
+        "keyId": 96214691,
+        "filename": "python_dateutil-2.8.1-py2.py3-none-any.whl",
+        "type": "Python",
+        "languages": "Python",
+        "description": "Extensions to the standard Python datetime module",
+        "references": {
+          "url": "https://files.pythonhosted.org/packages/d4/70/d60450c3dd48ef87586924207ae8907090de0b306af2bce5d134d78615cb/python_dateutil-2.8.1-py2.py3-none-any.whl",
+          "homePage": "https://dateutil.readthedocs.io",
+          "genericPackageIndex": "https://pypi.python.org/pypi/python-dateutil/2.8.1"
+        },
+        "sha1": "3005ff67df93ee276fb8631e17c677df852254ad",
+        "name": "python-dateutil",
+        "artifactId": "python_dateutil-2.8.1-py2.py3-none-any.whl",
+        "version": "2.8.1",
+        "groupId": "python-dateutil",
+        "licenses": [
+          {
+            "name": "BSD 3",
+            "spdxName": "BSD-3-Clause",
+            "url": "http://www.opensource.org/licenses/BSD-3-Clause",
+            "profileInfo": {
+              "copyrightRiskScore": "THREE",
+              "patentRiskScore": "THREE",
+              "copyleft": "NO",
+              "linking": "NON_VIRAL",
+              "royaltyFree": "NO"
+            },
+            "references": [
+              {
+                "referenceType": "PyPI (details available in Python Package Index)",
+                "reference": "https://index.whitesourcesoftware.com/gri/app/reader/resource/content/asString/ff73c874-2981-4ac7-a6d7-257caf002af0"
+              },
+              {
+                "referenceType": "PyPI (details available in Python Package Index)",
+                "reference": "https://index.whitesourcesoftware.com/gri/app/reader/resource/content/asString/29dc72fe-716d-4683-b810-a5d863834c6e"
+              }
+            ]
+          },
+          {
+            "name": "Apache 2.0",
+            "spdxName": "Apache-2.0",
+            "url": "http://www.opensource.org/licenses/Apache-2.0",
+            "profileInfo": {
+              "copyrightRiskScore": "THREE",
+              "patentRiskScore": "ONE",
+              "copyleft": "NO",
+              "linking": "DYNAMIC",
+              "royaltyFree": "CONDITIONAL"
+            },
+            "references": [
+              {
+                "referenceType": "PyPI (details available in Python Package Index)",
+                "reference": "https://index.whitesourcesoftware.com/gri/app/reader/resource/content/asString/ff73c874-2981-4ac7-a6d7-257caf002af0"
+              }
+            ]
+          }
+        ]
+      },
+      "project": "GH_quantum-workflow-generator",
+      "projectId": 1734929,
+      "projectToken": "94fdebb7b6464878bf3ad9ed7d272a4e9b619dc26fd04094b0fec808a0818296",
+      "directDependency": false,
+      "description": "2 licenses identified",
+      "date": "2020-07-31",
+      "modifiedDate": "2020-07-31",
+      "time": 1596213733000,
+      "creation_date": "2020-07-31",
+      "alertUuid": "936029bb-3bc6-4924-b002-eef3fc2d0917"
+    },
+    {
+      "type": "MULTIPLE_LICENSES",
+      "level": "MINOR",
+      "library": {
+        "keyUuid": "627bdebe-2849-4edf-81a7-80d9dda2f679",
+        "keyId": 96214691,
+        "filename": "python_dateutil-2.8.1-py2.py3-none-any.whl",
+        "type": "Python",
+        "languages": "Python",
+        "description": "Extensions to the standard Python datetime module",
+        "references": {
+          "url": "https://files.pythonhosted.org/packages/d4/70/d60450c3dd48ef87586924207ae8907090de0b306af2bce5d134d78615cb/python_dateutil-2.8.1-py2.py3-none-any.whl",
+          "homePage": "https://dateutil.readthedocs.io",
+          "genericPackageIndex": "https://pypi.python.org/pypi/python-dateutil/2.8.1"
+        },
+        "sha1": "3005ff67df93ee276fb8631e17c677df852254ad",
+        "name": "python-dateutil",
+        "artifactId": "python_dateutil-2.8.1-py2.py3-none-any.whl",
+        "version": "2.8.1",
+        "groupId": "python-dateutil",
+        "licenses": [
+          {
+            "name": "BSD 3",
+            "spdxName": "BSD-3-Clause",
+            "url": "http://www.opensource.org/licenses/BSD-3-Clause",
+            "profileInfo": {
+              "copyrightRiskScore": "THREE",
+              "patentRiskScore": "THREE",
+              "copyleft": "NO",
+              "linking": "NON_VIRAL",
+              "royaltyFree": "NO"
+            },
+            "references": [
+              {
+                "referenceType": "PyPI (details available in Python Package Index)",
+                "reference": "https://index.whitesourcesoftware.com/gri/app/reader/resource/content/asString/ff73c874-2981-4ac7-a6d7-257caf002af0"
+              },
+              {
+                "referenceType": "PyPI (details available in Python Package Index)",
+                "reference": "https://index.whitesourcesoftware.com/gri/app/reader/resource/content/asString/29dc72fe-716d-4683-b810-a5d863834c6e"
+              }
+            ]
+          },
+          {
+            "name": "Apache 2.0",
+            "spdxName": "Apache-2.0",
+            "url": "http://www.opensource.org/licenses/Apache-2.0",
+            "profileInfo": {
+              "copyrightRiskScore": "THREE",
+              "patentRiskScore": "ONE",
+              "copyleft": "NO",
+              "linking": "DYNAMIC",
+              "royaltyFree": "CONDITIONAL"
+            },
+            "references": [
+              {
+                "referenceType": "PyPI (details available in Python Package Index)",
+                "reference": "https://index.whitesourcesoftware.com/gri/app/reader/resource/content/asString/ff73c874-2981-4ac7-a6d7-257caf002af0"
+              }
+            ]
+          }
+        ]
+      },
+      "project": "GH_serverless-scheduler",
+      "projectId": 1734921,
+      "projectToken": "13e603e405b34514bebdfe8d082d8c14fd9c6aa4910042b8a74102eb3f5a1e9d",
+      "directDependency": true,
+      "description": "2 licenses identified",
+      "date": "2020-07-21",
+      "modifiedDate": "2020-07-21",
+      "time": 1595345188000,
+      "creation_date": "2020-07-21",
+      "alertUuid": "26f0ea4e-a233-44cc-97bc-9abc9c9d1028"
+    },
+    {
+      "type": "MULTIPLE_LICENSES",
+      "level": "MINOR",
+      "library": {
+        "keyUuid": "627bdebe-2849-4edf-81a7-80d9dda2f679",
+        "keyId": 96214691,
+        "filename": "python_dateutil-2.8.1-py2.py3-none-any.whl",
+        "type": "Python",
+        "languages": "Python",
+        "description": "Extensions to the standard Python datetime module",
+        "references": {
+          "url": "https://files.pythonhosted.org/packages/d4/70/d60450c3dd48ef87586924207ae8907090de0b306af2bce5d134d78615cb/python_dateutil-2.8.1-py2.py3-none-any.whl",
+          "homePage": "https://dateutil.readthedocs.io",
+          "genericPackageIndex": "https://pypi.python.org/pypi/python-dateutil/2.8.1"
+        },
+        "sha1": "3005ff67df93ee276fb8631e17c677df852254ad",
+        "name": "python-dateutil",
+        "artifactId": "python_dateutil-2.8.1-py2.py3-none-any.whl",
+        "version": "2.8.1",
+        "groupId": "python-dateutil",
+        "licenses": [
+          {
+            "name": "Apache 2.0",
+            "spdxName": "Apache-2.0",
+            "url": "http://www.opensource.org/licenses/Apache-2.0",
+            "profileInfo": {
+              "copyrightRiskScore": "THREE",
+              "patentRiskScore": "ONE",
+              "copyleft": "NO",
+              "linking": "DYNAMIC",
+              "royaltyFree": "CONDITIONAL"
+            },
+            "references": [
+              {
+                "referenceType": "PyPI (details available in Python Package Index)",
+                "reference": "https://index.whitesourcesoftware.com/gri/app/reader/resource/content/asString/ff73c874-2981-4ac7-a6d7-257caf002af0"
+              }
+            ]
+          },
+          {
+            "name": "BSD 3",
+            "spdxName": "BSD-3-Clause",
+            "url": "http://www.opensource.org/licenses/BSD-3-Clause",
+            "profileInfo": {
+              "copyrightRiskScore": "THREE",
+              "patentRiskScore": "THREE",
+              "copyleft": "NO",
+              "linking": "NON_VIRAL",
+              "royaltyFree": "NO"
+            },
+            "references": [
+              {
+                "referenceType": "PyPI (details available in Python Package Index)",
+                "reference": "https://index.whitesourcesoftware.com/gri/app/reader/resource/content/asString/ff73c874-2981-4ac7-a6d7-257caf002af0"
+              },
+              {
+                "referenceType": "PyPI (details available in Python Package Index)",
+                "reference": "https://index.whitesourcesoftware.com/gri/app/reader/resource/content/asString/29dc72fe-716d-4683-b810-a5d863834c6e"
+              }
+            ]
+          }
+        ]
+      },
+      "project": "SomeProject1",
+      "projectId": 1734926,
+      "projectToken": "259afde815fd40da8b7eb7877350b54a10014b145ee849f49906a77210ec491e",
+      "directDependency": false,
+      "description": "2 licenses identified",
+      "date": "2020-07-06",
+      "modifiedDate": "2020-07-06",
+      "time": 1594057160000,
+      "creation_date": "2020-07-06",
+      "alertUuid": "9cde94e2-0933-40b6-9d76-8c9bc3b91c3c"
+    }
+  ]
+}
