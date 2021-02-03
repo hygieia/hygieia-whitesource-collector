@@ -1,10 +1,10 @@
 package com.capitalone.dashboard.logging;
 
 
-import com.capitalone.dashboard.collector.WhiteSourceSettings;
 import com.capitalone.dashboard.misc.HygieiaException;
 import com.capitalone.dashboard.model.RequestLog;
 import com.capitalone.dashboard.repository.RequestLogRepository;
+import com.capitalone.dashboard.settings.WhiteSourceSettings;
 import com.mongodb.util.JSON;
 import org.apache.commons.io.output.TeeOutputStream;
 import org.apache.commons.lang3.StringUtils;
@@ -15,7 +15,6 @@ import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
-import org.tmatesoft.svn.core.internal.io.dav.http.HTTPStatus;
 
 import javax.activation.MimeType;
 import javax.activation.MimeTypeParseException;
@@ -49,6 +48,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -79,11 +79,7 @@ public class LoggingFilter implements Filter {
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
         HttpServletResponse httpServletResponse = (HttpServletResponse) response;
 
-        if (httpServletRequest.getMethod().equals(HttpMethod.PUT.toString()) ||
-                (httpServletRequest.getMethod().equals(HttpMethod.POST.toString())) ||
-                (httpServletRequest.getMethod().equals(HttpMethod.DELETE.toString()))) {
-
-
+        if (Stream.of(HttpMethod.PUT, HttpMethod.POST, HttpMethod.DELETE).anyMatch(httpMethod -> httpServletRequest.getMethod().equals(httpMethod.toString()))) {
             Map<String, String> requestMap = this.getTypesafeRequestMap(httpServletRequest);
             BufferedRequestWrapper bufferedRequest = new BufferedRequestWrapper(httpServletRequest);
             BufferedResponseWrapper bufferedResponse = new BufferedResponseWrapper(httpServletResponse);

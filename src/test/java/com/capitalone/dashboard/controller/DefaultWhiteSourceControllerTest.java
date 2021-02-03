@@ -2,17 +2,13 @@ package com.capitalone.dashboard.controller;
 
 import com.capitalone.dashboard.collector.DefaultWhiteSourceClient;
 import com.capitalone.dashboard.misc.HygieiaException;
-import com.capitalone.dashboard.model.Collector;
 import com.capitalone.dashboard.model.WhiteSourceRequest;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
@@ -34,7 +30,6 @@ public class DefaultWhiteSourceControllerTest {
         data.setProjectVitals("dGVzdA==");
         return data;
     }
-
 
 
     @Test

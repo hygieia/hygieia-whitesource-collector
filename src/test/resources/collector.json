@@ -1,0 +1,28 @@
+{
+  "id" : "5fdeb200c8a1d024ff3d27e4",
+  "whiteSourceServers" : [
+    "https://somewhitesource.com"
+  ],
+  "name" : "WhiteSource",
+  "collectorType" : "LibraryPolicy",
+  "enabled" : true,
+  "online" : false,
+  "errors" : [],
+  "uniqueFields" : {
+    "projectToken" : "",
+    "orgName" : ""
+  },
+  "allFields" : {
+    "productToken" : "",
+    "projectToken" : "",
+    "orgName" : "",
+    "projectName" : "",
+    "productName" : ""
+  },
+  "lastExecuted" : 1609272362066,
+  "lastExecutionRecordCount" : 0,
+  "searchFields" : [
+    "description"
+  ],
+  "properties" : {}
+}

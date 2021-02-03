@@ -9,7 +9,7 @@
   </description>
   <url>https://github.com/Hygieia/${repository.name}</url>
   <packaging>jar</packaging>
-  <version>1.1.1-SNAPSHOT</version>
+  <version>1.2.0-SNAPSHOT</version>
 
   <parent>
     <groupId>org.springframework.boot</groupId>
@@ -52,7 +52,7 @@
     <apache.rat.plugin.version>0.13</apache.rat.plugin.version>
     <bc.version>3.0.1</bc.version>
     <com.capitalone.dashboard.core.version>3.12.0</com.capitalone.dashboard.core.version>
-    <commons.io.version>2.4</commons.io.version>
+    <commons.io.version>2.8.0</commons.io.version>
     <commons.lang.version>3.8.1</commons.lang.version>
     <coveralls.maven.plugin.version>4.3.0</coveralls.maven.plugin.version>
     <developmentTeam>The Hygieia Team</developmentTeam>
@@ -69,7 +69,7 @@
     <maven.compiler.plugin.version>3.1</maven.compiler.plugin.version>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
-    <maven.javadoc.plugin.version>3.1.0</maven.javadoc.plugin.version>
+    <maven.javadoc.plugin.version>3.2.0</maven.javadoc.plugin.version>
     <maven.pmd.plugin.version>3.11.0</maven.pmd.plugin.version>
     <maven.project-info.version>3.0.0</maven.project-info.version>
     <maven.scm.publish.plugin.version>3.0.0</maven.scm.publish.plugin.version>
@@ -119,6 +119,11 @@
 
   <dependencies>
     <dependency>
+      <groupId>javax.activation</groupId>
+      <artifactId>activation</artifactId>
+      <version>1.1.1</version>
+    </dependency>
+    <dependency>
       <groupId>com.capitalone.dashboard</groupId>
       <artifactId>core</artifactId>
       <version>${com.capitalone.dashboard.core.version}</version>
@@ -127,11 +132,11 @@
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
       <version>${commons.io.version}</version>
-      <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>joda-time</groupId>
-      <artifactId>joda-time</artifactId>
+      <groupId>de.flapdoodle.embed</groupId>
+      <artifactId>de.flapdoodle.embed.mongo</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>
@@ -166,6 +171,7 @@
     <dependency>
       <groupId>com.googlecode.json-simple</groupId>
       <artifactId>json-simple</artifactId>
+      <version>1.1.1</version>
     </dependency>
     <dependency>
       <groupId>commons-codec</groupId>
@@ -199,12 +205,6 @@
     </dependency>
 
     <dependency>
-      <groupId>com.github.fakemongo</groupId>
-      <artifactId>fongo</artifactId>
-      <version>2.0.3</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
       <groupId>org.assertj</groupId>
       <artifactId>assertj-core</artifactId>
       <version>3.9.0</version>
@@ -215,12 +215,32 @@
       <artifactId>gson</artifactId>
     </dependency>
     <dependency>
-      <groupId>commons-io</groupId>
-      <artifactId>commons-io</artifactId>
-      <version>2.6</version>
-      <scope>compile</scope>
+      <groupId>org.mongodb</groupId>
+      <artifactId>mongodb-driver</artifactId>
+      <version>3.9.1</version>
     </dependency>
-
+    <dependency>
+      <groupId>de.bwaldvogel</groupId>
+      <artifactId>mongo-java-server-core</artifactId>
+      <version>1.36.0</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>de.bwaldvogel</groupId>
+      <artifactId>mongo-java-server-memory-backend</artifactId>
+      <version>1.36.0</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.powermock</groupId>
+      <artifactId>powermock-module-junit4</artifactId>
+      <version>1.7.4</version>
+    </dependency>
+    <dependency>
+      <groupId>org.powermock</groupId>
+      <artifactId>powermock-api-mockito</artifactId>
+      <version>1.7.3</version>
+    </dependency>
   </dependencies>
 
   <build>
@@ -240,7 +260,7 @@
         </excludes>
       </resource>
     </resources>
-    <finalName>${artifactId}</finalName>
+    <finalName>${project.artifactId}</finalName>
     <plugins>
       <plugin>
         <groupId>org.springframework.boot</groupId>
@@ -416,6 +436,7 @@
           <failOnError>false</failOnError>
           <failOnWarnings>false</failOnWarnings>
           <excludes>**/*Test*.java</excludes>
+          <source>8</source>
         </configuration>
       </plugin>
       <plugin>
