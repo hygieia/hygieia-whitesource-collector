@@ -1,6 +1,7 @@
-package com.capitalone.dashboard.settings;
+package com.capitalone.dashboard.collector;
 
 import com.capitalone.dashboard.model.LicensePolicyType;
+import com.capitalone.dashboard.model.WhiteSourceServerSettings;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -44,27 +45,22 @@ public class WhiteSourceSettings  {
     private long offSet;
     @Value("${whitesource.historyTimestamp:345600000}") // 4days in millis
     private long historyTimestamp;
-    @Value("${whitesource.maxOrgLevelQueryTimeWindow:3600000}") // 1 hr in millis
-    private long maxOrgLevelQueryTimeWindow;
-
     private List<LicensePolicyType> criticalLicensePolicyTypes = new ArrayList<>();
     private List<LicensePolicyType> highLicensePolicyTypes = new ArrayList<>();
     private List<LicensePolicyType> mediumLicensePolicyTypes = new ArrayList<>();
     private List<LicensePolicyType> lowLicensePolicyTypes = new ArrayList<>();
     private String ignoredChangeClass;
     private List<WhiteSourceServerSettings> whiteSourceServerSettings = new ArrayList<>();
+    @Value("${whitesource.zone:America/New_York}")
+    private String zone;
 
-    private List<String> ignoreEndPoints = new ArrayList<>();
-    private List<String> ignoreApiUsers = new ArrayList<>();
-    private List<String> ignoreBodyEndPoints = new ArrayList<>();
+    private List<String> ignoreEndPoints = new ArrayList();
+    private List<String> ignoreApiUsers = new ArrayList();
+    private List<String> ignoreBodyEndPoints = new ArrayList();
     @Value("${corsEnabled:false}")
     private boolean corsEnabled;
     private String corsWhitelist;
     private List<String> searchPatterns = new ArrayList();
-
-    private ThreadPoolSettings threadPoolSettings = new ThreadPoolSettings();
-    @Value("${whitesource.optimizeCollection:true}")
-    private boolean optimizeCollection;
 
     public long getHistoryTimestamp() {
         return historyTimestamp;
@@ -272,6 +268,14 @@ public class WhiteSourceSettings  {
         this.whiteSourceServerSettings = whiteSourceServerSettings;
     }
 
+    public String getZone() {
+        return zone;
+    }
+
+    public void setZone(String zone) {
+        this.zone = zone;
+    }
+
     public List<String> getIgnoreEndPoints() {
         return ignoreEndPoints;
     }
@@ -312,31 +316,7 @@ public class WhiteSourceSettings  {
         this.corsWhitelist = corsWhitelist;
     }
 
-    public long getMaxOrgLevelQueryTimeWindow() {
-        return maxOrgLevelQueryTimeWindow;
-    }
-
-    public void setMaxOrgLevelQueryTimeWindow(long maxOrgLevelQueryTimeWindow) {
-        this.maxOrgLevelQueryTimeWindow = maxOrgLevelQueryTimeWindow;
-    }
-
-    public ThreadPoolSettings getThreadPoolSettings() {
-        return threadPoolSettings;
-    }
-
-    public void setThreadPoolSettings(ThreadPoolSettings threadPoolSettings) {
-        this.threadPoolSettings = threadPoolSettings;
-    }
-
-    public boolean isOptimizeCollection() {
-        return optimizeCollection;
-    }
-
-    public void setOptimizeCollection(boolean optimizeCollection) {
-        this.optimizeCollection = optimizeCollection;
-    }
-
-    public boolean checkIgnoreEndPoint(String endPointURI) { return !ignoreEndPoints.isEmpty() && ignoreEndPoints.contains(endPointURI); }
+    public boolean checkIgnoreEndPoint(String endPointURI) { return !getIgnoreEndPoints().isEmpty() && getIgnoreEndPoints().contains(endPointURI); }
 
     public boolean checkIgnoreApiUser(String apiUser) {
         if(CollectionUtils.isEmpty(this.ignoreApiUsers)) return false;

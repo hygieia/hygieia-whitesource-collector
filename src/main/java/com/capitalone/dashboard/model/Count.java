@@ -1,7 +1,7 @@
 package com.capitalone.dashboard.model;
 
 
-public class CollectorMetric {
+public class Count {
     private int added = 0;
     private int updated = 0;
     private int instanceCount = 0;
@@ -40,18 +40,18 @@ public class CollectorMetric {
     }
 
     public void addNewCount(int current){
-        this.added = added + current;
+        this.added = getAdded() + current;
     }
 
     public void addUpdatedCount(int current){
-        this.updated = updated + current;
+        this.updated = getUpdated() + current;
     }
 
     public void addInstanceCount(int current) {
-        this.instanceCount = instanceCount + current;
+        this.instanceCount = getInstanceCount() + current;
     }
 
     public void addFetched(int current){
-        this.fetched = fetched + current;
+        this.fetched = getFetched() + current;
     }
 }
