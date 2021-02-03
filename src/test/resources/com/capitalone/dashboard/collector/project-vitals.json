@@ -4,7 +4,7 @@
       "pluginName": "bolt-4-op-github-scanner",
       "id": 2528994,
       "name": "Test1Project",
-      "token": "05b07ce07a6f49c6b3ac7ad9fbbd383b123db8a4486c4cfe91065441d31267af",
+      "token": "05b07ce07a6f49c6b3ac7ad9fbbd383b443db8a4486c4cfe91065441d31267bd",
       "creationDate": "2020-06-12 15:34:45 +0000",
       "lastUpdatedDate": "2020-06-12 15:34:55 +0000"
     },
@@ -14,7 +14,7 @@
       "requestToken": "214720a33149472e9691f5f9453ab988",
       "id": 2157113,
       "name": "Test2Project",
-      "token": "e660acc1583745e793ac4435bbccbb6674f9b5bbcee94be09b183e5c34aac037",
+      "token": "e660acc1583745e793ac4435bbccbb9974f9b5bbcee94be09b183e5c34aac039",
       "creationDate": "2020-04-02 15:27:04 +0000",
       "lastUpdatedDate": "2020-12-17 21:48:32 +0000"
     },
@@ -22,7 +22,7 @@
       "pluginName": "bolt-4-op-github-scanner",
       "id": 1885347,
       "name": "Test3Project",
-      "token": "95a82d2395bc4da98083bb9ab84cff349ed92e990ec745439ef37818b8ded1b3",
+      "token": "95a82d2395bc4da98083bb9ab84cff349ed92e660ec745439ef37818b8ded1a7",
       "creationDate": "2020-02-03 09:49:55 +0000",
       "lastUpdatedDate": "2020-04-07 10:06:00 +0000"
     },
@@ -32,7 +32,7 @@
       "requestToken": "bf5743fe66ee4b41b967e53f03a41a66",
       "id": 1894168,
       "name": "Test4Project",
-      "token": "612123ad31d34ff5b47ab2fe9eabda3f3afe3a76d0534c2a9fa8d30db9e563bb",
+      "token": "612123ad31d34ff5b47ab2fe9eadba3f3afe3a76d0534c2a9fa8d30db9e563ff",
       "creationDate": "2020-02-04 16:32:09 +0000",
       "lastUpdatedDate": "2020-12-15 13:05:27 +0000"
     },
@@ -40,7 +40,7 @@
       "pluginName": "bolt-4-op-github-scanner",
       "id": 1539743,
       "name": "Test5Project",
-      "token": "75d22af901e84194b5b4137854506895d94da4c616f941ae903c26bb3b74d786",
+      "token": "75d22af901e84194b5b4137854506895d89da4c616f941ae903c26bb3b74d799",
       "creationDate": "2019-10-02 18:55:44 +0000",
       "lastUpdatedDate": "2019-10-02 19:11:13 +0000"
     }

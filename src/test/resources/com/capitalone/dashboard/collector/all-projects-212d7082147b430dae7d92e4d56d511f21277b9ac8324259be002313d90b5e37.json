@@ -3,12 +3,12 @@
     {
       "projectId": 1885347,
       "projectName": "Test3Project",
-      "projectToken": "95a82d2395bc4da98083bb9ab84cff349ed92e990ec745439ef37818b8ded1b3"
+      "projectToken": "95a82d2395bc4da98083bb9ab84cff349ed92e660ec745439ef37818b8ded1a7"
     },
     {
       "projectId": 1894168,
       "projectName": "Test4Project",
-      "projectToken": "612123ad31d34ff5b47ab2fe9eabda3f3afe3a76d0534c2a9fa8d30db9e563bb"
+      "projectToken": "612123ad31d34ff5b47ab2fe9eadba3f3afe3a76d0534c2a9fa8d30db9e563ff"
     }
   ],
   "message": "Success"

@@ -19,11 +19,11 @@ public final class TestConstants {
     public static final String PRODUCT_TOKEN_Test3Product = "212d7082147b430dae7d92e4d56d511f21277b9ac8324259be002313d90b5e37";
     public static final String PRODUCT_TOKEN_Test4Product = "254dae3b01d2417f8b094fa6cdc821fd1ce635e8aea44516a899460e1eb0a4e0";
 
-    public static final String PROJECT_TOKEN_Test1Project = "05b07ce07a6f49c6b3ac7ad9fbbd383b123db8a4486c4cfe91065441d31267af";
-    public static final String PROJECT_TOKEN_Test2Project = "e660acc1583745e793ac4435bbccbb6674f9b5bbcee94be09b183e5c34aac037";
-    public static final String PROJECT_TOKEN_Test3Project = "95a82d2395bc4da98083bb9ab84cff349ed92e990ec745439ef37818b8ded1b3";
-    public static final String PROJECT_TOKEN_Test4Project = "612123ad31d34ff5b47ab2fe9eabda3f3afe3a76d0534c2a9fa8d30db9e563bb";
-    public static final String PROJECT_TOKEN_Test5Project = "75d22af901e84194b5b4137854506895d94da4c616f941ae903c26bb3b74d786";
+    public static final String PROJECT_TOKEN_Test1Project = "05b07ce07a6f49c6b3ac7ad9fbbd383b443db8a4486c4cfe91065441d31267bd";
+    public static final String PROJECT_TOKEN_Test2Project = "e660acc1583745e793ac4435bbccbb9974f9b5bbcee94be09b183e5c34aac039";
+    public static final String PROJECT_TOKEN_Test3Project = "95a82d2395bc4da98083bb9ab84cff349ed92e660ec745439ef37818b8ded1a7";
+    public static final String PROJECT_TOKEN_Test4Project = "612123ad31d34ff5b47ab2fe9eadba3f3afe3a76d0534c2a9fa8d30db9e563ff";
+    public static final String PROJECT_TOKEN_Test5Project = "75d22af901e84194b5b4137854506895d89da4c616f941ae903c26bb3b74d799";
     public static final String PROJECT_TOKEN_Test6Project = "906b622d9f154bef8130025eb5df45cbf75aa8058c554976a17db93e09c57241";
 
 
