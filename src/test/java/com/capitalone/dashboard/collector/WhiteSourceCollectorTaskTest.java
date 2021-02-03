@@ -171,6 +171,9 @@ public class WhiteSourceCollectorTaskTest {
         for(String token : TestConstants.PROJECT_TOKENS) {
             TestUtils.addResponse(restOperationsSupplier,TestConstants.PROJECT_VITALS_REQUEST_FOR_TOKEN(token), response, HttpStatus.ACCEPTED);
         }
+        for(String token : TestConstants.PROJECT_VITALS_TOKENS) {
+            TestUtils.addResponse(restOperationsSupplier,TestConstants.PROJECT_VITALS_REQUEST_FOR_TOKEN(token), response, HttpStatus.ACCEPTED);
+        }
     }
 
     @Test
