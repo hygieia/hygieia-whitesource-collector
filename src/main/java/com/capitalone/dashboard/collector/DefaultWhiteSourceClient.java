@@ -592,7 +592,7 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
         String token = (String) projectVital.get("token");
         String lastUpdatedDate = (String) projectVital.get("lastUpdatedDate");
         LibraryPolicyResult libraryPolicyResult = new LibraryPolicyResult();
-        long timestamp = DateTimeUtils.timeFromStringToMillis(lastUpdatedDate, DEFAULT_WHITESOURCE_TIMEZONE, yyyy_MM_dd_HH_mm_ss);
+        long timestamp = DateTimeUtils.timeFromStringToMillis(lastUpdatedDate, DEFAULT_WHITESOURCE_TIMEZONE, yyyy_MM_dd_HH_mm_ss_z);
         libraryPolicyResult.setEvaluationTimestamp(timestamp);
         CollectorItem collectorItem = collectorItemRepository.findByOrgNameAndProjectNameAndProjectToken(orgName, name, token);
         LOG.info("WhiteSourceRequest collecting  analysis for orgName= " + orgName + " name : " + name + " token : " + token + " timestamp : " + timestamp);
