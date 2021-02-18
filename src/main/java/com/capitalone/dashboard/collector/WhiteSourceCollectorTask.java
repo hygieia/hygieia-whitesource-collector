@@ -366,7 +366,7 @@ public class WhiteSourceCollectorTask extends CollectorTask<WhiteSourceCollector
         startTime = System.currentTimeMillis();
         saveLibraryReferenceData(cumulativeDataRefresh.getLibraryReferenceMap());
 
-        LOG.info("WhitesourceCollectorTask: Saved refernece data. Total Libraries : " + cumulativeDataRefresh.getLibraryReferenceMap().size() + ". Time taken =" + (System.currentTimeMillis() - startTime));
+        LOG.info("WhitesourceCollectorTask: Saved reference data. Total Libraries : " + cumulativeDataRefresh.getLibraryReferenceMap().size() + ". Time taken =" + (System.currentTimeMillis() - startTime));
         return count;
     }
 
