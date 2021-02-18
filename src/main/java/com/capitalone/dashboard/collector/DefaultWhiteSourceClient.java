@@ -526,7 +526,7 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
             ResponseEntity<String> response = restClient.makeRestCallPost(getApiBaseUrl(serverSettings.getInstanceUrl()), new HttpHeaders(), requestJSON);
             if ((response == null) || (response.toString().isEmpty())) return new JSONObject();
             return (JSONObject) parser.parse(response.getBody());
-        } catch (Exception e) {
+        } catch (ParseException e) {
             LOG.error("Exception occurred while parsing json object", e);
         }
         return new JSONObject();
