@@ -138,6 +138,8 @@ public class WhiteSourceCollectorTask extends CollectorTask<WhiteSourceCollector
         });
         long end = System.currentTimeMillis();
         long elapsedTime = (end - start) / 1000;
+        collector.setLastExecutionRecordCount(collectorMetric.getUpdated());
+        collector.setLastExecutedSeconds(elapsedTime);
 
         LOG.info(String.format("WhitesourceCollectorTask:collector stop, totalProcessSeconds=%d,  totalFetchedProjects=%d, totalNewProjects=%d, totalUpdatedProjects=%d, totalUpdatedInstanceData=%d ",
                 elapsedTime, collectorMetric.getFetched(), collectorMetric.getAdded(), collectorMetric.getUpdated(), collectorMetric.getInstanceCount()));
@@ -364,7 +366,7 @@ public class WhiteSourceCollectorTask extends CollectorTask<WhiteSourceCollector
         startTime = System.currentTimeMillis();
         saveLibraryReferenceData(cumulativeDataRefresh.getLibraryReferenceMap());
 
-        LOG.info("WhitesourceCollectorTask: Saved refernece data. Total Libraries : " + cumulativeDataRefresh.getLibraryReferenceMap().size() + ". Time taken =" + (System.currentTimeMillis() - startTime));
+        LOG.info("WhitesourceCollectorTask: Saved reference data. Total Libraries : " + cumulativeDataRefresh.getLibraryReferenceMap().size() + ". Time taken =" + (System.currentTimeMillis() - startTime));
         return count;
     }
 
