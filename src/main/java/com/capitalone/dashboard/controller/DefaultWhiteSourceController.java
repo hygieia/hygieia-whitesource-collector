@@ -49,15 +49,15 @@ public class DefaultWhiteSourceController {
     @RequestMapping(value = "/refresh", method = POST,
             consumes = "application/json", produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<String> refresh(@Valid @RequestBody WhiteSourceRefreshRequest request) throws HygieiaException {
-        if (Objects.isNull(request) ||Objects.isNull(request.getOrgName()) ||Objects.isNull(request.getProductName()) ||Objects.isNull(request.getProjectToken()) ){
+        if (Objects.isNull(request) ||Objects.isNull(request.getOrgName()) ||Objects.isNull(request.getProjectToken()) ){
             return ResponseEntity
                     .status(HttpStatus.BAD_REQUEST)
                     .body("Required fields are null");
         }
-        defaultWhiteSourceClient.refresh(request.getOrgName(),request.getProductName(),request.getProjectToken());
+        defaultWhiteSourceClient.refresh(request.getOrgName(),request.getProjectToken());
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body("Updated Whitesource component:: OrgName="+request.getOrgName()+", productName="+request.getProductName()+", projectToken="+request.getProjectToken());
+                .body("Updated Whitesource component:: OrgName="+request.getOrgName()+ ", projectToken="+request.getProjectToken());
     }
 
 }

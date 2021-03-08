@@ -405,13 +405,12 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
      * Refresh project on demand using org level project vitals
      *
      * @param orgName Whitesource Org
-     * @param productName Whitesource Product Name
      * @param projectToken Whitesource Project Token
      *
      */
     @Override
-    public void refresh (String orgName, String productName, String projectToken){
-        List<WhiteSourceComponent> components = getWhiteSourceComponents(orgName, productName, projectToken);
+    public void refresh (String orgName, String projectToken){
+        List<WhiteSourceComponent> components = getWhiteSourceComponents(orgName, projectToken);
         components.forEach(component -> {
             LibraryPolicyResult libraryPolicyResult = getProjectAlerts(component, null, whiteSourceSettings.getWhiteSourceServerSettings().get(0));
             if (Objects.nonNull(libraryPolicyResult)) {
@@ -617,9 +616,9 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
         return " Successfully updated library policy result " + libraryPolicyResult.getId();
     }
 
-    public List<WhiteSourceComponent> getWhiteSourceComponents(String orgName, String productName, String projectToken) {
+    public List<WhiteSourceComponent> getWhiteSourceComponents(String orgName, String projectToken) {
         Collector collector = collectorRepository.findByName(Constants.WHITE_SOURCE);
-        Map<String, Object> options = getOptions(orgName, productName, projectToken);
+        Map<String, Object> options = getOptions(orgName, projectToken);
         Iterable<CollectorItem> collectorItems = collectorItemRepository.findAllByOptionMapAndCollectorIdsIn(options, Stream.of(collector.getId()).collect(Collectors.toList()));
         List<WhiteSourceComponent> whiteSourceComponents = new ArrayList<>();
         for (CollectorItem collectorItem : collectorItems) {
@@ -642,10 +641,9 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
         return whiteSourceComponent;
     }
 
-    private static Map<String, Object> getOptions(String orgName, String productName, String projectToken) {
+    private static Map<String, Object> getOptions(String orgName, String projectToken) {
         Map<String, Object> options = new HashMap<>();
         options.put(Constants.ORG_NAME, orgName);
-        options.put(Constants.PRODUCT_NAME, productName);
         options.put(Constants.PROJECT_TOKEN, projectToken);
         return options;
     }
