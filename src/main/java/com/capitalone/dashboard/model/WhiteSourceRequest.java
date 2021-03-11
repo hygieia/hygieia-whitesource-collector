@@ -17,6 +17,8 @@ public class WhiteSourceRequest {
 
     private String buildUrl;
 
+    private String clientReference;
+
 
     public String getAlerts() {
         return alerts;
@@ -48,6 +50,14 @@ public class WhiteSourceRequest {
 
     public void setOrgName(String orgName) {
         this.orgName = orgName;
+    }
+
+    public String getClientReference() {
+        return clientReference;
+    }
+
+    public void setClientReference(String clientReference) {
+        this.clientReference = clientReference;
     }
 }
 

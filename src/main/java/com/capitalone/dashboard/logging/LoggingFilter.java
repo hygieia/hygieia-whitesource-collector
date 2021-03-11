@@ -1,19 +1,17 @@
 package com.capitalone.dashboard.logging;
 
 
-import com.capitalone.dashboard.misc.HygieiaException;
 import com.capitalone.dashboard.model.RequestLog;
 import com.capitalone.dashboard.repository.RequestLogRepository;
 import com.capitalone.dashboard.settings.WhiteSourceSettings;
+import com.capitalone.dashboard.util.CommonConstants;
 import com.mongodb.util.JSON;
+import org.apache.commons.collections.MapUtils;
 import org.apache.commons.io.output.TeeOutputStream;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 import javax.activation.MimeType;
@@ -43,12 +41,12 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.stream.Stream;
+import java.util.stream.Collectors;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -79,83 +77,92 @@ public class LoggingFilter implements Filter {
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
         HttpServletResponse httpServletResponse = (HttpServletResponse) response;
 
-        if (Stream.of(HttpMethod.PUT, HttpMethod.POST, HttpMethod.DELETE).anyMatch(httpMethod -> httpServletRequest.getMethod().equals(httpMethod.toString()))) {
-            Map<String, String> requestMap = this.getTypesafeRequestMap(httpServletRequest);
-            BufferedRequestWrapper bufferedRequest = new BufferedRequestWrapper(httpServletRequest);
-            BufferedResponseWrapper bufferedResponse = new BufferedResponseWrapper(httpServletResponse);
-            String apiUser = bufferedRequest.getHeader(API_USER_KEY);
-            String endPointURI = httpServletRequest.getRequestURI();
+        Map<String, String> requestMap = this.getTypesafeRequestMap(httpServletRequest);
+        BufferedRequestWrapper bufferedRequest = new BufferedRequestWrapper(httpServletRequest);
+        BufferedResponseWrapper bufferedResponse = new BufferedResponseWrapper(httpServletResponse);
+        String apiUser = bufferedRequest.getHeader(API_USER_KEY);
+        apiUser = (StringUtils.isEmpty(apiUser) ? UNKNOWN_USER : apiUser);
+        //retrieve header value from request and set it to response
+        String correlation_id = httpServletRequest.getHeader(CommonConstants.HEADER_CLIENT_CORRELATION_ID);
+        httpServletResponse.setHeader(CommonConstants.HEADER_CLIENT_CORRELATION_ID, correlation_id);
 
-            if (settings.checkIgnoreEndPoint(endPointURI) || settings.checkIgnoreApiUser(apiUser)) {
-                chain.doFilter(bufferedRequest, bufferedResponse);
-                return;
-            }
+        String parameters = MapUtils.isEmpty(request.getParameterMap())? "NONE" :
+                Collections.list(request.getParameterNames()).stream()
+                        .map(p -> p + ":" + Arrays.asList( request.getParameterValues(p)) )
+                        .collect(Collectors.joining(","));
 
-            long startTime = System.currentTimeMillis();
-            RequestLog requestLog = new RequestLog();
-            requestLog.setClient(httpServletRequest.getRemoteAddr());
-            requestLog.setEndpoint(httpServletRequest.getRequestURI());
-            requestLog.setMethod(httpServletRequest.getMethod());
-            requestLog.setParameter(requestMap.toString());
-            requestLog.setApiUser(StringUtils.isNotEmpty(apiUser) ? apiUser : UNKNOWN_USER);
-            requestLog.setRequestSize(httpServletRequest.getContentLengthLong());
-            requestLog.setRequestContentType(httpServletRequest.getContentType());
-            try {
+        long startTime = System.currentTimeMillis();
+        RequestLog requestLog = new RequestLog();
+        requestLog.setClient(httpServletRequest.getRemoteAddr());
+        requestLog.setEndpoint(httpServletRequest.getRequestURI());
+        requestLog.setMethod(httpServletRequest.getMethod());
+        requestLog.setParameter(requestMap.toString());
+        requestLog.setApiUser(apiUser);
+        if(StringUtils.isNotEmpty(correlation_id)) {
+            requestLog.setClientReference(correlation_id);
+        }
+
+        if(settings.checkIgnoreEndPoint(httpServletRequest.getRequestURI()) || settings.checkIgnoreApiUser(requestLog.getApiUser())) {
             chain.doFilter(bufferedRequest, bufferedResponse);
-            requestLog.setResponseContentType(httpServletResponse.getContentType());
 
-                boolean skipBody = settings.checkIgnoreBodyEndPoint(endPointURI);
-                if ((httpServletRequest.getContentType() != null) && (new MimeType(httpServletRequest.getContentType()).match(new MimeType(APPLICATION_JSON_VALUE)))) {
-                    requestLog.setRequestBody(JSON.parse(bufferedRequest.getRequestBody()));
-                }
-                if ((bufferedResponse.getContentType() != null) && (new MimeType(bufferedResponse.getContentType()).match(new MimeType(APPLICATION_JSON_VALUE)))) {
-                    requestLog.setResponseBody( skipBody ? StringUtils.EMPTY : bufferedResponse.getContent());
-                }
-                requestLog.setResponseSize(bufferedResponse.getContent().length());
-                requestLog.setResponseCode(bufferedResponse.getStatus());
-            } catch (MimeTypeParseException e) {
-                LOGGER.error("Invalid MIME Type detected. Request MIME type=" + httpServletRequest.getContentType() + ". Response MIME Type=" + bufferedResponse.getContentType());
-            }catch (Exception e){
-                LOGGER.error("Internal Error =" + e.getMessage());
-                requestLog.setResponseBody(ExceptionUtils.getMessage(e));
-                requestLog.setResponseSize(bufferedResponse.getContent().length());
-                if(e instanceof HygieiaException){
-                    requestLog.setResponseCode(HttpStatus.BAD_REQUEST.value());
-                }else{
-                    requestLog.setResponseCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
-                }
-                throw e;
+            int response_code = bufferedResponse.getStatus();
+            boolean success = (response_code >=200 && response_code <=399) ;
+
+            LOGGER.info("correlation_id=" + correlation_id
+                    + ", requester=" + apiUser
+                    + ", duration=" + (System.currentTimeMillis() - startTime)
+                    + ", application=hygieia, service=whitesource-collector"
+                    + ", uri=" + bufferedRequest.getRequestURI()
+                    + ", request_method=" + bufferedRequest.getMethod()
+                    + ", response_status=" + (success ? "success" : "failed")
+                    + ", response_code=" + (bufferedResponse == null ? 0 : bufferedResponse.getStatus())
+                    + ", client_ip=" + httpServletRequest.getRemoteAddr()
+                    + (StringUtils.equalsIgnoreCase(httpServletRequest.getMethod(), "GET") ? ", request_params="+parameters :  StringUtils.EMPTY ));
+            return;
+        }
+
+        requestLog.setRequestSize(httpServletRequest.getContentLengthLong());
+        requestLog.setRequestContentType(httpServletRequest.getContentType());
+
+        chain.doFilter(bufferedRequest, bufferedResponse);
+        requestLog.setResponseContentType(httpServletResponse.getContentType());
+        try {
+
+            if ((httpServletRequest.getContentType() != null) && (new MimeType(httpServletRequest.getContentType()).match(new MimeType(APPLICATION_JSON_VALUE)))) {
+                requestLog.setRequestBody(JSON.parse(bufferedRequest.getRequestBody()));
             }
-            finally {
-                long endTime = System.currentTimeMillis();
-                requestLog.setResponseTime(endTime - startTime);
-                requestLog.setTimestamp(endTime);
-                try {
-                    requestLogRepository.save(requestLog);
-                } catch (RuntimeException re) {
-                    LOGGER.error("Encountered exception while saving request log - " + requestLog.toString(), re);
-                }
+
+            if ((bufferedResponse.getContentType() != null) && (new MimeType(bufferedResponse.getContentType()).match(new MimeType(APPLICATION_JSON_VALUE)))) {
+                requestLog.setResponseBody(JSON.parse(bufferedResponse.getContent()));
             }
-        } else {
-            if (settings.isCorsEnabled()) {
+        } catch (MimeTypeParseException e) {
+            LOGGER.error("Invalid MIME Type detected. Request MIME type=" + httpServletRequest.getContentType() + ". Response MIME Type=" + bufferedResponse.getContentType());
+        } finally {
 
-                String clientOrigin = httpServletRequest.getHeader("Origin");
+            int response_code = bufferedResponse.getStatus();
+            boolean success = (response_code >=200 && response_code <=399) ;
 
-                String corsWhitelist = settings.getCorsWhitelist();
-                if (!StringUtils.isEmpty(corsWhitelist)) {
-                    List<String> incomingURLs = Arrays.asList(corsWhitelist.trim().split(","));
+            LOGGER.info("correlation_id=" + correlation_id
+                    + ", requester=" + apiUser
+                    + ", duration=" + (System.currentTimeMillis() - startTime)
+                    + ", application=hygieia, service=whitesource-collector"
+                    + ", uri=" + bufferedRequest.getRequestURI()
+                    + ", request_method=" + bufferedRequest.getMethod()
+                    + ", response_status=" + (success ? "success" : "failed")
+                    + ", response_code=" + (bufferedResponse == null ? 0 : bufferedResponse.getStatus())
+                    + ", client_ip=" + httpServletRequest.getRemoteAddr()
+                    + (StringUtils.equalsIgnoreCase(httpServletRequest.getMethod(), "GET") ? ", request_params="+parameters :  StringUtils.EMPTY ));
+        }
+        requestLog.setResponseSize(bufferedResponse.getContent().length());
 
-                    if (incomingURLs.contains(clientOrigin)) {
-                        //adds headers to response to allow CORS
-                        httpServletResponse.addHeader("Access-Control-Allow-Origin", clientOrigin);
-                        httpServletResponse.addHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
-                        httpServletResponse.addHeader("Access-Control-Allow-Headers", "Content-Type");
-                        httpServletResponse.addHeader("Access-Control-Max-Age", "1");
-                    }
-                }
-
-            }
-            chain.doFilter(httpServletRequest, httpServletResponse);
+        requestLog.setResponseCode(bufferedResponse.getStatus());
+        long endTime = System.currentTimeMillis();
+        requestLog.setResponseTime(endTime - startTime);
+        requestLog.setTimestamp(endTime);
+        try {
+            requestLogRepository.save(requestLog);
+        } catch (RuntimeException re) {
+            LOGGER.error("Encountered exception while saving request log - " + requestLog.toString(), re);
         }
     }
 
