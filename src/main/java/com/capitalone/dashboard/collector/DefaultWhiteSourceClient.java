@@ -591,8 +591,9 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
         JSONObject projectVital = (JSONObject) decodeJsonPayload(whiteSourceRequest.getProjectVitals());
         JSONArray alerts = (JSONArray) decodeJsonPayload(whiteSourceRequest.getAlerts());
         String orgName = whiteSourceRequest.getOrgName();
+        String clientReference = whiteSourceRequest.getClientReference();
         if (projectVital == null) {
-            throw new HygieiaException("WhiteSource request : Project Vital is null for project", HygieiaException.BAD_DATA);
+            throw new HygieiaException("WhiteSource request : Project Vital is null for project with correlation_id="+clientReference, HygieiaException.BAD_DATA);
         }
         String name = (String) projectVital.get("name");
         String token = (String) projectVital.get("token");
@@ -601,15 +602,15 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
         long timestamp = DateTimeUtils.timeFromStringToMillis(lastUpdatedDate, DEFAULT_WHITESOURCE_TIMEZONE, yyyy_MM_dd_HH_mm_ss_z);
         libraryPolicyResult.setEvaluationTimestamp(timestamp);
         CollectorItem collectorItem = collectorItemRepository.findByOrgNameAndProjectNameAndProjectToken(orgName, name, token);
-        LOG.info("WhiteSourceRequest collecting  analysis for orgName= " + orgName + " name : " + name + " token : " + token + " timestamp : " + timestamp);
+        LOG.info("WhiteSourceRequest collecting  analysis for orgName= " + orgName + " name : " + name + " token : " + token + " timestamp : " + timestamp + "correlation_id :"+clientReference);
         if (collectorItem != null) {
             LibraryPolicyResult lp = getLibraryPolicyData(collectorItem, libraryPolicyResult);
             if (lp != null) {
-                LOG.info("Record already exist in LibraryPolicy " + lp.getId());
-                return "Record already exist in LibraryPolicy  " + lp.getId();
+                LOG.info("Record already exist in LibraryPolicy " + lp.getId() +"for correlation_id="+clientReference);
+                return "Record already exist in LibraryPolicy  " + lp.getId() +"correlation_id="+clientReference;
             }
         } else {
-            throw new HygieiaException("WhiteSource request : Invalid Whitesource project", HygieiaException.BAD_DATA);
+            throw new HygieiaException("WhiteSource request : Invalid Whitesource project with correlation_id="+clientReference, HygieiaException.BAD_DATA);
         }
         transformAlerts(libraryPolicyResult, alerts);
         libraryPolicyResult.setCollectorItemId(collectorItem.getId());
@@ -622,8 +623,8 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
             collectorItem.setEnabled(true);
             collectorItemRepository.save(collectorItem);
         }
-        LOG.info("Successfully updated library policy result  " + libraryPolicyResult.getId());
-        return " Successfully updated library policy result " + libraryPolicyResult.getId();
+        LOG.info("Successfully updated library policy result  " + libraryPolicyResult.getId() +" for correlation_id="+clientReference);
+        return " Successfully updated library policy result " + libraryPolicyResult.getId() + " for correlation_id="+clientReference;
     }
 
     private void associateBuildToLibraryPolicy(String buildUrl, String clientReference, LibraryPolicyResult libraryPolicyResult){
