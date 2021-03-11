@@ -2,6 +2,8 @@ package com.capitalone.dashboard.collector;
 
 import com.capitalone.dashboard.client.RestClient;
 import com.capitalone.dashboard.misc.HygieiaException;
+import com.capitalone.dashboard.model.Build;
+import com.capitalone.dashboard.model.BuildStatus;
 import com.capitalone.dashboard.model.Collector;
 import com.capitalone.dashboard.model.CollectorItem;
 import com.capitalone.dashboard.model.LibraryPolicyResult;
@@ -15,6 +17,7 @@ import com.capitalone.dashboard.model.WhiteSourceProduct;
 import com.capitalone.dashboard.model.WhiteSourceProjectVital;
 import com.capitalone.dashboard.model.WhiteSourceRequest;
 import com.capitalone.dashboard.model.WhitesourceOrg;
+import com.capitalone.dashboard.repository.BuildRepository;
 import com.capitalone.dashboard.repository.CollectorItemRepository;
 import com.capitalone.dashboard.repository.CollectorRepository;
 import com.capitalone.dashboard.repository.LibraryPolicyResultsRepository;
@@ -25,6 +28,7 @@ import com.capitalone.dashboard.utils.DateTimeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bson.types.ObjectId;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -60,17 +64,20 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
     private final CollectorItemRepository collectorItemRepository;
     private final LibraryPolicyResultsRepository libraryPolicyResultsRepository;
     private final CollectorRepository collectorRepository;
+    private final BuildRepository buildRepository;
 
 
     @Autowired
     public DefaultWhiteSourceClient(RestClient restClient, WhiteSourceSettings settings, CollectorItemRepository collectorItemRepository,
                                     LibraryPolicyResultsRepository libraryPolicyResultsRepository,
-                                    CollectorRepository collectorRepository) {
+                                    CollectorRepository collectorRepository,
+                                    BuildRepository buildRepository) {
         this.restClient = restClient;
         this.whiteSourceSettings = settings;
         this.collectorItemRepository = collectorItemRepository;
         this.libraryPolicyResultsRepository = libraryPolicyResultsRepository;
         this.collectorRepository = collectorRepository;
+        this.buildRepository = buildRepository;
     }
 
 
@@ -607,6 +614,9 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
         transformAlerts(libraryPolicyResult, alerts);
         libraryPolicyResult.setCollectorItemId(collectorItem.getId());
         libraryPolicyResult.setBuildUrl(whiteSourceRequest.getBuildUrl());
+        //associate build to LibraryPolicyResult
+        associateBuildToLibraryPolicy(whiteSourceRequest.getBuildUrl(), whiteSourceRequest.getClientReference(), libraryPolicyResult);
+        libraryPolicyResult.setClientReference(whiteSourceRequest.getClientReference());
         libraryPolicyResult = libraryPolicyResultsRepository.save(libraryPolicyResult);
         if (!collectorItem.isEnabled()) {
             collectorItem.setEnabled(true);
@@ -615,6 +625,23 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
         LOG.info("Successfully updated library policy result  " + libraryPolicyResult.getId());
         return " Successfully updated library policy result " + libraryPolicyResult.getId();
     }
+
+    private void associateBuildToLibraryPolicy(String buildUrl, String clientReference, LibraryPolicyResult libraryPolicyResult){
+      Build build = buildRepository.findByBuildUrl(buildUrl);
+        if(Objects.nonNull(build)){
+            build.setClientReference(clientReference);
+            libraryPolicyResult.setBuildId(build.getId());
+            buildRepository.save(build);
+        }else{
+            Build baseBuild = new Build();
+            baseBuild.setBuildUrl(buildUrl);
+            baseBuild.setBuildStatus(BuildStatus.InProgress);
+            baseBuild.setClientReference(clientReference);
+            baseBuild = buildRepository.save(baseBuild);
+            libraryPolicyResult.setBuildId(baseBuild.getId());
+        }
+    }
+
 
     public List<WhiteSourceComponent> getWhiteSourceComponents(String orgName, String projectToken) {
         Collector collector = collectorRepository.findByName(Constants.WHITE_SOURCE);
