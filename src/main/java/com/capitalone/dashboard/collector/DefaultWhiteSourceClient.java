@@ -592,7 +592,7 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
         JSONArray alerts = (JSONArray) decodeJsonPayload(whiteSourceRequest.getAlerts());
         String orgName = whiteSourceRequest.getOrgName();
         if (projectVital == null) {
-            throw new HygieiaException("WhiteSource request : Project Vital is null for project", HygieiaException.BAD_DATA);
+            throw new HygieiaException("WhiteSource request : Project Vital is null for project with correlation_id="+whiteSourceRequest.getClientReference(), HygieiaException.BAD_DATA);
         }
         String name = (String) projectVital.get("name");
         String token = (String) projectVital.get("token");
@@ -609,7 +609,7 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
                 return "Record already exist in LibraryPolicy  " + lp.getId();
             }
         } else {
-            throw new HygieiaException("WhiteSource request : Invalid Whitesource project", HygieiaException.BAD_DATA);
+            throw new HygieiaException("WhiteSource request : Invalid Whitesource project with correlation_id="+whiteSourceRequest.getClientReference(), HygieiaException.BAD_DATA);
         }
         transformAlerts(libraryPolicyResult, alerts);
         libraryPolicyResult.setCollectorItemId(collectorItem.getId());
