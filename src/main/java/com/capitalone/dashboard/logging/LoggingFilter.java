@@ -60,6 +60,8 @@ public class LoggingFilter implements Filter {
 
     private static final String UNKNOWN_USER = "unknown";
 
+    private static final String PING = "ping";
+
     @Autowired
     private RequestLogRepository requestLogRepository;
 
@@ -102,6 +104,10 @@ public class LoggingFilter implements Filter {
             requestLog.setClientReference(correlation_id);
         }
 
+        if(StringUtils.containsIgnoreCase(httpServletRequest.getRequestURI(), PING)) {
+            chain.doFilter(bufferedRequest, bufferedResponse);
+            return;
+        }
         if(settings.checkIgnoreEndPoint(httpServletRequest.getRequestURI()) || settings.checkIgnoreApiUser(requestLog.getApiUser())) {
             chain.doFilter(bufferedRequest, bufferedResponse);
 
