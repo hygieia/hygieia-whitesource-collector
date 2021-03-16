@@ -62,6 +62,8 @@ public class LoggingFilter implements Filter {
 
     private static final String PING = "ping";
 
+    private static final String WHITESOURCE = "WhiteSource";
+
     @Autowired
     private RequestLogRepository requestLogRepository;
 
@@ -100,6 +102,7 @@ public class LoggingFilter implements Filter {
         requestLog.setMethod(httpServletRequest.getMethod());
         requestLog.setParameter(requestMap.toString());
         requestLog.setApiUser(apiUser);
+        requestLog.setApplication(WHITESOURCE);
         if(StringUtils.isNotEmpty(correlation_id)) {
             requestLog.setClientReference(correlation_id);
         }
