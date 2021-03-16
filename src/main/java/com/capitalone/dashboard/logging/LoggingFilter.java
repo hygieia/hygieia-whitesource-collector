@@ -119,7 +119,6 @@ public class LoggingFilter implements Filter {
 
             LOGGER.info("correlation_id=" + correlation_id
                     + ", requester=" + apiUser
-                    + ", source=" + WHITESOURCE
                     + ", duration=" + (System.currentTimeMillis() - startTime)
                     + ", application=hygieia, service=whitesource-collector"
                     + ", uri=" + bufferedRequest.getRequestURI()
@@ -154,7 +153,6 @@ public class LoggingFilter implements Filter {
 
             LOGGER.info("correlation_id=" + correlation_id
                     + ", requester=" + apiUser
-                    + ", source=" + WHITESOURCE
                     + ", duration=" + (System.currentTimeMillis() - startTime)
                     + ", application=hygieia, service=whitesource-collector"
                     + ", uri=" + bufferedRequest.getRequestURI()
