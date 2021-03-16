@@ -25,6 +25,7 @@ import com.capitalone.dashboard.settings.WhiteSourceServerSettings;
 import com.capitalone.dashboard.settings.WhiteSourceSettings;
 import com.capitalone.dashboard.utils.Constants;
 import com.capitalone.dashboard.utils.DateTimeUtils;
+import com.mongodb.util.JSON;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -796,4 +797,8 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
         return Constants.NONE;
     }
 
+
+    public static void main(String args[]){
+        JSON.parse("{hello whitesource}");
+    }
 }
