@@ -90,6 +90,11 @@ public class LoggingFilter implements Filter {
         String correlation_id = httpServletRequest.getHeader(CommonConstants.HEADER_CLIENT_CORRELATION_ID);
         httpServletResponse.setHeader(CommonConstants.HEADER_CLIENT_CORRELATION_ID, correlation_id);
 
+        if(settings.checkIgnoreEndPoint(httpServletRequest.getRequestURI()) || settings.checkIgnoreApiUser(apiUser)) {
+            chain.doFilter(bufferedRequest, bufferedResponse);
+            return;
+        }
+
         String parameters = MapUtils.isEmpty(request.getParameterMap())? "NONE" :
                 Collections.list(request.getParameterNames()).stream()
                         .map(p -> p + ":" + Arrays.asList( request.getParameterValues(p)) )
@@ -116,17 +121,18 @@ public class LoggingFilter implements Filter {
 
             int response_code = bufferedResponse.getStatus();
             boolean success = (response_code >=200 && response_code <=399) ;
-
-            LOGGER.info("correlation_id=" + correlation_id
-                    + ", requester=" + apiUser
-                    + ", duration=" + (System.currentTimeMillis() - startTime)
-                    + ", application=hygieia, service=whitesource-collector"
-                    + ", uri=" + bufferedRequest.getRequestURI()
-                    + ", request_method=" + bufferedRequest.getMethod()
-                    + ", response_status=" + (success ? "success" : "failed")
-                    + ", response_code=" + (bufferedResponse == null ? 0 : bufferedResponse.getStatus())
-                    + ", client_ip=" + httpServletRequest.getRemoteAddr()
-                    + (StringUtils.equalsIgnoreCase(httpServletRequest.getMethod(), "GET") ? ", request_params="+parameters :  StringUtils.EMPTY ));
+            if(!StringUtils.containsIgnoreCase(httpServletRequest.getRequestURI(), PING)) {
+                LOGGER.info("correlation_id=" + correlation_id
+                        + ", requester=" + apiUser
+                        + ", duration=" + (System.currentTimeMillis() - startTime)
+                        + ", application=hygieia, service=whitesource-collector"
+                        + ", uri=" + bufferedRequest.getRequestURI()
+                        + ", request_method=" + bufferedRequest.getMethod()
+                        + ", response_status=" + (success ? "success" : "failed")
+                        + ", response_code=" + (bufferedResponse == null ? 0 : bufferedResponse.getStatus())
+                        + ", client_ip=" + httpServletRequest.getRemoteAddr()
+                        + (StringUtils.equalsIgnoreCase(httpServletRequest.getMethod(), "GET") ? ", request_params=" + parameters : StringUtils.EMPTY));
+            }
             return;
         }
 
@@ -150,17 +156,18 @@ public class LoggingFilter implements Filter {
 
             int response_code = bufferedResponse.getStatus();
             boolean success = (response_code >=200 && response_code <=399) ;
-
-            LOGGER.info("correlation_id=" + correlation_id
-                    + ", requester=" + apiUser
-                    + ", duration=" + (System.currentTimeMillis() - startTime)
-                    + ", application=hygieia, service=whitesource-collector"
-                    + ", uri=" + bufferedRequest.getRequestURI()
-                    + ", request_method=" + bufferedRequest.getMethod()
-                    + ", response_status=" + (success ? "success" : "failed")
-                    + ", response_code=" + (bufferedResponse == null ? 0 : bufferedResponse.getStatus())
-                    + ", client_ip=" + httpServletRequest.getRemoteAddr()
-                    + (StringUtils.equalsIgnoreCase(httpServletRequest.getMethod(), "GET") ? ", request_params="+parameters :  StringUtils.EMPTY ));
+            if(!StringUtils.containsIgnoreCase(httpServletRequest.getRequestURI(), PING)) {
+                LOGGER.info("correlation_id=" + correlation_id
+                        + ", requester=" + apiUser
+                        + ", duration=" + (System.currentTimeMillis() - startTime)
+                        + ", application=hygieia, service=whitesource-collector"
+                        + ", uri=" + bufferedRequest.getRequestURI()
+                        + ", request_method=" + bufferedRequest.getMethod()
+                        + ", response_status=" + (success ? "success" : "failed")
+                        + ", response_code=" + (bufferedResponse == null ? 0 : bufferedResponse.getStatus())
+                        + ", client_ip=" + httpServletRequest.getRemoteAddr()
+                        + (StringUtils.equalsIgnoreCase(httpServletRequest.getMethod(), "GET") ? ", request_params=" + parameters : StringUtils.EMPTY));
+            }
         }
         requestLog.setResponseSize(bufferedResponse.getContent().length());
 

@@ -628,18 +628,20 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
     }
 
     private void associateBuildToLibraryPolicy(String buildUrl, String clientReference, LibraryPolicyResult libraryPolicyResult){
-      Build build = buildRepository.findByBuildUrl(buildUrl);
-        if(Objects.nonNull(build)){
-            build.setClientReference(clientReference);
-            libraryPolicyResult.setBuildId(build.getId());
-            buildRepository.save(build);
-        }else{
-            Build baseBuild = new Build();
-            baseBuild.setBuildUrl(buildUrl);
-            baseBuild.setBuildStatus(BuildStatus.InProgress);
-            baseBuild.setClientReference(clientReference);
-            baseBuild = buildRepository.save(baseBuild);
-            libraryPolicyResult.setBuildId(baseBuild.getId());
+        if(Objects.nonNull(buildUrl)){
+            Build build = buildRepository.findByBuildUrl(buildUrl);
+            if(Objects.nonNull(build)){
+                build.setClientReference(clientReference);
+                libraryPolicyResult.setBuildId(build.getId());
+                buildRepository.save(build);
+            }else{
+                Build baseBuild = new Build();
+                baseBuild.setBuildUrl(buildUrl);
+                baseBuild.setBuildStatus(BuildStatus.InProgress);
+                baseBuild.setClientReference(clientReference);
+                baseBuild = buildRepository.save(baseBuild);
+                libraryPolicyResult.setBuildId(baseBuild.getId());
+            }
         }
     }
 
