@@ -628,7 +628,7 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
     }
 
     private void associateBuildToLibraryPolicy(String buildUrl, String clientReference, LibraryPolicyResult libraryPolicyResult){
-        if(Objects.nonNull(buildUrl)){
+        if(Objects.isNull(buildUrl)) return;
             Build build = buildRepository.findByBuildUrl(buildUrl);
             if(Objects.nonNull(build)){
                 build.setClientReference(clientReference);
@@ -642,7 +642,6 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
                 baseBuild = buildRepository.save(baseBuild);
                 libraryPolicyResult.setBuildId(baseBuild.getId());
             }
-        }
     }
 
 
