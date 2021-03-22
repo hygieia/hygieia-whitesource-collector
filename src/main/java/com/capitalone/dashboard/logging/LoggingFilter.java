@@ -90,7 +90,7 @@ public class LoggingFilter implements Filter {
         String correlation_id = httpServletRequest.getHeader(CommonConstants.HEADER_CLIENT_CORRELATION_ID);
         httpServletResponse.setHeader(CommonConstants.HEADER_CLIENT_CORRELATION_ID, correlation_id);
 
-        if(settings.checkIgnoreEndPoint(httpServletRequest.getRequestURI()) || settings.checkIgnoreApiUser(apiUser)) {
+        if(!StringUtils.containsIgnoreCase(httpServletRequest.getRequestURI(), PING) || settings.checkIgnoreEndPoint(httpServletRequest.getRequestURI()) || settings.checkIgnoreApiUser(apiUser)) {
             chain.doFilter(bufferedRequest, bufferedResponse);
             return;
         }
