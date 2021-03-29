@@ -23,6 +23,7 @@ import com.capitalone.dashboard.repository.CollectorRepository;
 import com.capitalone.dashboard.repository.LibraryPolicyResultsRepository;
 import com.capitalone.dashboard.settings.WhiteSourceServerSettings;
 import com.capitalone.dashboard.settings.WhiteSourceSettings;
+import com.capitalone.dashboard.util.HygieiaUtils;
 import com.capitalone.dashboard.utils.Constants;
 import com.capitalone.dashboard.utils.DateTimeUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -637,6 +638,12 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
             }else{
                 Build baseBuild = new Build();
                 baseBuild.setBuildUrl(buildUrl);
+                String trailedBuildUrl = HygieiaUtils.normalizeJobUrl(buildUrl);
+                Collector collector = collectorRepository.findByName(whiteSourceSettings.getBuildCollectorName());
+                CollectorItem buildCollectorItem = collectorItemRepository.findByJobUrl(collector.getId(), trailedBuildUrl);
+                if(Objects.nonNull(buildCollectorItem)){
+                    baseBuild.setCollectorItemId(buildCollectorItem.getId());
+                }
                 baseBuild.setBuildStatus(BuildStatus.InProgress);
                 baseBuild.setClientReference(clientReference);
                 baseBuild = buildRepository.save(baseBuild);

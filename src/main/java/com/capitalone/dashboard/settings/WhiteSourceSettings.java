@@ -66,6 +66,9 @@ public class WhiteSourceSettings  {
     @Value("${whitesource.optimizeCollection:true}")
     private boolean optimizeCollection;
 
+    @Value("${whitesource.buildCollectorName:Hudson}")
+    private String buildCollectorName;
+
     public long getHistoryTimestamp() {
         return historyTimestamp;
     }
@@ -357,5 +360,13 @@ public class WhiteSourceSettings  {
 
     public void setSearchPatterns(List<String> searchPatterns) {
         this.searchPatterns = searchPatterns;
+    }
+
+    public String getBuildCollectorName() {
+        return buildCollectorName;
+    }
+
+    public void setBuildCollectorName(String buildCollectorName) {
+        this.buildCollectorName = buildCollectorName;
     }
 }
