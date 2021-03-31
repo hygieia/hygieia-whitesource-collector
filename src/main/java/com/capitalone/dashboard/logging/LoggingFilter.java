@@ -1,20 +1,14 @@
 package com.capitalone.dashboard.logging;
 
 
-import com.capitalone.dashboard.misc.HygieiaException;
 import com.capitalone.dashboard.model.RequestLog;
 import com.capitalone.dashboard.repository.RequestLogRepository;
 import com.capitalone.dashboard.settings.WhiteSourceSettings;
 import com.capitalone.dashboard.util.CommonConstants;
-import com.google.gson.Gson;
-import com.mongodb.util.JSON;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.io.output.TeeOutputStream;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.log4j.Logger;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
