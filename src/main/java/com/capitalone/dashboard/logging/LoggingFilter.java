@@ -154,10 +154,7 @@ public class LoggingFilter implements Filter {
         } catch (MimeTypeParseException e) {
             LOGGER.error("Invalid MIME Type detected. Request MIME type=" + httpServletRequest.getContentType() + ". Response MIME Type=" + bufferedResponse.getContentType());
         }
-        catch (Exception e){
-
-            e.printStackTrace();
-        } finally {
+        finally {
 
             int response_code = bufferedResponse.getStatus();
             boolean success = (response_code >=200 && response_code <=399) ;
