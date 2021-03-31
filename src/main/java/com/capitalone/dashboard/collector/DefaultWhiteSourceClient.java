@@ -608,7 +608,7 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
             LibraryPolicyResult lp = getLibraryPolicyData(collectorItem, libraryPolicyResult);
             if (lp != null) {
                 LOG.info("Record already exist in LibraryPolicy " + lp.getId() +"for correlation_id="+clientReference);
-                return "Record already exist in LibraryPolicy  " + lp.getId() +"correlation_id="+clientReference;
+                return "Record already exist in LibraryPolicy  " + lp.getId() +" correlation_id="+clientReference;
             }
         } else {
             throw new HygieiaException("WhiteSource request : Invalid Whitesource project with correlation_id="+clientReference, HygieiaException.BAD_DATA);
