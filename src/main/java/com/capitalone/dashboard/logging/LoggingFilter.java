@@ -149,7 +149,7 @@ public class LoggingFilter implements Filter {
             }
 
             if ((bufferedResponse.getContentType() != null) && (new MimeType(bufferedResponse.getContentType()).match(new MimeType(APPLICATION_JSON_VALUE)))) {
-                requestLog.setResponseBody(new Gson().fromJson(bufferedRequest.getRequestBody(), Object.class));
+                requestLog.setResponseBody(bufferedResponse.getContent());
             }
         } catch (MimeTypeParseException e) {
             LOGGER.error("Invalid MIME Type detected. Request MIME type=" + httpServletRequest.getContentType() + ". Response MIME Type=" + bufferedResponse.getContentType());
