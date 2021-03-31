@@ -5,8 +5,6 @@ import com.capitalone.dashboard.model.RequestLog;
 import com.capitalone.dashboard.repository.RequestLogRepository;
 import com.capitalone.dashboard.settings.WhiteSourceSettings;
 import com.capitalone.dashboard.util.CommonConstants;
-import com.google.gson.Gson;
-import com.mongodb.util.JSON;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.io.output.TeeOutputStream;
 import org.apache.commons.lang3.StringUtils;
@@ -145,13 +143,14 @@ public class LoggingFilter implements Filter {
         try {
 
             if ((httpServletRequest.getContentType() != null) && (new MimeType(httpServletRequest.getContentType()).match(new MimeType(APPLICATION_JSON_VALUE)))) {
-                requestLog.setRequestBody(new Gson().fromJson(bufferedRequest.getRequestBody(), Object.class));
+                requestLog.setRequestBody(bufferedRequest.getRequestBody());
             }
 
             if ((bufferedResponse.getContentType() != null) && (new MimeType(bufferedResponse.getContentType()).match(new MimeType(APPLICATION_JSON_VALUE)))) {
                 requestLog.setResponseBody(bufferedResponse.getContent());
             }
-        } catch (MimeTypeParseException e) {
+        }
+        catch (MimeTypeParseException e) {
             LOGGER.error("Invalid MIME Type detected. Request MIME type=" + httpServletRequest.getContentType() + ". Response MIME Type=" + bufferedResponse.getContentType());
         } finally {
 
