@@ -601,7 +601,6 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
         if (projectVital == null) {
             throw new HygieiaException("WhiteSource request : Project Vital is null for project with correlation_id="+clientReference, HygieiaException.BAD_DATA);
         }
-        String name = (String) projectVital.get("name");
         String token = (String) projectVital.get("token");
         String lastUpdatedDate = (String) projectVital.get("lastUpdatedDate");
         long timestamp = DateTimeUtils.timeFromStringToMillis(lastUpdatedDate, DEFAULT_WHITESOURCE_TIMEZONE, yyyy_MM_dd_HH_mm_ss_z);
