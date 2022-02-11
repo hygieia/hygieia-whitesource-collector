@@ -20,6 +20,7 @@ import com.capitalone.dashboard.model.WhitesourceOrg;
 import com.capitalone.dashboard.repository.BuildRepository;
 import com.capitalone.dashboard.repository.CollectorItemRepository;
 import com.capitalone.dashboard.repository.CollectorRepository;
+import com.capitalone.dashboard.repository.WhiteSourceComponentRepository;
 import com.capitalone.dashboard.repository.LibraryPolicyResultsRepository;
 import com.capitalone.dashboard.settings.WhiteSourceServerSettings;
 import com.capitalone.dashboard.settings.WhiteSourceSettings;
@@ -38,7 +39,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-import org.springframework.util.CollectionUtils;
+import org.apache.commons.collections4.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.Base64;
@@ -66,16 +67,20 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
     private final LibraryPolicyResultsRepository libraryPolicyResultsRepository;
     private final CollectorRepository collectorRepository;
     private final BuildRepository buildRepository;
+    private final WhiteSourceComponentRepository whiteSourceComponentRepository;
 
 
     @Autowired
-    public DefaultWhiteSourceClient(RestClient restClient, WhiteSourceSettings settings, CollectorItemRepository collectorItemRepository,
+    public DefaultWhiteSourceClient(RestClient restClient, WhiteSourceSettings settings,
+                                    WhiteSourceComponentRepository whiteSourceComponentRepository,
+                                    CollectorItemRepository collectorItemRepository,
                                     LibraryPolicyResultsRepository libraryPolicyResultsRepository,
                                     CollectorRepository collectorRepository,
                                     BuildRepository buildRepository) {
         this.restClient = restClient;
         this.whiteSourceSettings = settings;
         this.collectorItemRepository = collectorItemRepository;
+        this.whiteSourceComponentRepository = whiteSourceComponentRepository;
         this.libraryPolicyResultsRepository = libraryPolicyResultsRepository;
         this.collectorRepository = collectorRepository;
         this.buildRepository = buildRepository;
@@ -505,7 +510,7 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
         setAllLibraryLicensesAlerts(libraryPolicyResult, componentName, String.valueOf(DateTimeUtils.getDays(creationDateTimeStamp)), getLicenseThreatLevel(alertType, description), description);
         // add threat for Security vulns
         JSONObject vulns = (JSONObject) Objects.requireNonNull(alert).get(Constants.VULNERABILITY);
-        if (!CollectionUtils.isEmpty(vulns)) {
+        if (Objects.nonNull(vulns) && !vulns.isEmpty()) {
             setSecurityVulns(vulns, libraryPolicyResult, componentName, String.valueOf(DateTimeUtils.getDays(creationDateTimeStamp)), description);
         }
         libraryPolicyResult.setTimestamp(System.currentTimeMillis());
@@ -596,36 +601,40 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
         if (projectVital == null) {
             throw new HygieiaException("WhiteSource request : Project Vital is null for project with correlation_id="+clientReference, HygieiaException.BAD_DATA);
         }
-        String name = (String) projectVital.get("name");
         String token = (String) projectVital.get("token");
         String lastUpdatedDate = (String) projectVital.get("lastUpdatedDate");
-        LibraryPolicyResult libraryPolicyResult = new LibraryPolicyResult();
         long timestamp = DateTimeUtils.timeFromStringToMillis(lastUpdatedDate, DEFAULT_WHITESOURCE_TIMEZONE, yyyy_MM_dd_HH_mm_ss_z);
-        libraryPolicyResult.setEvaluationTimestamp(timestamp);
-        CollectorItem collectorItem = collectorItemRepository.findByOrgNameAndProjectNameAndProjectToken(orgName, name, token);
-        LOG.info("WhiteSourceRequest collecting  analysis for orgName= " + orgName + " name : " + name + " token : " + token + " timestamp : " + timestamp + "correlation_id :"+clientReference);
-        if (collectorItem != null) {
+        List<CollectorItem> collectorItems = whiteSourceComponentRepository.findByOrgNameAndProjectToken(orgName, token);
+        if (CollectionUtils.isEmpty(collectorItems)) {
+            throw new HygieiaException("WhiteSource request : Invalid Whitesource project with correlation_id="+clientReference, HygieiaException.BAD_DATA);
+        }
+        String lpIds = "";
+        for (CollectorItem collectorItem: collectorItems) {
+            LOG.info("WhiteSourceRequest collecting  analysis for orgName=" + orgName + " projectToken=" + token + " timestamp=" + timestamp + " correlation_id="+clientReference);
+            if (collectorItem == null) continue;
+            LibraryPolicyResult libraryPolicyResult = new LibraryPolicyResult();
+            libraryPolicyResult.setEvaluationTimestamp(timestamp);
             LibraryPolicyResult lp = getLibraryPolicyData(collectorItem, libraryPolicyResult);
             if (lp != null) {
                 LOG.info("Record already exist in LibraryPolicy " + lp.getId() +"for correlation_id="+clientReference);
-                return "Record already exist in LibraryPolicy  " + lp.getId() +" correlation_id="+clientReference;
+                lpIds = lpIds.equals("") ? lp.getId().toString() : lpIds + "," + lp.getId();
+                continue;
             }
-        } else {
-            throw new HygieiaException("WhiteSource request : Invalid Whitesource project with correlation_id="+clientReference, HygieiaException.BAD_DATA);
+            transformAlerts(libraryPolicyResult, alerts);
+            libraryPolicyResult.setCollectorItemId(collectorItem.getId());
+            libraryPolicyResult.setBuildUrl(whiteSourceRequest.getBuildUrl());
+            //associate build to LibraryPolicyResult
+            associateBuildToLibraryPolicy(whiteSourceRequest.getBuildUrl(), whiteSourceRequest.getClientReference(), libraryPolicyResult);
+            libraryPolicyResult.setClientReference(whiteSourceRequest.getClientReference());
+            libraryPolicyResult = libraryPolicyResultsRepository.save(libraryPolicyResult);
+            if (!collectorItem.isEnabled()) {
+                collectorItem.setEnabled(true);
+                collectorItemRepository.save(collectorItem);
+            }
+            LOG.info("Successfully updated library policy result  " + libraryPolicyResult.getId() +" for correlation_id="+clientReference);
+            lpIds = lpIds.equals("") ? libraryPolicyResult.getId().toString() : lpIds + "," + libraryPolicyResult.getId();
         }
-        transformAlerts(libraryPolicyResult, alerts);
-        libraryPolicyResult.setCollectorItemId(collectorItem.getId());
-        libraryPolicyResult.setBuildUrl(whiteSourceRequest.getBuildUrl());
-        //associate build to LibraryPolicyResult
-        associateBuildToLibraryPolicy(whiteSourceRequest.getBuildUrl(), whiteSourceRequest.getClientReference(), libraryPolicyResult);
-        libraryPolicyResult.setClientReference(whiteSourceRequest.getClientReference());
-        libraryPolicyResult = libraryPolicyResultsRepository.save(libraryPolicyResult);
-        if (!collectorItem.isEnabled()) {
-            collectorItem.setEnabled(true);
-            collectorItemRepository.save(collectorItem);
-        }
-        LOG.info("Successfully updated library policy result  " + libraryPolicyResult.getId() +" for correlation_id="+clientReference);
-        return " Successfully updated library policy result " + libraryPolicyResult.getId() + " for correlation_id="+clientReference;
+        return " Successfully updated library policy result : " + lpIds + " for correlation_id="+clientReference;
     }
 
     private void associateBuildToLibraryPolicy(String buildUrl, String clientReference, LibraryPolicyResult libraryPolicyResult){
