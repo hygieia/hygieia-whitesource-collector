@@ -617,7 +617,7 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
 
         List<String> lpIds = new ArrayList<>();
         for (CollectorItem collectorItem: collectorItems) {
-            LOG.info("WhiteSourceRequest collecting  analysis for orgName=" + orgName + " projectToken=" + token + " timestamp=" + timestamp + " correlation_id="+clientReference);
+            LOG.info("WhiteSourceRequest collecting  analysis for projectToken=" + token + " timestamp=" + timestamp + " correlation_id=" + clientReference);
             if (collectorItem == null) continue;
             LibraryPolicyResult libraryPolicyResult = new LibraryPolicyResult();
             libraryPolicyResult.setEvaluationTimestamp(timestamp);
