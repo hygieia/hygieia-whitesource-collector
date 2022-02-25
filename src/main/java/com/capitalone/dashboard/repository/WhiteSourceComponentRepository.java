@@ -15,4 +15,7 @@ public interface WhiteSourceComponentRepository extends BaseCollectorItemReposit
     @Query("{'options.orgName' : ?0, 'options.projectToken' : ?1}")
     List<CollectorItem> findByOrgNameAndProjectToken(String orgName, String projectToken);
 
+    @Query("{'options.projectToken' : ?0}")
+    List<CollectorItem> findByProjectToken(String projectToken);
+
 }
