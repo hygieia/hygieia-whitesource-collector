@@ -615,7 +615,7 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
         List<String> reportURLs = whiteSourceSettings.getWhiteSourceServerSettings().stream().map(s -> String.format(s.getDeeplink(), projectId)).collect(Collectors.toList());
         String reportUrl = String.join(",", reportURLs);
 
-        String lpIds = "";
+        List<String> lpIds = new ArrayList<>();
         for (CollectorItem collectorItem: collectorItems) {
             LOG.info("WhiteSourceRequest collecting  analysis for orgName=" + orgName + " projectToken=" + token + " timestamp=" + timestamp + " correlation_id="+clientReference);
             if (collectorItem == null) continue;
@@ -623,8 +623,8 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
             libraryPolicyResult.setEvaluationTimestamp(timestamp);
             LibraryPolicyResult lp = getLibraryPolicyData(collectorItem, libraryPolicyResult);
             if (lp != null) {
-                LOG.info("Record already exist in LibraryPolicy " + lp.getId() +"for correlation_id="+clientReference);
-                lpIds = lpIds.equals("") ? lp.getId().toString() : lpIds + "," + lp.getId();
+                LOG.info("process(): Record already exist in LibraryPolicy " + lp.getId() + "for correlation_id=" + clientReference);
+                lpIds.add(lp.getId().toString());
                 continue;
             }
             transformAlerts(libraryPolicyResult, alerts);
@@ -639,11 +639,12 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
                 collectorItem.setEnabled(true);
                 collectorItemRepository.save(collectorItem);
             }
-            LOG.info("Successfully updated library policy result  " + libraryPolicyResult.getId() +" for correlation_id="+clientReference);
-            lpIds = lpIds.equals("") ? libraryPolicyResult.getId().toString() : lpIds + "," + libraryPolicyResult.getId();
+            LOG.info(String.format("process(): successfully updated library_policy_result=%s  for correlation_id=%s ", libraryPolicyResult.getId(), clientReference));
+            lpIds.add(libraryPolicyResult.getId().toString());
         }
-        LOG.info(String.format("process(): completed updating library_policy_results=%s for correlation_id=%s duration=%d", lpIds, clientReference, (System.currentTimeMillis() - startTime) / 1000));
-        return " Successfully updated library policy result : " + lpIds + " for correlation_id="+clientReference;
+        String changedIds = String.join(",", lpIds);
+        LOG.info(String.format("process(): completed updating library_policy_results=[%s] for correlation_id=%s duration=%d", changedIds, clientReference, (System.currentTimeMillis() - startTime) / 1000));
+        return String.format("Successfully updated library policy result : [%s] for correlation_id=%s ", changedIds, clientReference);
     }
 
     private void associateBuildToLibraryPolicy(String buildUrl, String clientReference, LibraryPolicyResult libraryPolicyResult){
