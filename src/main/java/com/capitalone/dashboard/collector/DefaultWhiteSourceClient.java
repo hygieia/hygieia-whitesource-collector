@@ -20,17 +20,17 @@ import com.capitalone.dashboard.model.WhitesourceOrg;
 import com.capitalone.dashboard.repository.BuildRepository;
 import com.capitalone.dashboard.repository.CollectorItemRepository;
 import com.capitalone.dashboard.repository.CollectorRepository;
-import com.capitalone.dashboard.repository.WhiteSourceComponentRepository;
 import com.capitalone.dashboard.repository.LibraryPolicyResultsRepository;
+import com.capitalone.dashboard.repository.WhiteSourceComponentRepository;
 import com.capitalone.dashboard.settings.WhiteSourceServerSettings;
 import com.capitalone.dashboard.settings.WhiteSourceSettings;
 import com.capitalone.dashboard.util.HygieiaUtils;
 import com.capitalone.dashboard.utils.Constants;
 import com.capitalone.dashboard.utils.DateTimeUtils;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.bson.types.ObjectId;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -39,7 +39,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-import org.apache.commons.collections4.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.Base64;
@@ -594,6 +593,7 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
     }
 
     public String process(WhiteSourceRequest whiteSourceRequest) throws HygieiaException {
+        long startTime = System.currentTimeMillis();
         JSONObject projectVital = (JSONObject) decodeJsonPayload(whiteSourceRequest.getProjectVitals());
         JSONArray alerts = (JSONArray) decodeJsonPayload(whiteSourceRequest.getAlerts());
         String orgName = whiteSourceRequest.getOrgName();
@@ -602,12 +602,19 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
             throw new HygieiaException("WhiteSource request : Project Vital is null for project with correlation_id="+clientReference, HygieiaException.BAD_DATA);
         }
         String token = (String) projectVital.get("token");
+
         String lastUpdatedDate = (String) projectVital.get("lastUpdatedDate");
         long timestamp = DateTimeUtils.timeFromStringToMillis(lastUpdatedDate, DEFAULT_WHITESOURCE_TIMEZONE, yyyy_MM_dd_HH_mm_ss_z);
-        List<CollectorItem> collectorItems = whiteSourceComponentRepository.findByOrgNameAndProjectToken(orgName, token);
+        List<CollectorItem> collectorItems = whiteSourceComponentRepository.findByProjectToken(token);
         if (CollectionUtils.isEmpty(collectorItems)) {
             throw new HygieiaException("WhiteSource request : Invalid Whitesource project with correlation_id="+clientReference, HygieiaException.BAD_DATA);
         }
+
+        // add reportUrls to the result
+        Long projectId = (Long) projectVital.get("id");
+        List<String> reportURLs = whiteSourceSettings.getWhiteSourceServerSettings().stream().map(s -> String.format(s.getDeeplink(), projectId)).collect(Collectors.toList());
+        String reportUrl = String.join(",", reportURLs);
+
         String lpIds = "";
         for (CollectorItem collectorItem: collectorItems) {
             LOG.info("WhiteSourceRequest collecting  analysis for orgName=" + orgName + " projectToken=" + token + " timestamp=" + timestamp + " correlation_id="+clientReference);
@@ -621,6 +628,7 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
                 continue;
             }
             transformAlerts(libraryPolicyResult, alerts);
+            libraryPolicyResult.setReportUrl(reportUrl);
             libraryPolicyResult.setCollectorItemId(collectorItem.getId());
             libraryPolicyResult.setBuildUrl(whiteSourceRequest.getBuildUrl());
             //associate build to LibraryPolicyResult
@@ -634,6 +642,7 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
             LOG.info("Successfully updated library policy result  " + libraryPolicyResult.getId() +" for correlation_id="+clientReference);
             lpIds = lpIds.equals("") ? libraryPolicyResult.getId().toString() : lpIds + "," + libraryPolicyResult.getId();
         }
+        LOG.info(String.format("process(): completed updating library_policy_results=%s for correlation_id=%s duration=%d", lpIds, clientReference, (System.currentTimeMillis() - startTime) / 1000));
         return " Successfully updated library policy result : " + lpIds + " for correlation_id="+clientReference;
     }
 
