@@ -174,8 +174,15 @@ public class AsyncService {
 
         if (Objects.isNull(libraryPolicyResult)) return;
         LibraryPolicyResult libraryPolicyResultExisting = getLibraryPolicyResultExisting(project.getId(), libraryPolicyResult.getEvaluationTimestamp());
-        if (Objects.nonNull(libraryPolicyResultExisting)) {
-            libraryPolicyResult.setId(libraryPolicyResultExisting.getId());
+        String status = "SKIPPED";
+        if (Objects.nonNull(libraryPolicyResultExisting) && libraryPolicyResultExisting.getCollectorItemId().equals(libraryPolicyResult.getCollectorItemId())) {
+            if (libraryPolicyResult.getEvaluationTimestamp() < libraryPolicyResultExisting.getEvaluationTimestamp()) {
+                 libraryPolicyResult.setId(libraryPolicyResultExisting.getId());
+                 status = "UPDATED";
+            }
+            LOG.info(String.format("saveScanData(): %s - library_policy=%s evaluationTimestamp=%d with existing_library_policy=%s evaluationTimestamp=%d matching collector_item_id=%s",
+                    status, libraryPolicyResult.getId(), libraryPolicyResult.getEvaluationTimestamp(), libraryPolicyResultExisting.getId(),
+                    libraryPolicyResultExisting.getEvaluationTimestamp(), libraryPolicyResult.getCollectorItemId()));
         }
         libraryPolicyResult.setCollectorItemId(project.getId());
         libraryPolicyResultsRepository.save(libraryPolicyResult);
