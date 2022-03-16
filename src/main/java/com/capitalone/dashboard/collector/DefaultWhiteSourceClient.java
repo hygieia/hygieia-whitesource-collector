@@ -607,7 +607,7 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
         long timestamp = DateTimeUtils.timeFromStringToMillis(lastUpdatedDate, DEFAULT_WHITESOURCE_TIMEZONE, yyyy_MM_dd_HH_mm_ss_z);
         List<CollectorItem> collectorItems = whiteSourceComponentRepository.findByProjectToken(token);
         if (CollectionUtils.isEmpty(collectorItems)) {
-            throw new HygieiaException("WhiteSource request : Invalid Whitesource project with correlation_id="+clientReference, HygieiaException.BAD_DATA);
+            throw new HygieiaException(String.format("WhiteSource request : Invalid Whitesource project projectToken=%s correlation_id=%s", token, clientReference), HygieiaException.BAD_DATA);
         }
 
         // add reportUrls to the result
@@ -616,16 +616,20 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
         String reportUrl = String.join(",", reportURLs);
 
         List<String> lpIds = new ArrayList<>();
+        lpIds.clear();
         for (CollectorItem collectorItem: collectorItems) {
             LOG.info("WhiteSourceRequest collecting  analysis for projectToken=" + token + " timestamp=" + timestamp + " correlation_id=" + clientReference);
             if (collectorItem == null) continue;
             LibraryPolicyResult libraryPolicyResult = new LibraryPolicyResult();
             libraryPolicyResult.setEvaluationTimestamp(timestamp);
-            LibraryPolicyResult lp = getLibraryPolicyData(collectorItem, libraryPolicyResult);
-            if (lp != null) {
-                LOG.info("process(): Record already exist in LibraryPolicy " + lp.getId() + "for correlation_id=" + clientReference);
-                lpIds.add(lp.getId().toString());
-                continue;
+            LibraryPolicyResult existingLp = getLibraryPolicyData(collectorItem, libraryPolicyResult);
+            if (existingLp != null) {
+                // vulnerability dis-positioning not updating the evaluation timestamp in the latest report. so, the sent report takes precedence over existing
+                libraryPolicyResult.setId(existingLp.getId());
+                String lpIdStr = libraryPolicyResult.getId().toString();
+                lpIds.add(lpIdStr);
+                LOG.info(String.format("process(): existing library_policy is updated with the pushed library_policy_id=%s evaluationTimeStamp=%d correlation_id=%s",
+                        lpIdStr, libraryPolicyResult.getEvaluationTimestamp(), clientReference));
             }
             transformAlerts(libraryPolicyResult, alerts);
             libraryPolicyResult.setReportUrl(reportUrl);
