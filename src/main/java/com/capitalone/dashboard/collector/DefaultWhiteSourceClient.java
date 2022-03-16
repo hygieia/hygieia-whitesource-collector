@@ -616,7 +616,6 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
         String reportUrl = String.join(",", reportURLs);
 
         List<String> lpIds = new ArrayList<>();
-        lpIds.clear();
         for (CollectorItem collectorItem: collectorItems) {
             LOG.info("WhiteSourceRequest collecting  analysis for projectToken=" + token + " timestamp=" + timestamp + " correlation_id=" + clientReference);
             if (collectorItem == null) continue;
@@ -627,7 +626,6 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
                 // vulnerability dis-positioning not updating the evaluation timestamp in the latest report. so, the sent report takes precedence over existing
                 libraryPolicyResult.setId(existingLp.getId());
                 String lpIdStr = libraryPolicyResult.getId().toString();
-                lpIds.add(lpIdStr);
                 LOG.info(String.format("process(): existing library_policy is updated with the pushed library_policy_id=%s evaluationTimeStamp=%d correlation_id=%s",
                         lpIdStr, libraryPolicyResult.getEvaluationTimestamp(), clientReference));
             }
