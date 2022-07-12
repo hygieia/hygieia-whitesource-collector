@@ -30,6 +30,7 @@ public class WhiteSourceCollector extends Collector {
         allOptions.put(WhiteSourceComponent.PRODUCT_TOKEN, "");
         allOptions.put(WhiteSourceComponent.PROJECT_TOKEN, "");
         allOptions.put(WhiteSourceComponent.ORG_NAME, "");
+        allOptions.put(WhiteSourceComponent.LOCAL_CONFIG, "");
         protoType.setAllFields(allOptions);
 
         Map<String, Object> uniqueOptions = new HashMap<>();
