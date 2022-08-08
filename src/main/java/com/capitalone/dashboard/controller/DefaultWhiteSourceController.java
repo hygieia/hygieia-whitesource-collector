@@ -8,6 +8,7 @@ import com.capitalone.dashboard.model.WhiteSourceRequest;
 import com.capitalone.dashboard.util.CommonConstants;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,18 +62,15 @@ public class DefaultWhiteSourceController {
     @RequestMapping(value = "/refresh", method = POST,
             consumes = "application/json", produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<String> refresh(@Valid @RequestBody WhiteSourceRefreshRequest request) throws HygieiaException {
-        if (Objects.isNull(request) || Objects.isNull(request.getOrgName())){
-            return ResponseEntity
-                    .status(HttpStatus.BAD_REQUEST)
-                    .body("Required fields are null");
+        if (Objects.isNull(request) || StringUtils.isEmpty(request.getOrgName())){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Required fields are null");
         }
-        else if (Objects.isNull(request.getProjectToken()) && Objects.isNull(request.getAltIdentifier())){
-            return ResponseEntity
-                    .status(HttpStatus.BAD_REQUEST)
-                    .body("Must provide projectToken or altIdentifier");
+        else if (StringUtils.isEmpty(request.getProjectToken()) && StringUtils.isEmpty(request.getAltIdentifier())){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Must provide projectToken or altIdentifier");
         }
+
         defaultWhiteSourceClient.refresh(request.getOrgName(),request.getProjectToken(), request.getAltIdentifier());
-        String res = (Objects.nonNull(request.getProjectToken())) ? ", projectToken="+request.getProjectToken() : ", altIdentifier="+request.getAltIdentifier();
+        String res = StringUtils.isNotEmpty(request.getProjectToken()) ? ", projectToken="+request.getProjectToken() : ", altIdentifier="+request.getAltIdentifier();
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body("Updated Whitesource component:: OrgName="+request.getOrgName()+res);

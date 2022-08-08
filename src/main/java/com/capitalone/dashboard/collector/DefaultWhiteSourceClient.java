@@ -680,10 +680,10 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
         Map<String, Object> options = getOptions(orgName, projectToken);
         Iterable<CollectorItem> collectorItems = new ArrayList<>();
 
-        if (Objects.nonNull(projectToken)) {
+        if (StringUtils.isNotEmpty(projectToken)) {
             collectorItems = collectorItemRepository.findAllByOptionMapAndCollectorIdsIn(options, Stream.of(collector.getId()).collect(Collectors.toList()));
         }
-        else if (Objects.nonNull(altIdentifier)) {
+        else if (StringUtils.isNotEmpty(altIdentifier)) {
             collectorItems = collectorItemRepository.findAllByOptionMapCollectorIdAndAltId(options, collector.getId(), altIdentifier);
         }
 
