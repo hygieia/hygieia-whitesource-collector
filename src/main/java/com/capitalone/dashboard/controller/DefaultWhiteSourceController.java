@@ -62,18 +62,15 @@ public class DefaultWhiteSourceController {
     @RequestMapping(value = "/refresh", method = POST,
             consumes = "application/json", produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<String> refresh(@Valid @RequestBody WhiteSourceRefreshRequest request) throws HygieiaException {
-        if (Objects.isNull(request) || StringUtils.isEmpty(request.getOrgName())){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Required fields are null");
-        }
-        else if (StringUtils.isEmpty(request.getProjectToken()) && StringUtils.isEmpty(request.getAltIdentifier())){
+        if (StringUtils.isEmpty(request.getProjectToken()) && StringUtils.isEmpty(request.getAltIdentifier())){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Must provide projectToken or altIdentifier");
         }
 
-        defaultWhiteSourceClient.refresh(request.getOrgName(),request.getProjectToken(), request.getAltIdentifier());
-        String res = StringUtils.isNotEmpty(request.getProjectToken()) ? ", projectToken="+request.getProjectToken() : ", altIdentifier="+request.getAltIdentifier();
+        defaultWhiteSourceClient.refresh(request.getProjectToken(), request.getAltIdentifier());
+        String res = StringUtils.isNotEmpty(request.getProjectToken()) ? "projectToken="+request.getProjectToken() : "altIdentifier="+request.getAltIdentifier();
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body("Updated Whitesource component:: OrgName="+request.getOrgName()+res);
+                .body("Updated Whitesource component:: " + res);
     }
 
 }

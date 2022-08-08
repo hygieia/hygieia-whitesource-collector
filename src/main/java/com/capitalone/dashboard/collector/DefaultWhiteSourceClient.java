@@ -413,16 +413,10 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
         return projectVitalMap;
     }
 
-    /**
-     * Refresh project on demand using org level project vitals
-     *
-     * @param orgName Whitesource Org
-     * @param projectToken Whitesource Project Token
-     *
-     */
+
     @Override
-    public void refresh (String orgName, String projectToken, String altIdentifier){
-        List<WhiteSourceComponent> components = getWhiteSourceComponents(orgName, projectToken, altIdentifier);
+    public void refresh (String projectToken, String altIdentifier){
+        List<WhiteSourceComponent> components = getWhiteSourceComponents(projectToken, altIdentifier);
         if(!components.isEmpty()) {
             components.forEach(component -> {
                 LibraryPolicyResult libraryPolicyResult = getProjectAlerts(component, null, whiteSourceSettings.getWhiteSourceServerSettings().get(0));
@@ -675,7 +669,7 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
     }
 
 
-    public List<WhiteSourceComponent> getWhiteSourceComponents(String orgName, String projectToken, String altIdentifier) {
+    public List<WhiteSourceComponent> getWhiteSourceComponents(String projectToken, String altIdentifier) {
         Collector collector = collectorRepository.findByName(Constants.WHITE_SOURCE);
         Iterable<CollectorItem> collectorItems = new ArrayList<>();
 
