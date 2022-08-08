@@ -421,19 +421,21 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
      *
      */
     @Override
-    public void refresh (String orgName, String projectToken){
-        List<WhiteSourceComponent> components = getWhiteSourceComponents(orgName, projectToken);
-        components.forEach(component -> {
-            LibraryPolicyResult libraryPolicyResult = getProjectAlerts(component, null, whiteSourceSettings.getWhiteSourceServerSettings().get(0));
-            if (Objects.nonNull(libraryPolicyResult)) {
-                libraryPolicyResult.setCollectorItemId(component.getId());
-                LibraryPolicyResult libraryPolicyResultExisting = getLibraryPolicyData(component, libraryPolicyResult);
-                if (Objects.nonNull(libraryPolicyResultExisting)) {
-                    libraryPolicyResult.setId(libraryPolicyResultExisting.getId());
+    public void refresh (String orgName, String projectToken, String altIdentifier){
+        List<WhiteSourceComponent> components = getWhiteSourceComponents(orgName, projectToken, altIdentifier);
+        if(!components.isEmpty()) {
+            components.forEach(component -> {
+                LibraryPolicyResult libraryPolicyResult = getProjectAlerts(component, null, whiteSourceSettings.getWhiteSourceServerSettings().get(0));
+                if (Objects.nonNull(libraryPolicyResult)) {
+                    libraryPolicyResult.setCollectorItemId(component.getId());
+                    LibraryPolicyResult libraryPolicyResultExisting = getLibraryPolicyData(component, libraryPolicyResult);
+                    if (Objects.nonNull(libraryPolicyResultExisting)) {
+                        libraryPolicyResult.setId(libraryPolicyResultExisting.getId());
+                    }
+                    libraryPolicyResultsRepository.save(libraryPolicyResult);
                 }
-                libraryPolicyResultsRepository.save(libraryPolicyResult);
-            }
-        });
+            });
+        }
     }
 
     ////////////////////////////////////////////       Helper and private methods below /////////////////////////////////////////
@@ -673,10 +675,19 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
     }
 
 
-    public List<WhiteSourceComponent> getWhiteSourceComponents(String orgName, String projectToken) {
+    public List<WhiteSourceComponent> getWhiteSourceComponents(String orgName, String projectToken, String altIdentifier) {
         Collector collector = collectorRepository.findByName(Constants.WHITE_SOURCE);
         Map<String, Object> options = getOptions(orgName, projectToken);
-        Iterable<CollectorItem> collectorItems = collectorItemRepository.findAllByOptionMapAndCollectorIdsIn(options, Stream.of(collector.getId()).collect(Collectors.toList()));
+        Iterable<CollectorItem> collectorItems = new ArrayList<>();
+
+        if (Objects.nonNull(projectToken)) {
+            collectorItems = collectorItemRepository.findAllByOptionMapAndCollectorIdsIn(options, Stream.of(collector.getId()).collect(Collectors.toList()));
+        }
+        else if (Objects.nonNull(altIdentifier)) {
+            collectorItems = collectorItemRepository.findAllByOptionMapCollectorIdAndAltId(options, collector.getId(), altIdentifier);
+        }
+
+
         List<WhiteSourceComponent> whiteSourceComponents = new ArrayList<>();
         for (CollectorItem collectorItem : collectorItems) {
             whiteSourceComponents.add(buildWhiteSourceComponent(collectorItem));
@@ -701,7 +712,7 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
     private static Map<String, Object> getOptions(String orgName, String projectToken) {
         Map<String, Object> options = new HashMap<>();
         options.put(Constants.ORG_NAME, orgName);
-        options.put(Constants.PROJECT_TOKEN, projectToken);
+        if(Objects.nonNull(projectToken)){options.put(Constants.PROJECT_TOKEN, projectToken);}
         return options;
     }
 
