@@ -13,7 +13,7 @@ public class WhiteSourceRefreshRequest {
     @ApiModelProperty(notes = "WhiteSource alternate identifier",name="AltIdentifier",required=false)
     private String altIdentifier;
 
-    @ApiModelProperty(notes = "WhiteSource Project token",name="ProjectToken",required=true)
+    @ApiModelProperty(notes = "WhiteSource Project token",name="ProjectToken",required=false)
     private String projectToken;
 
     public String getOrgName() {
