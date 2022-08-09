@@ -417,19 +417,17 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
     @Override
     public void refresh (String projectToken, String altIdentifier){
         List<WhiteSourceComponent> components = getWhiteSourceComponents(projectToken, altIdentifier);
-        if(!components.isEmpty()) {
-            components.forEach(component -> {
-                LibraryPolicyResult libraryPolicyResult = getProjectAlerts(component, null, whiteSourceSettings.getWhiteSourceServerSettings().get(0));
-                if (Objects.nonNull(libraryPolicyResult)) {
-                    libraryPolicyResult.setCollectorItemId(component.getId());
-                    LibraryPolicyResult libraryPolicyResultExisting = getLibraryPolicyData(component, libraryPolicyResult);
-                    if (Objects.nonNull(libraryPolicyResultExisting)) {
-                        libraryPolicyResult.setId(libraryPolicyResultExisting.getId());
-                    }
-                    libraryPolicyResultsRepository.save(libraryPolicyResult);
+        components.forEach(component -> {
+            LibraryPolicyResult libraryPolicyResult = getProjectAlerts(component, null, whiteSourceSettings.getWhiteSourceServerSettings().get(0));
+            if (Objects.nonNull(libraryPolicyResult)) {
+                libraryPolicyResult.setCollectorItemId(component.getId());
+                LibraryPolicyResult libraryPolicyResultExisting = getLibraryPolicyData(component, libraryPolicyResult);
+                if (Objects.nonNull(libraryPolicyResultExisting)) {
+                    libraryPolicyResult.setId(libraryPolicyResultExisting.getId());
                 }
-            });
-        }
+                libraryPolicyResultsRepository.save(libraryPolicyResult);
+            }
+        });
     }
 
     ////////////////////////////////////////////       Helper and private methods below /////////////////////////////////////////

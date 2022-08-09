@@ -4,6 +4,12 @@ import io.swagger.annotations.ApiModelProperty;
 
 public class WhiteSourceRefreshRequest {
 
+    @ApiModelProperty(notes = "WhiteSource Organization name",name="OrgName",required=false)
+    private String orgName;
+
+    @ApiModelProperty(notes = "WhiteSource Product name",name="ProductName",required=false)
+    private String productName;
+
     @ApiModelProperty(notes = "WhiteSource Project name",name="ProjectName")
     private String projectName;
 
@@ -21,6 +27,14 @@ public class WhiteSourceRefreshRequest {
         this.projectName = projectName;
     }
 
+
+    public String getOrgName() {return orgName;}
+
+    public void setOrgName(String orgName) {this.orgName = orgName;}
+
+    public String getProductName() {return productName;}
+
+    public void setProductName(String productName) {this.productName = productName;}
 
     public String getAltIdentifier() {return altIdentifier;}
 
