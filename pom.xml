@@ -6,7 +6,7 @@
     <artifactId>whitesource-collector</artifactId>
     <name>${project.groupId}:${project.artifactId}</name>
     <description>
-        Whitesource Collector Microservice collecting stats from Whitesource
+        Whitesource Collector Microservice collecting stats from Whitesource/Mend
     </description>
     <url>https://github.com/Hygieia/${repository.name}</url>
     <packaging>jar</packaging>
