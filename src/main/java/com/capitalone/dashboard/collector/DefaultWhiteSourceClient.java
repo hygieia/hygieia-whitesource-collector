@@ -413,16 +413,10 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
         return projectVitalMap;
     }
 
-    /**
-     * Refresh project on demand using org level project vitals
-     *
-     * @param orgName Whitesource Org
-     * @param projectToken Whitesource Project Token
-     *
-     */
+
     @Override
-    public void refresh (String orgName, String projectToken){
-        List<WhiteSourceComponent> components = getWhiteSourceComponents(orgName, projectToken);
+    public void refresh (String projectToken, String altIdentifier){
+        List<WhiteSourceComponent> components = getWhiteSourceComponents(projectToken, altIdentifier);
         components.forEach(component -> {
             LibraryPolicyResult libraryPolicyResult = getProjectAlerts(component, null, whiteSourceSettings.getWhiteSourceServerSettings().get(0));
             if (Objects.nonNull(libraryPolicyResult)) {
@@ -673,10 +667,18 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
     }
 
 
-    public List<WhiteSourceComponent> getWhiteSourceComponents(String orgName, String projectToken) {
+    public List<WhiteSourceComponent> getWhiteSourceComponents(String projectToken, String altIdentifier) {
         Collector collector = collectorRepository.findByName(Constants.WHITE_SOURCE);
-        Map<String, Object> options = getOptions(orgName, projectToken);
-        Iterable<CollectorItem> collectorItems = collectorItemRepository.findAllByOptionMapAndCollectorIdsIn(options, Stream.of(collector.getId()).collect(Collectors.toList()));
+        Iterable<CollectorItem> collectorItems = new ArrayList<>();
+
+        if (StringUtils.isNotEmpty(projectToken)) {
+            collectorItems = whiteSourceComponentRepository.findByCollectorIdAndProjectToken(collector.getId(), projectToken);
+        }
+        else if (StringUtils.isNotEmpty(altIdentifier)) {
+            collectorItems = whiteSourceComponentRepository.findByCollectorIdAndAltIdentifier(collector.getId(), altIdentifier);
+        }
+
+
         List<WhiteSourceComponent> whiteSourceComponents = new ArrayList<>();
         for (CollectorItem collectorItem : collectorItems) {
             whiteSourceComponents.add(buildWhiteSourceComponent(collectorItem));
@@ -696,13 +698,6 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
         whiteSourceComponent.setEnabled(collectorItem.isEnabled());
         whiteSourceComponent.setLastUpdated(collectorItem.getLastUpdated());
         return whiteSourceComponent;
-    }
-
-    private static Map<String, Object> getOptions(String orgName, String projectToken) {
-        Map<String, Object> options = new HashMap<>();
-        options.put(Constants.ORG_NAME, orgName);
-        options.put(Constants.PROJECT_TOKEN, projectToken);
-        return options;
     }
 
 

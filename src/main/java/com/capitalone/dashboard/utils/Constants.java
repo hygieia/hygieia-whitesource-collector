@@ -10,6 +10,7 @@ public final class Constants {
     public static final String PROJECTS = "projects";
     public static final String PROJECT_NAME = "projectName";
     public static final String PROJECT_TOKEN = "projectToken";
+    public static final String ALT_IDENTIFIER = "altIdentifier";
     public static final String PROJECT_VITALS = "projectVitals";
     public static final String LAST_UPDATED_DATE = "lastUpdatedDate";
     public static final String NAME = "name";
