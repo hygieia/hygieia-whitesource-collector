@@ -505,6 +505,7 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
         JSONObject vulns = (JSONObject) Objects.requireNonNull(alert).get(Constants.VULNERABILITY);
         if (Objects.nonNull(vulns) && !vulns.isEmpty()) {
             setSecurityVulns(vulns, libraryPolicyResult, componentName, String.valueOf(DateTimeUtils.getDays(creationDateTimeStamp)), description);
+            setCVSS3SecurityVulns(vulns, libraryPolicyResult, componentName, String.valueOf(DateTimeUtils.getDays(creationDateTimeStamp)), description);
         }
         libraryPolicyResult.setTimestamp(System.currentTimeMillis());
     }
@@ -709,6 +710,10 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
         libraryPolicyResult.addThreat(LibraryPolicyType.Security, LibraryPolicyThreatLevel.fromString(getSecurityVulnSeverity(vuln)), LibraryPolicyThreatDisposition.Open, Constants.OPEN, componentName, age, getScore(vuln), policyName);
     }
 
+    private static void setCVSS3SecurityVulns(JSONObject vuln, LibraryPolicyResult libraryPolicyResult, String componentName, String age, String policyName) {
+        libraryPolicyResult.addThreat(LibraryPolicyType.Security_cvss3, LibraryPolicyThreatLevel.fromString(getCVSS3SecurityVulnSeverity(vuln)), LibraryPolicyThreatDisposition.Open, Constants.OPEN, componentName, age, getCVSS3Score(vuln), policyName);
+    }
+
     private LibraryPolicyThreatLevel getLicenseThreatLevel(String alertType, String description) {
         if (!CollectionUtils.isEmpty(whiteSourceSettings.getCriticalLicensePolicyTypes()) && getLicenseSeverity(whiteSourceSettings.getCriticalLicensePolicyTypes(), alertType, description)) {
             return LibraryPolicyThreatLevel.Critical;
@@ -817,6 +822,17 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
     private static String getSecurityVulnSeverity(JSONObject vuln) {
         String severity = getStringValue(vuln, Constants.SEVERITY);
         if (Objects.nonNull(severity)) return severity;
+        return Constants.NONE;
+    }
+
+    private static String getCVSS3Score(JSONObject vuln) {
+        Double cvss3Score = toDouble(vuln, Constants.CVSS_3_SCORE);
+        return cvss3Score.toString();
+    }
+
+    private static String getCVSS3SecurityVulnSeverity(JSONObject vuln) {
+        String cvss3_severity = getStringValue(vuln, Constants.CVSS_3_SEVERITY);
+        if (Objects.nonNull(cvss3_severity)) return cvss3_severity;
         return Constants.NONE;
     }
 
