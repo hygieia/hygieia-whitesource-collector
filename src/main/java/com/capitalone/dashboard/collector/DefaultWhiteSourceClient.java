@@ -825,6 +825,7 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
         return Constants.NONE;
     }
 
+
     private static String getCVSS3Score(JSONObject vuln) {
         Double cvss3Score = toDouble(vuln, Constants.CVSS_3_SCORE);
         return cvss3Score.toString();
