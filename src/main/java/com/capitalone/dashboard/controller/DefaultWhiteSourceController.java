@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.HashMap;
 import java.util.Objects;
 
 
@@ -66,12 +67,17 @@ public class DefaultWhiteSourceController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Must provide projectToken or altIdentifier");
         }
 
-        String res = "Updated Whitesource component:: ";
-        int refreshCount = defaultWhiteSourceClient.refresh(request.getProjectToken(), request.getAltIdentifier());
-        if (refreshCount > 0) {
-            res += StringUtils.isNotEmpty(request.getProjectToken()) ? "projectToken=" + request.getProjectToken() : "altIdentifier=" + request.getAltIdentifier();
+        String res = "Updated Whitesource component :: ";
+        HashMap<String, Integer> resultsMap = defaultWhiteSourceClient.refresh(request.getProjectToken(), request.getAltIdentifier());
+
+        if(resultsMap.get("passed").equals(0) && resultsMap.get("failed").equals(0)){
+            return ResponseEntity.status(HttpStatus.OK).body("Could Not Refresh :: Whitsource component not found.");
         }
-        else {res = "Could Not Refresh :: Whitsource component not found";}
+        else if (resultsMap.get("passed") > 0) {
+            res += String.format("%d Component(s) updated :: ",resultsMap.get("passed"));
+        }
+        if(resultsMap.get("failed") > 0){res += String.format("Failed to refresh %d Component(s) :: ",resultsMap.get("failed"));}
+        res += StringUtils.isNotEmpty(request.getProjectToken()) ? "projectToken=" + request.getProjectToken() : "altIdentifier=" + request.getAltIdentifier();
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(res);
