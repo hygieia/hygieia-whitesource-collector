@@ -415,7 +415,7 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
 
 
     @Override
-    public void refresh (String projectToken, String altIdentifier){
+    public int refresh (String projectToken, String altIdentifier){
         List<WhiteSourceComponent> components = getWhiteSourceComponents(projectToken, altIdentifier);
         components.forEach(component -> {
             LibraryPolicyResult libraryPolicyResult = getProjectAlerts(component, null, whiteSourceSettings.getWhiteSourceServerSettings().get(0));
@@ -428,6 +428,7 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
                 libraryPolicyResultsRepository.save(libraryPolicyResult);
             }
         });
+        return components.size();
     }
 
     ////////////////////////////////////////////       Helper and private methods below /////////////////////////////////////////

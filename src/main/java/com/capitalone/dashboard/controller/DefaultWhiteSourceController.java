@@ -66,11 +66,15 @@ public class DefaultWhiteSourceController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Must provide projectToken or altIdentifier");
         }
 
-        defaultWhiteSourceClient.refresh(request.getProjectToken(), request.getAltIdentifier());
-        String res = StringUtils.isNotEmpty(request.getProjectToken()) ? "projectToken="+request.getProjectToken() : "altIdentifier="+request.getAltIdentifier();
+        String res = "Updated Whitesource component:: ";
+        int refreshCount = defaultWhiteSourceClient.refresh(request.getProjectToken(), request.getAltIdentifier());
+        if (refreshCount > 0) {
+            res += StringUtils.isNotEmpty(request.getProjectToken()) ? "projectToken=" + request.getProjectToken() : "altIdentifier=" + request.getAltIdentifier();
+        }
+        else {res = "No Refresh :: Whitsource component not found";}
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body("Updated Whitesource component:: " + res);
+                .body(res);
     }
 
 }
