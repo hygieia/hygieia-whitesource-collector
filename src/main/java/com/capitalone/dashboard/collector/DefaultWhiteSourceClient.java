@@ -319,7 +319,7 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
      */
 
     @Override
-    public LibraryPolicyResult getProjectAlerts(WhiteSourceComponent project, WhiteSourceProjectVital projectVital, WhiteSourceServerSettings serverSettings) {
+    public LibraryPolicyResult getProjectAlerts(WhiteSourceComponent project, WhiteSourceProjectVital projectVital, WhiteSourceServerSettings serverSettings, Boolean[] failed) {
         LibraryPolicyResult libraryPolicyResult = new LibraryPolicyResult();
         try {
             JSONObject jsonObject = makeRestCall(Constants.RequestType.getProjectAlerts, null, null, project.getProjectToken(), null, null, serverSettings);
@@ -336,6 +336,7 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
             }
         } catch (Exception e) {
             LOG.info("Exception occurred while calling getProjectAlerts for projectName=" + project.getProjectName() , e);
+            if(Objects.nonNull(failed)){failed[0] = true;}
         }
         return libraryPolicyResult;
     }
@@ -415,10 +416,16 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
 
 
     @Override
-    public void refresh (String projectToken, String altIdentifier){
+    public HashMap<String, Integer> refresh (String projectToken, String altIdentifier){
         List<WhiteSourceComponent> components = getWhiteSourceComponents(projectToken, altIdentifier);
-        components.forEach(component -> {
-            LibraryPolicyResult libraryPolicyResult = getProjectAlerts(component, null, whiteSourceSettings.getWhiteSourceServerSettings().get(0));
+
+        HashMap<String, Integer> resultsMap = new HashMap<>();
+        resultsMap.put("passed",0);
+        resultsMap.put("failed",0);
+
+        for (WhiteSourceComponent component: components){
+            Boolean[] failed = {false};
+            LibraryPolicyResult libraryPolicyResult = getProjectAlerts(component, null, whiteSourceSettings.getWhiteSourceServerSettings().get(0), failed);
             if (Objects.nonNull(libraryPolicyResult)) {
                 libraryPolicyResult.setCollectorItemId(component.getId());
                 LibraryPolicyResult libraryPolicyResultExisting = getLibraryPolicyData(component, libraryPolicyResult);
@@ -427,7 +434,10 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
                 }
                 libraryPolicyResultsRepository.save(libraryPolicyResult);
             }
-        });
+            if(failed[0]){resultsMap.put("failed",resultsMap.get("failed")+1);}
+            else{resultsMap.put("passed",resultsMap.get("passed")+1);}
+        }
+        return resultsMap;
     }
 
     ////////////////////////////////////////////       Helper and private methods below /////////////////////////////////////////

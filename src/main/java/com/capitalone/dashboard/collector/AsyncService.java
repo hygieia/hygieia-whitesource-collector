@@ -147,7 +147,7 @@ public class AsyncService {
                 .stream()
                 .map(project -> {
                     LOG.info("Collecting alerts for Project Token " + project.getProjectToken() + ": " + counter.incrementAndGet() + "  of " + totalCount);
-                    LibraryPolicyResult libraryPolicyResult = whiteSourceClient.getProjectAlerts(project, projectVitalMap.get(project.getProjectToken()), serverSettings);
+                    LibraryPolicyResult libraryPolicyResult = whiteSourceClient.getProjectAlerts(project, projectVitalMap.get(project.getProjectToken()), serverSettings, null);
                     Map<String, LibraryPolicyResult> lpr = new HashMap<>();
                     lpr.put(project.getProjectToken(), libraryPolicyResult);
                     return lpr;
