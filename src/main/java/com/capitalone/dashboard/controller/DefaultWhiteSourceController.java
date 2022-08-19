@@ -68,7 +68,7 @@ public class DefaultWhiteSourceController {
         }
 
         String res = "Updated Whitesource component :: ";
-        HashMap<String, Integer> resultsMap = defaultWhiteSourceClient.refresh(request.getProjectToken(), request.getAltIdentifier());
+        HashMap<String, Integer> resultsMap = new HashMap<>(defaultWhiteSourceClient.refresh(request.getProjectToken(), request.getAltIdentifier()));
 
         if(resultsMap.get("passed").equals(0) && resultsMap.get("failed").equals(0)){
             return ResponseEntity.status(HttpStatus.OK).body("Could Not Refresh :: Whitsource component not found.");
