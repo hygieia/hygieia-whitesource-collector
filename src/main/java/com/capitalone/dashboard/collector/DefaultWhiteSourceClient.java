@@ -418,7 +418,11 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
     @Override
     public HashMap<String, Integer> refresh (String projectToken, String altIdentifier){
         List<WhiteSourceComponent> components = getWhiteSourceComponents(projectToken, altIdentifier);
-        HashMap<String, Integer> resultsMap = new HashMap<String, Integer>(){{put("passed",0);put("failed",0);}};
+
+        HashMap<String, Integer> resultsMap = new HashMap<>();
+        resultsMap.put("passed",0);
+        resultsMap.put("failed",0);
+
         for (WhiteSourceComponent component: components){
             Boolean[] failed = {false};
             LibraryPolicyResult libraryPolicyResult = getProjectAlerts(component, null, whiteSourceSettings.getWhiteSourceServerSettings().get(0), failed);
