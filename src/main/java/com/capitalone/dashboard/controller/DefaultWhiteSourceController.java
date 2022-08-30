@@ -76,7 +76,7 @@ public class DefaultWhiteSourceController {
 
         if(resultsMap.get("passed").equals(0) && resultsMap.get("failed").equals(0)){
             String param = StringUtils.isNotEmpty(request.getProjectToken()) ? "projectToken: " + request.getProjectToken() :
-                    "altIdetifier: " + request.getAltIdentifier();
+                    "altIdentifier: " + request.getAltIdentifier();
 
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Could Not Refresh :: Whitesource component (" + param + ") not found.");
         }
