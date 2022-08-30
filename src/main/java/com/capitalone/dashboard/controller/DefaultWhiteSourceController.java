@@ -60,6 +60,10 @@ public class DefaultWhiteSourceController {
                 .body(response);
     }
 
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "OK"),
+            @ApiResponse(code = 400, message = "Bad Request")
+    })
     @RequestMapping(value = "/refresh", method = POST,
             consumes = "application/json", produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<String> refresh(@Valid @RequestBody WhiteSourceRefreshRequest request) throws HygieiaException {
@@ -71,7 +75,10 @@ public class DefaultWhiteSourceController {
         HashMap<String, Integer> resultsMap = new HashMap<>(defaultWhiteSourceClient.refresh(request.getProjectToken(), request.getAltIdentifier()));
 
         if(resultsMap.get("passed").equals(0) && resultsMap.get("failed").equals(0)){
-            return ResponseEntity.status(HttpStatus.OK).body("Could Not Refresh :: Whitsource component not found.");
+            String param = StringUtils.isNotEmpty(request.getProjectToken()) ? "projectToken: " + request.getProjectToken() :
+                    "altIdentifier: " + request.getAltIdentifier();
+
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Could Not Refresh :: WhiteSource component (" + param + ") not found.");
         }
         else if (resultsMap.get("passed") > 0) {
             res += String.format("%d Component(s) updated :: ",resultsMap.get("passed"));
