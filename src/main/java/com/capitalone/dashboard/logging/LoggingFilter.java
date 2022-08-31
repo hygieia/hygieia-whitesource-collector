@@ -130,6 +130,7 @@ public class LoggingFilter implements Filter {
                         + ", response_status=" + (success ? "success" : "failed")
                         + ", response_code=" + (bufferedResponse == null ? 0 : bufferedResponse.getStatus())
                         + ", client_ip=" + httpServletRequest.getRemoteAddr()
+                        + ", x-forwarded-for=" + bufferedRequest.getHeader("x-forwarded-for")
                         + (StringUtils.equalsIgnoreCase(httpServletRequest.getMethod(), "GET") ? ", request_params=" + parameters : StringUtils.EMPTY));
             }
             return;
@@ -166,6 +167,7 @@ public class LoggingFilter implements Filter {
                         + ", response_status=" + (success ? "success" : "failed")
                         + ", response_code=" + (bufferedResponse == null ? 0 : bufferedResponse.getStatus())
                         + ", client_ip=" + httpServletRequest.getRemoteAddr()
+                        + ", x-forwarded-for=" + bufferedRequest.getHeader("x-forwarded-for")
                         + (StringUtils.equalsIgnoreCase(httpServletRequest.getMethod(), "GET") ? ", request_params=" + parameters : StringUtils.EMPTY));
             }
         }
