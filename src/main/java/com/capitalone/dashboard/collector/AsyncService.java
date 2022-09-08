@@ -78,6 +78,7 @@ public class AsyncService {
         Map<String, LibraryPolicyResult> libraryPolicyResultMap = new HashMap<>();
         Map<String, LibraryPolicyReference> libraryLookUp = new HashMap<>();
         int totalCount = productTokensToCollect.size();
+        long startTime = System.currentTimeMillis();
         productTokensToCollect
                 .stream()
                 .map(ept -> {
@@ -91,9 +92,12 @@ public class AsyncService {
         DataRefresh dataRefresh = new DataRefresh(collected, libraryLookUp);
         collected.forEach(project -> {
             saveScanData(project, libraryPolicyResultMap);
+
             Map<String, LibraryPolicyReference> referenceMap = buildLibraryReference(project, libraryPolicyResultMap);
             dataRefresh.addLibraryReference(referenceMap);
         });
+        long endTime = System.currentTimeMillis();
+        LOG.info(String.format("getAndUpdateByProductAsync :: Duration %d", startTime-endTime));
         return CompletableFuture.completedFuture(dataRefresh);
     }
 
