@@ -92,9 +92,8 @@ public class AsyncService {
         DataRefresh dataRefresh = new DataRefresh(collected, libraryLookUp);
         collected.forEach(project -> {
             saveScanData(project, libraryPolicyResultMap);
-
-            Map<String, LibraryPolicyReference> referenceMap = buildLibraryReference(project, libraryPolicyResultMap);
-            dataRefresh.addLibraryReference(referenceMap);
+//            Map<String, LibraryPolicyReference> referenceMap = buildLibraryReference(project, libraryPolicyResultMap);
+//            dataRefresh.addLibraryReference(referenceMap);
         });
         long endTime = System.currentTimeMillis();
         LOG.info(String.format("getAndUpdateByProductAsync :: Duration %d", startTime-endTime));
@@ -161,8 +160,8 @@ public class AsyncService {
         DataRefresh dataRefresh = new DataRefresh(new HashSet<>(projects), libraryLookUp);
         projects.forEach(project -> {
             saveScanData(project, libraryPolicyResultMap);
-            Map<String, LibraryPolicyReference> referenceMap = buildLibraryReference(project, libraryPolicyResultMap);
-            dataRefresh.addLibraryReference(referenceMap);
+//            Map<String, LibraryPolicyReference> referenceMap = buildLibraryReference(project, libraryPolicyResultMap);
+//            dataRefresh.addLibraryReference(referenceMap);
         });
         return CompletableFuture.completedFuture(dataRefresh);
     }
