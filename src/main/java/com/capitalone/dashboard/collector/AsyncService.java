@@ -91,7 +91,7 @@ public class AsyncService {
         collected.forEach(project -> {
             saveScanData(project, libraryPolicyResultMap);
         });
-        LOG.info(String.format("getAndUpdateByProductAsync :: Duration=%d", System.currentTimeMillis()-startTime));
+        LOG.info(String.format("getAndUpdateByProductAsync :: finished - duration=%d", System.currentTimeMillis()-startTime));
         return CompletableFuture.completedFuture(dataRefresh);
     }
 
