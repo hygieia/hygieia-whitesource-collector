@@ -63,6 +63,7 @@ public final class Constants {
     public static final String REJECTED_BY_POLICY = "REJECTED_BY_POLICY_RESOURCE";
     public static final String SECURITY_VULNERABILITY = "SECURITY_VULNERABILITY";
     public static final String DEFAULT_WHITESOURCE_TIMEZONE = "UTC";
+    public static final String APP_NAME = "whitesource-collector";
 
 
     public enum RequestType {

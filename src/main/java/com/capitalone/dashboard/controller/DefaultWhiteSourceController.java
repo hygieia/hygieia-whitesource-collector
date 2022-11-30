@@ -9,6 +9,7 @@ import com.capitalone.dashboard.util.CommonConstants;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.apache.commons.lang3.StringUtils;
+import org.owasp.encoder.Encode;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,7 +51,8 @@ public class DefaultWhiteSourceController {
     @RequestMapping(value = "/project-alerts", method = POST,
             consumes = "application/json", produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<String> setProjectVitalsAndAlerts(@Valid @RequestBody WhiteSourceRequest request) throws HygieiaException {
-        request.setClientReference(httpServletRequest.getHeader(CommonConstants.HEADER_CLIENT_CORRELATION_ID));
+        String correlation = Encode.forHtml(httpServletRequest.getHeader(CommonConstants.HEADER_CLIENT_CORRELATION_ID));
+        request.setClientReference(correlation);
         String requester = httpServletRequest.getHeader(CommonConstants.HEADER_API_USER);
         String response = defaultWhiteSourceClient.process(request);
         LOGGER.info("correlation_id="+request.getClientReference() +", application=hygieia, service=whitesource-collector, uri=" + httpServletRequest.getRequestURI()+", requester="+requester+

@@ -686,7 +686,7 @@ public class DefaultWhiteSourceClient implements WhiteSourceClient {
             collectorItems = whiteSourceComponentRepository.findByCollectorIdAndProjectToken(collector.getId(), projectToken);
         }
         else if (StringUtils.isNotEmpty(altIdentifier)) {
-            collectorItems = whiteSourceComponentRepository.findByCollectorIdAndAltIdentifier(collector.getId(), altIdentifier);
+            collectorItems = whiteSourceComponentRepository.findByCollectorIdAndAltIdentifierIgnoreCase(collector.getId(), altIdentifier);
         }
 
 
