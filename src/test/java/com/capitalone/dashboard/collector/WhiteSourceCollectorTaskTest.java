@@ -48,6 +48,11 @@ import java.util.List;
 @ComponentScan("com.capitalone.dashboard.client")
 @PrepareForTest(fullyQualifiedNames = "com.capitalone.dashboard.*")
 public class WhiteSourceCollectorTaskTest {
+	
+	/*
+	 * Power mock is not compatible with JUnit5
+	 * https://aggarwal-rohan17.medium.com/simplifying-junit-mockito-and-powermock-d1392059ce87
+	 * */
 
     @Autowired
     private WhiteSourceCollectorRepository whiteSourceCollectorRepository;
@@ -201,14 +206,14 @@ public class WhiteSourceCollectorTaskTest {
         String json = getJsonResponse("collector_items.json");
         Gson gson = GsonUtil.getGson();
         List<WhiteSourceComponent> components = gson.fromJson(json, new TypeToken<List<WhiteSourceComponent>>(){}.getType());
-        whiteSourceComponentRepository.save(components);
+        whiteSourceComponentRepository.saveAll(components);
     }
 
     private void populateLibraryPolicyResults() {
         String json = getJsonResponse("library_policy.json");
         Gson gson = GsonUtil.getGson();
         List<LibraryPolicyResult> libraryPolicyResults = gson.fromJson(json, new TypeToken<List<LibraryPolicyResult>>(){}.getType());
-        libraryPolicyResultsRepository.save(libraryPolicyResults);
+        libraryPolicyResultsRepository.saveAll(libraryPolicyResults);
     }
 
     private String getJsonResponse(String fileName) {
