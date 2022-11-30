@@ -82,6 +82,7 @@
         <spotbugs.plugin.version>3.1.11</spotbugs.plugin.version>
         <svnkit.version>1.8.7</svnkit.version>
         <tomcat.version>9.0.69</tomcat.version>
+        <jjwt.version>0.11.5</jjwt.version>
     </properties>
 
     <issueManagement>
@@ -275,6 +276,23 @@
             <groupId>org.owasp.encoder</groupId>
             <artifactId>encoder</artifactId>
             <version>1.2.3</version>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-api</artifactId>
+            <version>${jjwt.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-impl</artifactId>
+            <version>${jjwt.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-jackson</artifactId>
+            <version>${jjwt.version}</version>
+            <scope>runtime</scope>
         </dependency>
 
     </dependencies>
