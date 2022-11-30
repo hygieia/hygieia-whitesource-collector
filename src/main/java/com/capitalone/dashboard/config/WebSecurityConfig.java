@@ -56,14 +56,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Autowired
 	private AuthProperties authProperties;
-	@Value("${api.request.security.apigateway.pop.token.validateClaims:false}")
-	private boolean validateClaims;
-	@Value("${api.request.security.apigateway.pop.rsa.publickey.provider.url}")
-	private String providerUrl;
-	@Value("${api.request.security.apigateway.pop.token.value:DevExchange Gateway}")
-	private String gatewayToken;
-	@Value("${api.request.security.apigateway.pop.token.leeway:60}")
-	private long leeway;
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
@@ -73,14 +65,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers(HttpMethod.GET, "/**").permitAll()
 				.anyRequest().authenticated()
 				.and()
-				.addFilterBefore(whitesourceAuthFilter(), UsernamePasswordAuthenticationFilter.class)
+				.addFilterBefore(apiTokenRequestFilter(), UsernamePasswordAuthenticationFilter.class)
 				.exceptionHandling().authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED));
 	}
 
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 		auth.authenticationProvider(apiTokenAuthenticationProvider);
-		auth.authenticationProvider(preAuthenticatedAuthenticationProvider());
 	}
 
 	@Bean
@@ -110,44 +101,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		}));
 		return preAuthProvider;
 	}
-	@Bean
-	protected WhitesourceCollectorAuthenticationFilter whitesourceAuthFilter() throws Exception {
-		return new WhitesourceCollectorAuthenticationFilter();
-	}
+
 	@Bean
 	protected JwtAuthenticationFilter jwtAuthenticationFilter() {
 		return new JwtAuthenticationFilter(new TokenAuthenticationServiceImpl(authProperties));
 	}
-	protected RestTemplate restTemplateForRsaKeyProvider() {
-		return new RestTemplate();
-	}
-	@Bean
-	protected RsaKeyProvider rsaKeyProvider() {
-		return new ApiGatewayRsaKeyProvider(this.restTemplateForRsaKeyProvider(), this.providerUrl);
-	}
-	@Bean
-	protected JwtClaimsValidator jwtClaimsValidator() {
-		return new ApiGatewayJwtClaimsValidator(this.gatewayToken, this.leeway);
-	}
-	@Bean
-	protected PopTokenVerifier popTokenVerifier(RsaKeyProvider rsaKeyProvider, JwtClaimsValidator jwtClaimsValidator) {
-		return new JwtPopTokenVerifier(rsaKeyProvider, jwtClaimsValidator, this.validateClaims);
-	}
-	@Bean
-	protected PreAuthenticatedPopTokenHeaderProcessingFilter popTokenHeaderProcessingFilter() throws Exception {
-		PreAuthenticatedPopTokenHeaderProcessingFilter preAuthenticatedPopTokenHeaderProcessingFilter =
-				new PreAuthenticatedPopTokenHeaderProcessingFilter(this.popTokenVerifier(rsaKeyProvider(), jwtClaimsValidator()));
-		preAuthenticatedPopTokenHeaderProcessingFilter.setAuthenticationManager(authenticationManager());
-		return preAuthenticatedPopTokenHeaderProcessingFilter;
-	}
-	@Bean
-	public FilterRegistrationBean<PreAuthenticatedPopTokenHeaderProcessingFilter> popTokenFilter() {
-		FilterRegistrationBean <PreAuthenticatedPopTokenHeaderProcessingFilter> registrationBean = new FilterRegistrationBean<>();
-		PreAuthenticatedPopTokenHeaderProcessingFilter popTokenHeaderProcessingFilter =
-				new PreAuthenticatedPopTokenHeaderProcessingFilter(this.popTokenVerifier(rsaKeyProvider(), jwtClaimsValidator()));
-		registrationBean.setFilter(popTokenHeaderProcessingFilter);
-		registrationBean.addUrlPatterns("/refresh");
-		registrationBean.setOrder(Ordered.LOWEST_PRECEDENCE);
-		return registrationBean;
-	}
+
 }
