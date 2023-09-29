@@ -1,3 +1,5 @@
+# Due to changes in the priorities, this project is currently not being supported. The project is archived as of 6/1/223 and will be available in a read-only state. Please note, since archival, the project is not maintained or reviewed
+
 ## Hygieia collector for collecting Library Policy results from Whitesource
 
 Hygieia WhiteSource Collector
